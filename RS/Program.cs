@@ -37,12 +37,6 @@ namespace RS
             //ML_10M.MatrixFactorizationTest(0.2);
             //ML_10M.BiasedMatrixFactorizationTest(0.2);
 
-            // Yelp 2014
-
-            // Yelp 2015
-            //YelpE.MatrixFactorizationTest(0.1);
-            //YelpE.BiasedMatrixFactorizationTest(0.1);
-
             // Epinions 2006
             //Epinions.MeanFillingTest();
             //Epinions.MatrixFactorizationTest();
@@ -69,6 +63,14 @@ namespace RS
             //Douban.MatrixFactorizationTest();
             //Douban.BiasedMatrixFactorizationTest();
             //Douban.SVDPlusPlusTest();
+
+
+            // Yelp 2014
+
+            // Yelp 2015
+            YelpE.MatrixFactorizationTest(0.1);
+            YelpE.BiasedMatrixFactorizationTest(0.1);
+
         }
     }
 }
