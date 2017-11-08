@@ -66,7 +66,7 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(testRatings);
 
             BiasedMatrixFactorization model = new BiasedMatrixFactorization(MaxUserId, MaxItemId);
-            model.TrySGD(baseRatings, testRatings, 1000, 0.01, 0.01);
+            model.TrySGD(baseRatings, testRatings, 100, 0.01, 0.01, 0.95);
         }
 
         public static void SVDPlusPlusTest()
@@ -107,7 +107,7 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(links);
 
             FriendBiasedMatrixFactorization model = new FriendBiasedMatrixFactorization(MaxUserId, MaxItemId);
-            model.TrySGD(baseRatings, testRatings, links, 0.012, 100, 0.01, 0.01, 0.95);
+            model.TrySGD(baseRatings, testRatings, links, 0.02, 100, 0.01, 0.01, 0.96);
         }
 
 

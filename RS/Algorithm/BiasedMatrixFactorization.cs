@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using System.Threading.Tasks;
 
 using RS.DataType;
 using RS.Data.Utility;
 using RS.Evaluation;
+
 
 namespace RS.Algorithm
 {
@@ -129,7 +131,6 @@ namespace RS.Algorithm
             Console.WriteLine("maximumRating,{0}", maximumRating);
         }
 
-
         public virtual void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
         {
             PrintParameters(train, test, epochs, gamma, lambda, decay, mimimumRating, maximumRating);
@@ -155,7 +156,7 @@ namespace RS.Algorithm
                 }
 
                 double lastLoss = Loss(test, lambda, miu);
-                var eval = EvaluateMaeRmse(test, miu);
+                var eval = EvaluateMaeRmse(test, miu, mimimumRating, maximumRating);
                 Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
 
                 if (decay != 1.0)
@@ -175,40 +176,68 @@ namespace RS.Algorithm
             }
         }
 
-
-        protected List<Rating> GetRecommendations(MyTable ratingTable, double miu, int N = 10)
+        protected List<Rating> GetRecommendations(MyTable ratingTable, double miu, int N = 10, bool multiThread = false)
         {
             List<Rating> recommendedItems = new List<Rating>();
             ArrayList list = ratingTable.GetSubKeyList();
-            foreach (int userId in ratingTable.Keys)
+
+            if (multiThread)
             {
-                Hashtable Nu = (Hashtable)ratingTable[userId];      // ratings of user u
-                List<Rating> predictedRatings = new List<Rating>();
-                foreach (int itemId in list)
+                int[] mainKeys = new int[ratingTable.Keys.Count];
+                ratingTable.Keys.CopyTo(mainKeys, 0);
+
+                Parallel.ForEach(mainKeys, userId =>
                 {
-                    if (!Nu.ContainsKey(itemId))
+                    Hashtable Nu = (Hashtable)ratingTable[userId];      // ratings of user u
+                    List<Rating> predictedRatings = new List<Rating>();
+                    foreach (int itemId in list)
                     {
-                        double p = Predict(userId, itemId, miu);
-                        predictedRatings.Add(new Rating(userId, itemId, p));
+                        if (!Nu.ContainsKey(itemId))
+                        {
+                            double p = Predict(userId, itemId, miu);
+                            predictedRatings.Add(new Rating(userId, itemId, p));
+                        }
                     }
+                    List<Rating> sortedLi = predictedRatings.OrderByDescending(r => r.Score).ToList();
+                    lock (recommendedItems)
+                    {
+                        recommendedItems.AddRange(sortedLi.GetRange(0, Math.Min(sortedLi.Count, N)));
+                    }
+                });
+            }
+            else
+            {
+                foreach (int userId in ratingTable.Keys)
+                {
+                    Hashtable Nu = (Hashtable)ratingTable[userId];      // ratings of user u
+                    List<Rating> predictedRatings = new List<Rating>();
+                    foreach (int itemId in list)
+                    {
+                        if (!Nu.ContainsKey(itemId))
+                        {
+                            double p = Predict(userId, itemId, miu);
+                            predictedRatings.Add(new Rating(userId, itemId, p));
+                        }
+                    }
+                    List<Rating> sortedLi = predictedRatings.OrderByDescending(r => r.Score).ToList();
+                    recommendedItems.AddRange(sortedLi.GetRange(0, Math.Min(sortedLi.Count, N)));
                 }
-                List<Rating> sortedLi = predictedRatings.OrderByDescending(r => r.Score).ToList();
-                recommendedItems.AddRange(sortedLi.GetRange(0, Math.Min(sortedLi.Count, N)));
             }
             return recommendedItems;
         }
 
         public void TrySGDForTopN(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0)
         {
-            double miu = train.Average(r => r.Score);
-
             PrintParameters(train, test, epochs, gamma, lambda, decay, 0, 1);
             Console.WriteLine("epoch,train:loss,K(Cosine),N,P,R,Coverage,Popularity");
+
+            double miu = train.Average(r => r.Score);
             double loss = Loss(train, lambda, miu);
 
+            int[] K = { 1, 5, 10, 15, 20, 25, 30 };  // recommdation list
             MyTable ratingTable = Tools.GetRatingTable(train);
 
-            for (int iter = 0; iter < epochs; iter++)
+            for (int epoch = 0; epoch < epochs; epoch++)
             {
                 foreach (Rating r in train)
                 {
@@ -222,22 +251,25 @@ namespace RS.Algorithm
                 }
 
                 double lastLoss = Loss(train, lambda, miu);
-                
-                if (iter % 2 == 0)
+                if (epoch % 2 == 0)
                 {
-                    int n = 10; // recommdation list
-                    List<Rating> recommendations = GetRecommendations(ratingTable, n);
-                    var pr = Metrics.PrecisionAndRecall(recommendations, test);
-                    var cp = Metrics.CoverageAndPopularity(recommendations, train);
-                    Console.WriteLine("{0},{1},{2},{3},{4},{5},{6}", iter + 1, lastLoss, n, pr.Item1, pr.Item2, cp.Item1, cp.Item2);
+                    Console.Write("{0}#{1}", epoch, lastLoss);
+                    List<Rating> recommendations = GetRecommendations(ratingTable, miu, K[K.Length - 1], true);   // note that, the max K
+                    foreach (int k in K)
+                    {
+                        Console.Write(",{0}", k);
+                        List<Rating> subset = Tools.GetSubset(recommendations, k);
+                        var pr = Metrics.PrecisionAndRecall(subset, test);
+                        var cp = Metrics.CoverageAndPopularity(subset, train);
+                        var map = Metrics.MAP(subset, test, k);
+                        Console.WriteLine(",{0},{1},{2},{3},{4}", pr.Item1, pr.Item2, cp.Item1, cp.Item2, map);
+                    }
                 }
-
 
                 if (decay != 1.0)
                 {
                     gamma *= decay;
                 }
-
                 if (lastLoss < loss)
                 {
                     loss = lastLoss;

@@ -59,22 +59,21 @@ namespace RS.Algorithm
             }
         }
 
-        //public override double Predict(int userId, int itemId, double miu)
-        //{
-        //    double _r = 0.0;
-        //    for (int i = 0; i < f; i++)
-        //    {
-        //        // _r += Q[iId, i] * (P[uId, i] +  X[uId, i]);  // 修正用户P，xi为朋友们的隐式特征
-        //        _r += P[userId, i] * (Q[itemId, i] + X[userId, i]);    // 修正物品Q，xi为朋友们的隐式特征
-        //    }
-        //    return _r+ bu[userId] + bi[itemId] + miu;
-        //}
+        public override double Predict(int userId, int itemId, double miu)
+        {
+            double _r = 0.0;
+            for (int i = 0; i < f; i++)
+            {
+                _r += P[userId, i] * (Q[itemId, i] + X[userId, i]);    // 修正物品Q，xi为朋友们的隐式特征
+            }
+            return bu[userId] + bi[itemId] + miu + _r;
+        }
 
         private void PrintParameters(List<Rating> train, List<Rating> test, List<Link> links, double w = 1.0, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
         {
             Console.WriteLine(GetType().Name);
             Console.WriteLine("train,{0}", train.Count);
-            Console.WriteLine("test,{0}", test == null ? 0 : test.Count);
+            Console.WriteLine("test,{0}", test.Count);
             Console.WriteLine("links,{0}", links.Count);
             Console.WriteLine("w,{0}", w);
             Console.WriteLine("p,{0},q,{1},f,{2}", p, q, f);
@@ -89,44 +88,44 @@ namespace RS.Algorithm
         public void TrySGD(List<Rating> train, List<Rating> test, List<Link> links, double w = 1.0, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
         {
             PrintParameters(train, test, links, w, epochs, gamma, lambda, decay, mimimumRating, maximumRating);
+            Console.WriteLine("epoch,train:loss,test:mae,test:rmse");
+
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);
             Hashtable userLinksTable = Tools.GetUserLinksTable(links);
-            double miu = 0; // train.AsParallel().Average(r => r.Score);
 
-            Console.WriteLine("epoch,loss,test:mae,test:rmse");
-            //UpdateX(userLinksTable, w);
+            double miu = train.AsParallel().Average(r => r.Score);
             double loss = Loss(train, lambda, miu);
+            UpdateX(userLinksTable, w);
 
             for (int epoch = 1; epoch <= epochs; epoch++)
             {
-                // UpdateX(userLinksTable, w);
-                //foreach (int uId in userItemsTable.Keys)
-                //{
-                    //if (userLinksTable.ContainsKey(uId))
-                    //{
-                    //    List<Link> _links = (List<Link>)userLinksTable[uId];
-                    //    UpdateX(uId, _links, w);
-                    //}
+                foreach (int uId in userItemsTable.Keys)
+                {
+                    if (userLinksTable.ContainsKey(uId))
+                    {
+                        List<Link> _links = (List<Link>)userLinksTable[uId];
+                        UpdateX(uId, _links, w);
+                    }
 
-                    //List<Rating> ratings = (List<Rating>)userItemsTable[uId]; // ratings with an UserId
-                    foreach (Rating r in train)
+                    List<Rating> ratings = (List<Rating>)userItemsTable[uId];
+                    foreach (Rating r in ratings)
                     {
                         double pui = Predict(r.UserId, r.ItemId, miu);
                         double eui = r.Score - pui;
 
-                    bu[r.UserId] += gamma * (eui - lambda * bu[r.UserId]);
-                    bi[r.ItemId] += gamma * (eui - lambda * bi[r.ItemId]);
+                        bu[r.UserId] += gamma * (eui - lambda * bu[r.UserId]);
+                        bi[r.ItemId] += gamma * (eui - lambda * bi[r.ItemId]);
 
-                    for (int i = 0; i < f; i++)
+                        for (int i = 0; i < f; i++)
                         {
                             P[r.UserId, i] += gamma * (eui * (Q[r.ItemId, i] + X[r.UserId, i]) - lambda * P[r.UserId, i]);
                             Q[r.ItemId, i] += gamma * (eui * (P[r.UserId, i]) - lambda * Q[r.ItemId, i]);
                         }
-                    //}
+                    }
                 }
 
                 double lastLoss = Loss(test, lambda, miu);
-                var eval = EvaluateMaeRmse(test, mimimumRating, maximumRating);
+                var eval = EvaluateMaeRmse(test, miu, mimimumRating, maximumRating);
                 Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
 
                 if (decay != 1.0)

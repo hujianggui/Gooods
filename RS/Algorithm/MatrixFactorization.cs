@@ -161,13 +161,10 @@ namespace RS.Algorithm
                 var eval = EvaluateMaeRmse(train);
                 Console.WriteLine("{0},{1},{2},{3}", iter + 1, lastLoss, eval.Item1, eval.Item2);
 
-
                 if (decay != 1.0)
                 {
                     gamma *= decay;
                 }
-
-
                 if (lastLoss < loss)
                 {
                     loss = lastLoss;
