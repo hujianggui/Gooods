@@ -51,7 +51,8 @@ namespace RS
             //Epinions.SVDPlusPlusTest();
             //Epinions.FriendMatrixFactorizationTest();
             //Epinions.AdaptiveFriendMatrixFactorizationTest();
-            Epinions.FriendBiasedMatrixFactorizationTest();
+            //Epinions.FriendBiasedMatrixFactorizationTest();
+            Epinions.AdaptiveFriendBiasedMatrixFactorizationTest();
 
             //Epinions.MatrixFactorizationTopNTest();
             //Epinions.AdaptiveFriendMatrixFactorizationTopNTest();

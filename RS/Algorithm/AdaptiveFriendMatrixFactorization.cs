@@ -15,15 +15,14 @@ namespace RS.Algorithm
 
         public AdaptiveFriendMatrixFactorization() { }
 
+        public AdaptiveFriendMatrixFactorization(int p, int q, int f = 10, string fillMethod = "uniform_df")
+        {
+            InitializeModel(p, q, f, fillMethod);
+        }
         public override void InitializeModel(int p, int q, int f, string fillMethod = "uniform_df")
         {
             base.InitializeModel(p, q, f, fillMethod);
             W = new double[p];
-        }
-
-        public AdaptiveFriendMatrixFactorization(int p, int q, int f = 10, string fillMethod = "uniform_df")
-        {
-            InitializeModel(p, q, f, fillMethod);
         }
 
         protected void UpdateX(int uId, List<Link> links)

@@ -69,6 +69,7 @@
     <Compile Include="Algorithm\BiasedMatrixFactorization.cs" />
     <Compile Include="Algorithm\AdaptiveFriendMatrixFactorization.cs" />
     <Compile Include="Algorithm\EuclideanEmbedding.cs" />
+    <Compile Include="Algorithm\AdaptiveFriendBiasedMatrixFactorization.cs" />
     <Compile Include="Algorithm\FriendBiasedMatrixFactorization.cs" />
     <Compile Include="Algorithm\FriendMatrixFactorization.cs" />
     <Compile Include="Algorithm\MatrixFactorization.cs" />
