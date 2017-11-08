@@ -22,12 +22,12 @@ namespace RS.Algorithm
 
         public BiasedMatrixFactorization() { }
 
-        public BiasedMatrixFactorization(int p, int q, int f = 10, string fillMethod = "uniform_f")
+        public BiasedMatrixFactorization(int p, int q, int f = 10, string fillMethod = "uniform_df")
         {
             InitializeModel(p, q, f, fillMethod);
         }
 
-        public void InitializeModel(int p, int q, int f, string fillMethod = "uniform_f")
+        public virtual void InitializeModel(int p, int q, int f, string fillMethod = "uniform_df")
         {
             this.p = p;
             this.q = q;
@@ -36,7 +36,7 @@ namespace RS.Algorithm
             bu = new double[this.p];
             bi = new double[this.q];
 
-            if (fillMethod == "uniform_f")
+            if (fillMethod == "uniform_df")
             {
                 P = MathUtility.RandomUniform(p, f, 1.0 / Math.Sqrt(f));
                 Q = MathUtility.RandomUniform(q, f, 1.0 / Math.Sqrt(f));
@@ -133,9 +133,9 @@ namespace RS.Algorithm
         public virtual void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
         {
             PrintParameters(train, test, epochs, gamma, lambda, decay, mimimumRating, maximumRating);
-            double miu = train.Average(r => r.Score);
             Console.WriteLine("epoch,loss,test:mae,test:rmse");
-           
+
+            double miu = train.AsParallel().Average(r => r.Score);
             double loss = Loss(test, lambda, miu);
 
             for (int iter = 0; iter < epochs; iter++)

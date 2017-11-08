@@ -96,6 +96,20 @@ namespace RS.Data
             model.TrySGD(baseRatings, testRatings, links, 2.6, 100, 0.01, 0.01, 0.9);
         }
 
+        public static void FriendBiasedMatrixFactorizationTest()
+        {
+            List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile, " ");
+            List<Rating> testRatings = Tools.GetRatings(TestRatingFile, " ");
+            List<Link> links = Tools.GetLinks(DefaultLinkFile, " ");
+
+            Tools.UpdateIndexesToZeroBased(baseRatings);
+            Tools.UpdateIndexesToZeroBased(testRatings);
+            Tools.UpdateIndexesToZeroBased(links);
+
+            FriendBiasedMatrixFactorization model = new FriendBiasedMatrixFactorization(MaxUserId, MaxItemId);
+            model.TrySGD(baseRatings, testRatings, links, 0.012, 100, 0.01, 0.01, 0.9);
+        }
+
 
         public static void AdaptiveFriendMatrixFactorizationTest()
         {
