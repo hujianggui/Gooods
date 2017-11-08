@@ -12,8 +12,11 @@ Algorithm list
 [4] Alternating Least Lquares, rating prediction, top-N recommendation.
 
 [5] Friend Matrix Factorization, rating prediction, top-N recommendation. (PAKDD2015-Wang)
+
     Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
+    
     Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.
+    
     Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
     
     
