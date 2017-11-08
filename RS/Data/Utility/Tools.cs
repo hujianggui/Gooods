@@ -33,13 +33,21 @@ namespace RS.Data.Utility
                 string line = reader.ReadLine();
                 string[] elements = line.Split(separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-                int uid = Int32.Parse(elements[0]);
-                int iid = Int32.Parse(elements[1]);
-
-                double rate = Double.Parse(elements[2]);
-                Rating r = new Rating(uid, iid, rate);
-
-                ratings.Add(r);
+                if (elements.Length == 3)
+                {
+                    int uid = Int32.Parse(elements[0]);
+                    int iid = Int32.Parse(elements[1]);
+                    double rate = Double.Parse(elements[2]);
+                    Rating r = new Rating(uid, iid, rate);
+                    ratings.Add(r);
+                }
+                else if (elements.Length == 2)
+                {
+                    int uid = Int32.Parse(elements[0]);
+                    int iid = Int32.Parse(elements[1]);
+                    Rating r = new Rating(uid, iid, 1.0);
+                    ratings.Add(r);
+                }
             }
             reader.Close();
             return ratings;

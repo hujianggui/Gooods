@@ -313,7 +313,6 @@ namespace RS.Algorithm
                 {
                     gamma *= decay;
                 }
-
                 if (lastLoss < loss)
                 {
                     loss = lastLoss;
