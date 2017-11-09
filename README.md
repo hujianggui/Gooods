@@ -23,8 +23,9 @@ Algorithms
     Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.
     
     Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
-    
-    
+
+[8] Euclidean Embedding, rating prediction, top-N recommendation.
+    
 Evaluation metrics
 
 [1] error metrics: MAE, RMSE
