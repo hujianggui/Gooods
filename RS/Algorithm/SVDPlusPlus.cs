@@ -197,13 +197,13 @@ namespace RS.Algorithm
 
             double loss = Loss(test, lambda, miu);
 
-            for (int iter = 0; iter < epochs; iter++)
+            for (int epoch = 1; epoch <= epochs; epoch++)
             {
                 foreach (int uId in userItemsTable.Keys)
                 {
                     List<Rating> li = (List<Rating>)userItemsTable[uId];
-                    double ru = w / System.Math.Sqrt(li.Count);
-                    UpdataZ(uId, li, ru);
+                    double ru = w / Math.Sqrt(li.Count);
+                    UpdataZ(uId, li, ru);   // NOTE: different from the provided in Java, posite here to reduce complexity.
                     double[] sum = new double[f];
 
                     foreach (Rating r in li)
@@ -233,7 +233,7 @@ namespace RS.Algorithm
                 double lastLoss = Loss(test, lambda, miu);
                 double mae = 0.0, rmse = 0.0;
                 EvaluateMaeRmse(test, lambda, miu, out mae, out rmse);
-                Console.WriteLine("{0},{1},{2},{3}", iter + 1, lastLoss, mae, rmse);
+                Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, mae, rmse);
 
                 if (decay != 1.0)
                 {
