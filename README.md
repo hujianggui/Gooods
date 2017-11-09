@@ -6,12 +6,12 @@
 	[2] ItemKNN (item-based collaborative filtering), top-N recommendation.
 	[3] Matrix Factorization, rating prediction, top-N recommendation.
 	[4] Biased Matrix Factorization, rating prediction, top-N recommendation.
-	[5] SVD++, rating prediction.
+	[5] SVD++ (speed up), rating prediction.
 	[6] Alternating Least Lquares, rating prediction, top-N recommendation.
 	[7] Euclidean Embedding, rating prediction, top-N recommendation.
 	[8] Friend Matrix Factorization, rating prediction, top-N recommendation.
 	    Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
-	    citation:
+		citation:
 	    @inproceedings{DBLP:conf/pakdd/WangYHH15,
 	      author    = {Zhijin Wang and Yan Yang and Qinmin Hu and Liang He},
 	      title     = {An Empirical Study of Personal Factors and Social Effects on Rating Prediction},
@@ -29,11 +29,9 @@
 	[3] Rank metrics: MAP@N
 
 ### Data collections (examples)
-	[1] ml-100k, ml-1m, ml-10m
-	[2] Douban
-	[3] Epinions
-	[4] Flixster
-	[5] Yelp
+	[1] Moive data: ml-100k, ml-1m, ml-10m
+	[2] Social data: Douban, Epinions, Flixster
+	[3] Yelp
 
 ### Contact
 	freepose@126.com
