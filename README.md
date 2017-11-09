@@ -1,6 +1,6 @@
-##Algorithms for recommendation systems in C#.
+###Algorithms for recommendation systems in C#.
 
-### The algorithms are listed as below.
+#### The algorithms are listed as below.
 	[0] Global mean, user mean, item mean filling methods. Those are used for rating prediction.
 	[1] UserKNN (user-based collaborative filstering), rating prediction, top-N recommendation.
 	[2] ItemKNN (item-based collaborative filstering), top-N recommendation.
@@ -26,17 +26,17 @@
 	      series    = {PAKDD'15},
 	    }
 
-### Evaluation metrics
+#### Evaluation metrics
 	[1] error metrics: MAE, RMSE
 	[2] accuracy metrics: Precsion@N, Recall@N
 	[3] Rank metrics: MAP@N
 
-### Data collections (examples)
+#### Data collections (examples)
 	[1] ml-100k, ml-1m, ml-10m
 	[2] Douban
 	[3] Epinions
 	[4] Flixster
 	[5] Yelp
 
-### Contact
+#### Contact
 	freepose@126.com
