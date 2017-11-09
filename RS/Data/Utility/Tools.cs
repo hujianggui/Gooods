@@ -41,13 +41,7 @@ namespace RS.Data.Utility
                     Rating r = new Rating(uid, iid, rate);
                     ratings.Add(r);
                 }
-                else if (elements.Length == 2)
-                {
-                    int uid = Int32.Parse(elements[0]);
-                    int iid = Int32.Parse(elements[1]);
-                    Rating r = new Rating(uid, iid, 1.0);
-                    ratings.Add(r);
-                } else if (elements.Length == 4)
+                else if (elements.Length == 4)
                 {
                     int uid = Int32.Parse(elements[0]);
                     int iid = Int32.Parse(elements[1]);
@@ -55,12 +49,11 @@ namespace RS.Data.Utility
                     Rating r = new Rating(uid, iid, rate, elements[3]);
                     ratings.Add(r);
                 }
-                else if (elements.Length == 4)
+                else if (elements.Length == 2)
                 {
                     int uid = Int32.Parse(elements[0]);
                     int iid = Int32.Parse(elements[1]);
-                    double rate = Double.Parse(elements[2]);
-                    Rating r = new Rating(uid, iid, rate, elements[3]);
+                    Rating r = new Rating(uid, iid, 1.0);
                     ratings.Add(r);
                 }
             }
