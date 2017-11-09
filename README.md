@@ -13,10 +13,7 @@
 	    Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 	    citation:
 	    @inproceedings{DBLP:conf/pakdd/WangYHH15,
-	      author    = {Zhijin Wang and
-	                   Yan Yang and
-	                   Qinmin Hu and
-	                   Liang He},
+	      author    = {Zhijin Wang and Yan Yang and Qinmin Hu and Liang He},
 	      title     = {An Empirical Study of Personal Factors and Social Effects on Rating Prediction},
 	      booktitle = {Proceedings of the 19th Pacific-Asia Conference on Knowledge Discovery and Data Mining},
 	      pages     = {747-758},
