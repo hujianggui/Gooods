@@ -7,7 +7,6 @@ using RS.DataType;
 namespace RS.Algorithm
 {
     /// <summary>
-    /// class EuclideanEmbedding
     /// Collaborative Filtering via Euclidean Embedding
     /// Recsys 2010, p87, Khoshneshin & Street
     /// </summary>

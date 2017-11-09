@@ -11,6 +11,9 @@ using RS.Evaluation;
 
 namespace RS.Algorithm
 {
+    /// <summary>
+    /// KDD'08-p426-Koren
+    /// </summary>
     public class BiasedMatrixFactorization 
     {
         protected int p = 0;   // Number of Users

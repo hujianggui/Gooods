@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 namespace RS.Algorithm
 {
     /// <summary>
-    /// class MatrixFactorization
+    ///  computer2009-Koren
+    ///  "Matrix factorization techniques for recommender systems"
     /// </summary>
     public class MatrixFactorization
     {

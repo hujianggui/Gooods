@@ -8,6 +8,9 @@ using RS.DataType;
 
 namespace RS.Algorithm
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class SVDPlusPlus
     {
         protected int p = 0;   // Number of Users

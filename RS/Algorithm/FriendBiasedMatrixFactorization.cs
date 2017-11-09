@@ -8,6 +8,10 @@ using RS.DataType;
 
 namespace RS.Algorithm
 {
+    /// <summary>
+    /// PAKDD2015-Wang
+    /// An empirical study of personal factors and social effects on rating predition.
+    /// </summary>
     public class FriendBiasedMatrixFactorization : BiasedMatrixFactorization
     {
         protected double[,] X = null;   // weighted linked factors

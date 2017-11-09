@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 namespace RS.Algorithm
 {
     /// <summary>
-    /// class Als
     /// ICDM 2007, Robert M. Bell and Yehuda Koren, p43
     /// "Scalable Collaborative Filtering with Jointly Derived Neighborhood Interpolation Weights"
     /// Recsys 2010, Pilászy, p71
