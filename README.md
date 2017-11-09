@@ -13,7 +13,7 @@
 	    Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 	    Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
 	    Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
-		citation:
+	    citation:
 	    @inproceedings{DBLP:conf/pakdd/WangYHH15,
 	      author    = {Zhijin Wang and
 	                   Yan Yang and
