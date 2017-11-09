@@ -11,8 +11,6 @@
 	[7] Euclidean Embedding, rating prediction, top-N recommendation.
 	[8] Friend Matrix Factorization, rating prediction, top-N recommendation.
 	    Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
-	    Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
-	    Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 	    citation:
 	    @inproceedings{DBLP:conf/pakdd/WangYHH15,
 	      author    = {Zhijin Wang and
@@ -25,6 +23,8 @@
 	      year      = {2015},
 	      series    = {PAKDD'15},
 	    }
+	[9] Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
+	    Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 
 ### Evaluation metrics
 	[1] error metrics: MAE, RMSE
