@@ -1,6 +1,6 @@
-## Algorithms for recommendation systems in C#.
+## Algorithms for recommendation systems in C#
 
-### The algorithms are listed as below.
+### The algorithms
 	[0] Global mean, user mean, item mean filling methods. Those are used for rating prediction.
 	[1] UserKNN (user-based collaborative filtering), rating prediction, top-N recommendation.
 	[2] ItemKNN (item-based collaborative filtering), top-N recommendation.
