@@ -7,7 +7,7 @@
 	[3] Matrix Factorization, rating prediction, top-N recommendation.
 	[4] Biased Matrix Factorization, rating prediction, top-N recommendation.
 	[5] SVD++ (speed up), rating prediction.
-	[6] Alternating Least Squares, rating prediction, top-N recommendation.
+	[6] Alternating Least Lquares, rating prediction, top-N recommendation.
 	[7] Euclidean Embedding, rating prediction, top-N recommendation.
 	[8] Friend Matrix Factorization, rating prediction, top-N recommendation.
 	    Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
@@ -28,6 +28,7 @@
 	[1] error metrics: MAE, RMSE
 	[2] accuracy metrics: Precision@N, Recall@N
 	[3] Rank metrics: MAP@N
+	[4] Others: Coverage, Popularity
 
 ### Data collections (examples)
 	[1] Moive data: ml-100k, ml-1m, ml-10m
