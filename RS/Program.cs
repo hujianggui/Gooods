@@ -68,7 +68,7 @@ namespace RS
             // Yelp 2014
 
             // Yelp 2015
-            YelpE.MatrixFactorizationTest(0.1);
+            //YelpE.MatrixFactorizationTest(0.1);
             YelpE.BiasedMatrixFactorizationTest(0.1);
 
         }

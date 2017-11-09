@@ -451,16 +451,22 @@ namespace RS.Data
         public static void MatrixFactorizationTest(double testSize = 0.1)
         {
             List<Rating> ratings = Tools.GetRatings(RatingFile, ",");
+            var max = Tools.GetMaxUserIdAndItemId(ratings);
+            var maxUserId = max.Item1 + 1;
+            var maxItemId = max.Item2 + 1;
+            MatrixFactorization model = new MatrixFactorization(maxUserId, maxItemId);
             var t = Tools.TrainTestSplit(ratings, testSize);
-            MatrixFactorization model = new MatrixFactorization(MaxUserId, MaxItemId);
             model.TrySGD(t.Item1, t.Item2, 100);
         }
 
         public static void BiasedMatrixFactorizationTest(double testSize = 0.1)
         {
             List<Rating> ratings = Tools.GetRatings(RatingFile, ",");
+            var max = Tools.GetMaxUserIdAndItemId(ratings);
+            var maxUserId = max.Item1 + 1;
+            var maxItemId = max.Item2 + 1;
+            BiasedMatrixFactorization model = new BiasedMatrixFactorization(maxUserId, maxItemId);
             var t = Tools.TrainTestSplit(ratings, testSize);
-            BiasedMatrixFactorization model = new BiasedMatrixFactorization(MaxUserId, MaxItemId);
             model.TrySGD(t.Item1, t.Item2, 100, 0.005);
         }
 
