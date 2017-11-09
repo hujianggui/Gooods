@@ -100,7 +100,6 @@ namespace RS.Algorithm
         public static double[,] RandomGaussian(int rows, int columns, double mean, double stdev)
         {
             double[,] matrix = new double[rows, columns];
-            Random r = new Random();
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
