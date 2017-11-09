@@ -16,7 +16,7 @@ Algorithms
 
 [6] Alternating Least Lquares, rating prediction, top-N recommendation.
 
-[7] Friend Matrix Factorization, rating prediction, top-N recommendation. (PAKDD2015-Wang)
+[7] Friend Matrix Factorization, rating prediction, top-N recommendation.
 
     Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
     
@@ -24,7 +24,21 @@ Algorithms
     
     Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 
+@inproceedings{DBLP:conf/pakdd/WangYHH15,
+  author    = {Zhijin Wang and
+               Yan Yang and
+               Qinmin Hu and
+               Liang He},
+  title     = {An Empirical Study of Personal Factors and Social Effects on Rating Prediction},
+  booktitle = {Proceedings of the 19th Pacific-Asia Conference on Knowledge Discovery and Data Mining},
+  pages     = {747--758},
+  year      = {2015},
+  series    = {PAKDD'15},
+}
+
+
 [8] Euclidean Embedding, rating prediction, top-N recommendation.
+
 
 
 Evaluation metrics
