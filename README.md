@@ -7,7 +7,7 @@
 	[3] Matrix Factorization, rating prediction, top-N recommendation.
 	[4] Biased Matrix Factorization, rating prediction, top-N recommendation.
 	[5] SVD++ (speed up), rating prediction.
-	[6] Alternating Least Lquares, rating prediction, top-N recommendation.
+	[6] Alternating Least Squares, rating prediction, top-N recommendation.
 	[7] Euclidean Embedding, rating prediction, top-N recommendation.
 	[8] Friend Matrix Factorization, rating prediction, top-N recommendation.
 	    Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
