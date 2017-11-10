@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using RS.Data.Utility;
 using RS.DataType;
-using RS.Algorithm;
+using RS.CollaborativeFiltering;
 
 namespace RS.Data
 {

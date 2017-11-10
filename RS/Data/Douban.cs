@@ -1,4 +1,4 @@
-﻿using RS.Algorithm;
+﻿using RS.CollaborativeFiltering;
 using RS.Data.Utility;
 using RS.DataType;
 using System;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using RS.Algorithm;
+using RS.CollaborativeFiltering;
 using RS.DataType;
 using RS.Data.Utility;
 

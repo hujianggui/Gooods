@@ -1,7 +1,7 @@
 ﻿
 using System.Collections.Generic;
 
-using RS.Algorithm;
+using RS.CollaborativeFiltering;
 using RS.DataType;
 using RS.Data.Utility;
 

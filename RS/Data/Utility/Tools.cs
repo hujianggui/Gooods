@@ -498,5 +498,6 @@ namespace RS.Data.Utility
 
             return samples;
         } 
+
     }
 }

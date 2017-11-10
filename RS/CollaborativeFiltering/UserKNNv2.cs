@@ -7,60 +7,63 @@ using RS.DataType;
 using RS.Data.Utility;
 using RS.Evaluation;
 
-namespace RS.Algorithm
+namespace RS.CollaborativeFiltering
 {
-    public class ItemKNNv2
+    /// <summary>
+    /// Top-N recommendation
+    /// </summary>
+    public class UserKNNv2
     {
-        protected MyTable CalculateCooccurrences(Hashtable userItemsTable)
+        protected MyTable CalculateCooccurrences(Hashtable itemUsersTable)
         {
             MyTable cooccurrences = new MyTable();
-            foreach (int uId in userItemsTable.Keys)
+            foreach (int iId in itemUsersTable.Keys)
             {
-                List<Rating> items = (List<Rating>)userItemsTable[uId];
-                foreach (Rating i in items)
+                List<Rating> users = (List<Rating>)itemUsersTable[iId];
+                foreach (Rating u in users)
                 {
-                    foreach (Rating j in items)
+                    foreach (Rating v in users)
                     {
-                        if (i.ItemId == j.ItemId)
+                        if (u.UserId == v.UserId)
                         {
                             continue;
                         }
-                        if (!cooccurrences.ContainsKey(i.ItemId, j.ItemId))
+                        if (!cooccurrences.ContainsKey(u.UserId, v.UserId))
                         {
-                            cooccurrences.Add(i.ItemId, j.ItemId, 0.0);
+                            cooccurrences.Add(u.UserId, v.UserId, 0.0);
                         }
-                        cooccurrences[i.ItemId, j.ItemId] = (double)cooccurrences[i.ItemId, j.ItemId] + 1.0;
+                        cooccurrences[u.UserId, v.UserId] = (double)cooccurrences[u.UserId, v.UserId] + 1.0 / Math.Log(1 + users.Count);
                     }
                 }
             }
             return cooccurrences;
         }
 
-        protected MyTable CalculateSimilarities(MyTable coourrencesTable, Hashtable itemUsersTable)
+        protected MyTable CalculateSimilarities(MyTable coourrencesTable, Hashtable userItemsTable)
         {
             MyTable wuv = new MyTable();
-            foreach (int iId in coourrencesTable.Keys)
+            foreach (int uId in coourrencesTable.Keys)
             {
-                Hashtable subTable = (Hashtable)coourrencesTable[iId];
-                List<Rating> iRatings = (List<Rating>)itemUsersTable[iId];
-                foreach (int jId in subTable.Keys)
+                Hashtable subTable = (Hashtable)coourrencesTable[uId];
+                List<Rating> uRatings = (List<Rating>)userItemsTable[uId];
+                foreach (int vId in subTable.Keys)
                 {
-                    double coourrences = (double)subTable[jId];
-                    List<Rating> jRatings = (List<Rating>)itemUsersTable[jId];
-                    wuv.Add(iId, jId, coourrences * 1.0 / Math.Sqrt(iRatings.Count + jRatings.Count));
+                    double coourrences = (double)subTable[vId];                    
+                    List<Rating> vRatings = (List<Rating>)userItemsTable[vId];
+                    wuv.Add(uId, vId, coourrences / Math.Sqrt(uRatings.Count + vRatings.Count));
                 }
             }
             return wuv;
         }
 
-        protected List<Link> GetSimilarItems(MyTable W, int itemId, int K = 80)
+        protected List<Link> GetSimilarUsers(MyTable W, int userId, int K = 80)
         {
             List<Link> weights = new List<Link>();
-            Hashtable subTable = (Hashtable)W[itemId];
+            Hashtable subTable = (Hashtable)W[userId];
             foreach (int vId in subTable.Keys)
             {
                 double _w = (double)subTable[vId];
-                Link l = new Link(itemId, vId, _w);
+                Link l = new Link(userId, vId, _w);
                 weights.Add(l);
             }
             List<Link> sortedWeights = weights.OrderByDescending(l => l.Weight).ToList();
@@ -69,16 +72,17 @@ namespace RS.Algorithm
 
         protected List<Rating> GetRecommendations(MyTable ratingTable, MyTable W, int K = 80, int N = 10)
         {
-            MyTable recommendedTable = new MyTable();
+            MyTable recommendedTable = new MyTable();            
             foreach (int userId in ratingTable.Keys)
             {
                 Hashtable Nu = (Hashtable)ratingTable[userId];      // ratings of user u
-                foreach (int itemId in Nu.Keys)
+                List<Link> similarUsers = GetSimilarUsers(W, userId, K);                
+                foreach (Link l in similarUsers)
                 {
-                    List<Link> similarItems = GetSimilarItems(W, itemId, K);
-                    foreach (Link l in similarItems)
+                    int vId = l.To;     // similar user v
+                    Hashtable Nv = (Hashtable)ratingTable[vId];    // ratings of user v
+                    foreach (int iId in Nv.Keys)
                     {
-                        int iId = l.To;
                         if (Nu.ContainsKey(iId))
                         {
                             continue;
@@ -94,16 +98,15 @@ namespace RS.Algorithm
                             recommendedTable.Add(userId, iId, l.Weight);
                         }
                     }
-
                 }
             }
 
             List<Rating> recommendedItems = new List<Rating>();
-            foreach (int uId in recommendedTable.Keys)
+            foreach(int uId in recommendedTable.Keys)
             {
                 List<Rating> li = new List<Rating>();
                 Hashtable subTable = (Hashtable)recommendedTable[uId];
-                foreach (int iId in subTable.Keys)
+                foreach(int iId in subTable.Keys)
                 {
                     double _t = (double)subTable[iId];
                     li.Add(new Rating(uId, iId, _t));
@@ -119,24 +122,26 @@ namespace RS.Algorithm
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);
             Hashtable itemUsersTable = Tools.GetItemUsersTable(train);
 
-            MyTable coourrrenceTable = CalculateCooccurrences(userItemsTable);
-            MyTable wuv = CalculateSimilarities(coourrrenceTable, itemUsersTable);
+            MyTable coourrrenceTable = CalculateCooccurrences(itemUsersTable);
+            MyTable wuv = CalculateSimilarities(coourrrenceTable, userItemsTable);
 
             MyTable ratingTable = Tools.GetRatingTable(train);
 
-            Console.WriteLine("K(Cosine),N,P,R,Coverage,Popularity"); 
+            Console.WriteLine("K(Cosine),N,P,R,Coverage,Popularity");   
             List<Rating> recommendations = GetRecommendations(ratingTable, wuv, K, N);
             var pr = Metrics.PrecisionAndRecall(recommendations, test);
-            var cp = Metrics.CoverageAndPopularity(recommendations, train);
-            Console.WriteLine("{0},{1},{2},{3},{4}", K, pr.Item1, pr.Item2, cp.Item1, cp.Item2);
+            var cp = Metrics.CoverageAndPopularity(recommendations, train); // note: train ratings
+            Console.WriteLine("{0},{1},{2},{3},{4}", N, pr.Item1, pr.Item2, cp.Item1, cp.Item2);
         }
 
         public void TryTopN(List<Rating> train, List<Rating> test)
         {
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);
             Hashtable itemUsersTable = Tools.GetItemUsersTable(train);
-            MyTable coourrrenceTable = CalculateCooccurrences(userItemsTable);
-            MyTable wuv = CalculateSimilarities(coourrrenceTable, itemUsersTable);
+
+            MyTable coourrrenceTable = CalculateCooccurrences(itemUsersTable);
+            MyTable wuv = CalculateSimilarities(coourrrenceTable, userItemsTable);
+
             MyTable ratingTable = Tools.GetRatingTable(train);
 
             List<int> Ks = new List<int>() { 5, 10, 20, 40, 80, 160 };
@@ -146,14 +151,15 @@ namespace RS.Algorithm
             foreach (int k in Ks)
             {
                 Console.Write(k);
-                foreach (int n in Ns)
+                foreach(int n in Ns)
                 {
                     List<Rating> recommendations = GetRecommendations(ratingTable, wuv, k, n);
                     var pr = Metrics.PrecisionAndRecall(recommendations, test);
                     var cp = Metrics.CoverageAndPopularity(recommendations, train);
                     Console.WriteLine(",{0},{1},{2},{3},{4}", n, pr.Item1, pr.Item2, cp.Item1, cp.Item2);
                 }
-            }            
+            }
         }
+
     }
 }

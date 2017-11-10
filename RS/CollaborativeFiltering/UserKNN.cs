@@ -6,7 +6,7 @@ using System.Linq;
 using RS.DataType;
 using RS.Data.Utility;
 
-namespace RS.Algorithm
+namespace RS.CollaborativeFiltering
 {
     /// <summary>
     /// class UserKNN, rating prediction

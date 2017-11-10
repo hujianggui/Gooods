@@ -8,7 +8,7 @@ using RS.DataType;
 using RS.Evaluation;
 using System.Threading.Tasks;
 
-namespace RS.Algorithm
+namespace RS.CollaborativeFiltering
 {
     /// <summary>
     /// ICDM 2007, Robert M. Bell and Yehuda Koren, p43

@@ -6,7 +6,7 @@ using RS.Data.Utility;
 using RS.DataType;
 using RS.Evaluation;
 
-namespace RS.Algorithm
+namespace RS.CollaborativeFiltering
 {
 
     public class AdaptiveFriendMatrixFactorization : FriendMatrixFactorization

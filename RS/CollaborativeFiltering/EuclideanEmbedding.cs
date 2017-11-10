@@ -4,7 +4,7 @@ using System.Linq;
 
 using RS.DataType;
 
-namespace RS.Algorithm
+namespace RS.CollaborativeFiltering
 {
     /// <summary>
     /// Collaborative Filtering via Euclidean Embedding

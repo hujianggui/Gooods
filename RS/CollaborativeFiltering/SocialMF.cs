@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RS.Algorithm
+namespace RS.CollaborativeFiltering
 {
     /// <summary>
     /// Recsys2010-p135-Jamali. 

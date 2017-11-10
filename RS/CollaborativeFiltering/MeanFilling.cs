@@ -5,7 +5,7 @@ using System.Linq;
 
 using RS.DataType;
 
-namespace RS.Algorithm
+namespace RS.CollaborativeFiltering
 {
     public class MeanFilling
     {

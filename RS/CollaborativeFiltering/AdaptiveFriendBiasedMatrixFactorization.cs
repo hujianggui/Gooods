@@ -6,7 +6,7 @@ using System.Linq;
 using RS.Data.Utility;
 using RS.DataType;
 
-namespace RS.Algorithm
+namespace RS.CollaborativeFiltering
 {
     public class AdaptiveFriendBiasedMatrixFactorization : FriendBiasedMatrixFactorization
     {

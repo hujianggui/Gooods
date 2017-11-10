@@ -8,7 +8,7 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 
 using RS.DataType;
-using RS.Algorithm;
+using RS.CollaborativeFiltering;
 using RS.Data.Utility;
 
 namespace RS.Data

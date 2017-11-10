@@ -1,20 +1,20 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
-
-using RS.DataType;
-using RS.Evaluation;
-using RS.Data.Utility;
 using System.Threading.Tasks;
 
-namespace RS.Algorithm
+using RS.DataType;
+using RS.Data.Utility;
+using RS.Evaluation;
+
+
+namespace RS.CollaborativeFiltering
 {
     /// <summary>
-    ///  computer2009-Koren
-    ///  "Matrix factorization techniques for recommender systems"
+    /// KDD'08-p426-Koren
     /// </summary>
-    public class MatrixFactorization
+    public class BiasedMatrixFactorization 
     {
         protected int p = 0;   // Number of Users
         protected int q = 0;   // Number of Items
@@ -22,10 +22,12 @@ namespace RS.Algorithm
 
         public double[,] P = null;  // Matrix consists of user features
         public double[,] Q = null;  // Matrix consists of item features
+        public double[] bu = null;
+        public double[] bi = null;
 
-        public MatrixFactorization() { }
+        public BiasedMatrixFactorization() { }
 
-        public MatrixFactorization(int p, int q, int f = 10, string fillMethod = "uniform_df")
+        public BiasedMatrixFactorization(int p, int q, int f = 10, string fillMethod = "uniform_df")
         {
             InitializeModel(p, q, f, fillMethod);
         }
@@ -35,6 +37,9 @@ namespace RS.Algorithm
             this.p = p;
             this.q = q;
             this.f = f;
+
+            bu = new double[p];
+            bi = new double[q];
 
             if (fillMethod == "uniform_df")
             {
@@ -51,24 +56,25 @@ namespace RS.Algorithm
                 P = MathUtility.RandomUniform(p, f);
                 Q = MathUtility.RandomUniform(q, f);
             }
+
         }
 
-        public virtual double Predict(int userId, int itemId)
+        public virtual double Predict(int userId, int itemId, double miu)
         {
             double _r = 0.0;
             for (int i = 0; i < f; i++)
             {
                 _r += P[userId, i] * Q[itemId, i];
             }
-            return _r;
+            return _r + bu[userId] + bi[itemId] + miu;
         }
 
-        protected virtual double Loss(List<Rating> ratings, double lambda)
+        protected virtual double Loss(List<Rating> ratings, double lambda, double miu)
         {
             double loss = 0.0;
             foreach (Rating r in ratings)
             {
-                double eui = r.Score - Predict(r.UserId, r.ItemId);
+                double eui = r.Score - Predict(r.UserId, r.ItemId, miu);
                 loss += eui * eui;
 
                 double sum_p_i = 0.0;
@@ -79,20 +85,19 @@ namespace RS.Algorithm
                     sum_p_i += P[r.UserId, i] * P[r.UserId, i];
                     sum_q_j += Q[r.ItemId, i] * Q[r.ItemId, i];
                 }
-                loss += lambda * 0.5 * (sum_p_i + sum_q_j);
+                loss += lambda * 0.5 * (sum_p_i + sum_q_j + bu[r.UserId] * bu[r.UserId] + bi[r.ItemId] * bi[r.ItemId]);
             }
             return loss;
         }
 
-        public Tuple<double, double> EvaluateMaeRmse(List<Rating> ratings, double mimimumRating = 1.0, double maximumRating = 5.0)
+        public Tuple<double, double> EvaluateMaeRmse(List<Rating> ratings, double miu, double mimimumRating = 1.0, double maximumRating = 5.0)
         {
             double mae = 0.0;
-            double rmse = 0.0;
+            double rmse = 0;
 
             foreach (Rating r in ratings)
             {
-                double pui = Predict(r.UserId, r.ItemId);
-
+                double pui = Predict(r.UserId, r.ItemId, miu);
                 if (pui < mimimumRating)
                 {
                     pui = mimimumRating;
@@ -101,7 +106,6 @@ namespace RS.Algorithm
                 {
                     pui = maximumRating;
                 }
-
                 double eui = r.Score - pui;
 
                 mae += Math.Abs(eui);
@@ -116,7 +120,7 @@ namespace RS.Algorithm
             return Tuple.Create(mae, rmse);
         }
 
-        protected void PrintParameters(List<Rating> train, List<Rating> test = null, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
+        public void PrintParameters(List<Rating> train, List<Rating> test = null, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
         {
             Console.WriteLine(GetType().Name);
             Console.WriteLine("train,{0}", train.Count);
@@ -130,65 +134,23 @@ namespace RS.Algorithm
             Console.WriteLine("maximumRating,{0}", maximumRating);
         }
 
-        public void TrySGD(List<Rating> train, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
-        {
-            PrintParameters(train, null, epochs, gamma, lambda, decay, mimimumRating, maximumRating);
-            Console.WriteLine("epoch,loss,train:mae,train:rmse");
-            double loss = Loss(train, lambda);
-
-            for (int iter = 0; iter < epochs; iter++)
-            {
-                foreach (Rating r in train)
-                {
-                    double pui = Predict(r.UserId, r.ItemId);
-                    if (pui < mimimumRating)
-                    {
-                        pui = mimimumRating;
-                    }
-                    else if (pui > maximumRating)
-                    {
-                        pui = maximumRating;
-                    }
-
-                    double eui = r.Score - pui;
-                    for (int i = 0; i < f; i++)
-                    {
-                        Q[r.ItemId, i] += gamma * (eui * P[r.UserId, i] - lambda * Q[r.ItemId, i]);
-                        P[r.UserId, i] += gamma * (eui * Q[r.ItemId, i] - lambda * P[r.UserId, i]);
-                    }
-                }
-
-                double lastLoss = Loss(train, lambda);
-                var eval = EvaluateMaeRmse(train);
-                Console.WriteLine("{0},{1},{2},{3}", iter + 1, lastLoss, eval.Item1, eval.Item2);
-
-                if (decay != 1.0)
-                {
-                    gamma *= decay;
-                }
-                if (lastLoss < loss)
-                {
-                    loss = lastLoss;
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-
-        public void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
+        public virtual void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
         {
             PrintParameters(train, test, epochs, gamma, lambda, decay, mimimumRating, maximumRating);
             Console.WriteLine("epoch,loss,test:mae,test:rmse");
-            double loss = Loss(test, lambda);
 
-            for (int iter = 0; iter < epochs; iter++)
+            double miu = train.AsParallel().Average(r => r.Score);
+            double loss = Loss(test, lambda, miu);
+
+            for (int epoch = 1; epoch <= epochs; epoch++)
             {
                 foreach (Rating r in train)
                 {
-                    double pui = Predict(r.UserId, r.ItemId);
+                    double pui = Predict(r.UserId, r.ItemId, miu);
                     double eui = r.Score - pui;
+                    bu[r.UserId] += gamma * (eui - lambda * bu[r.UserId]);
+                    bi[r.ItemId] += gamma * (eui - lambda * bi[r.ItemId]);
+
                     for (int i = 0; i < f; i++)
                     {
                         Q[r.ItemId, i] += gamma * (eui * P[r.UserId, i] - lambda * Q[r.ItemId, i]);
@@ -196,14 +158,15 @@ namespace RS.Algorithm
                     }
                 }
 
-                double lastLoss = Loss(test, lambda);
-                var eval = EvaluateMaeRmse(test, mimimumRating, maximumRating);
-                Console.WriteLine("{0},{1},{2},{3}", iter + 1, lastLoss, eval.Item1, eval.Item2);
+                double lastLoss = Loss(test, lambda, miu);
+                var eval = EvaluateMaeRmse(test, miu, mimimumRating, maximumRating);
+                Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
 
                 if (decay != 1.0)
                 {
                     gamma *= decay;
                 }
+
 
                 if (lastLoss < loss)
                 {
@@ -216,14 +179,7 @@ namespace RS.Algorithm
             }
         }
 
-
-        /// <summary>
-        /// Get recommendations based on the trained model?
-        /// </summary>
-        /// <param name="ratingTable"></param>
-        /// <param name="N"></param>
-        /// <returns></returns>
-        protected List<Rating> GetRecommendations(MyTable ratingTable, int N = 10, bool multiThread = false)
+        protected List<Rating> GetRecommendations(MyTable ratingTable, double miu, int N = 10, bool multiThread = false)
         {
             List<Rating> recommendedItems = new List<Rating>();
             ArrayList list = ratingTable.GetSubKeyList();
@@ -241,13 +197,13 @@ namespace RS.Algorithm
                     {
                         if (!Nu.ContainsKey(itemId))
                         {
-                            double p = Predict(userId, itemId);
+                            double p = Predict(userId, itemId, miu);
                             predictedRatings.Add(new Rating(userId, itemId, p));
                         }
                     }
                     List<Rating> sortedLi = predictedRatings.OrderByDescending(r => r.Score).ToList();
                     lock (recommendedItems)
-                    {                        
+                    {
                         recommendedItems.AddRange(sortedLi.GetRange(0, Math.Min(sortedLi.Count, N)));
                     }
                 });
@@ -262,7 +218,7 @@ namespace RS.Algorithm
                     {
                         if (!Nu.ContainsKey(itemId))
                         {
-                            double p = Predict(userId, itemId);
+                            double p = Predict(userId, itemId, miu);
                             predictedRatings.Add(new Rating(userId, itemId, p));
                         }
                     }
@@ -273,19 +229,22 @@ namespace RS.Algorithm
             return recommendedItems;
         }
 
-        public virtual void TrySGDForTopN(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
+        public void TrySGDForTopN(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0)
         {
-            PrintParameters(train, test, epochs, gamma, lambda, decay, mimimumRating, maximumRating);
-            Console.WriteLine("epoch#train:loss,N,P,R,Coverage,Popularity,MAP");
-            double loss = Loss(train, lambda);
-            MyTable ratingTable = Tools.GetRatingTable(train);
-            int[] K = { 1, 5, 10, 15, 20, 25, 30 };  // recommdation list
+            PrintParameters(train, test, epochs, gamma, lambda, decay, 0, 1);
+            Console.WriteLine("epoch,train:loss,K(Cosine),N,P,R,Coverage,Popularity");
 
-            for (int epoch = 1; epoch <= epochs; epoch++)
+            double miu = train.Average(r => r.Score);
+            double loss = Loss(train, lambda, miu);
+
+            int[] K = { 1, 5, 10, 15, 20, 25, 30 };  // recommdation list
+            MyTable ratingTable = Tools.GetRatingTable(train);
+
+            for (int epoch = 0; epoch < epochs; epoch++)
             {
                 foreach (Rating r in train)
                 {
-                    double pui = Predict(r.UserId, r.ItemId);
+                    double pui = Predict(r.UserId, r.ItemId, miu);
                     double eui = r.Score - pui;
                     for (int i = 0; i < f; i++)
                     {
@@ -294,11 +253,11 @@ namespace RS.Algorithm
                     }
                 }
 
-                double lastLoss = Loss(train, lambda);
+                double lastLoss = Loss(train, lambda, miu);
                 if (epoch % 2 == 0)
                 {
-                    Console.Write("{0}#{1}", epoch, lastLoss);  
-                    List<Rating> recommendations = GetRecommendations(ratingTable, K[K.Length - 1], true);   // note that, the max K
+                    Console.Write("{0}#{1}", epoch, lastLoss);
+                    List<Rating> recommendations = GetRecommendations(ratingTable, miu, K[K.Length - 1], true);   // note that, the max K
                     foreach (int k in K)
                     {
                         Console.Write(",{0}", k);
@@ -325,41 +284,6 @@ namespace RS.Algorithm
             }
         }
 
-        public static void Example()
-        {
-            List<Rating> ratings = new List<Rating>();
 
-            ratings.Add(new Rating(1, 1, 5));
-            ratings.Add(new Rating(2, 1, 4));
-            ratings.Add(new Rating(3, 1, 1));
-            ratings.Add(new Rating(4, 1, 1));
-            ratings.Add(new Rating(1, 2, 3));
-            ratings.Add(new Rating(3, 2, 1));
-            ratings.Add(new Rating(5, 2, 1));
-            ratings.Add(new Rating(5, 3, 5));
-            ratings.Add(new Rating(1, 4, 1));
-            ratings.Add(new Rating(2, 4, 1));
-            ratings.Add(new Rating(3, 4, 5));
-            ratings.Add(new Rating(4, 4, 4));
-            ratings.Add(new Rating(5, 4, 4));
-
-            MatrixFactorization f = new MatrixFactorization(6, 5, 4);
-            f.TrySGD(ratings, 500);
-
-            List<Rating> predicts = new List<Rating>();
-
-            predicts.Add(new Rating(5, 1, f.Predict(5, 1)));
-            predicts.Add(new Rating(2, 2, f.Predict(2, 2)));
-            predicts.Add(new Rating(4, 2, f.Predict(4, 2)));
-            predicts.Add(new Rating(1, 3, f.Predict(1, 3)));
-            predicts.Add(new Rating(2, 3, f.Predict(2, 3)));
-            predicts.Add(new Rating(3, 3, f.Predict(3, 3)));
-            predicts.Add(new Rating(4, 3, f.Predict(4, 3)));
-
-            foreach (Rating r in predicts)
-            {
-                Console.WriteLine("{0},{1},{2}", r.UserId, r.ItemId, r.Score);
-            }
-        }
     }
 }

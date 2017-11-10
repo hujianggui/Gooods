@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RS.Algorithm
+namespace RS.CollaborativeFiltering
 {
     public static class MathUtility
     {

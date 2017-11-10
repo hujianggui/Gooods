@@ -6,7 +6,7 @@ using System.Collections;
 using RS.DataType;
 
 
-namespace RS.Algorithm
+namespace RS.CollaborativeFiltering
 {
     /// <summary>
     /// 
