@@ -162,18 +162,12 @@ namespace RS.Algorithm
                     if (0 < denominator)
                     {
                         similarity[i, j] = numerator * 1.0 / (denominator - numerator);
+                        similarity[j, i] = similarity[i, j];    //  Copy to lower triangular matrix
                     }
                 }
             }
 
-            // Step 2. Copy to lower triangular matrix
-            for (int i = 0; i < M - 1; i++)
-            {
-                for (int j = i + 1; j < M; j++)
-                {
-                    similarity[j, i] = similarity[i, j];
-                }
-            }
+            // update diagonal section
             //for (int i = 0; i < M; i++)
             //{
             //    similarity[i, i] = 1.0;
@@ -221,28 +215,20 @@ namespace RS.Algorithm
                             denominatorJ += matrix[j, item] * matrix[j, item];
                         }
                     }
-                    double denominator = System.Math.Sqrt(denominatorI * denominatorJ);
+                    double denominator = Math.Sqrt(denominatorI * denominatorJ);
                     if (0 < denominator)
                     {
                         similarity[i, j] = numerator / denominator;
+                        similarity[j, i] = similarity[i, j];    //  Copy to lower triangular matrix
                     }
                         
                 }
             }
-
-            // Step 2. Copy to lower triangular matrix
-            for (int i = 0; i < M - 1; i++)
-            {
-                for (int j = i + 1; j < M; j++)
-                {
-                    similarity[j, i] = similarity[i, j];
-                }
-            }
-            for (int i = 0; i < M; i++)
-            {
-                similarity[i, i] = 1.0;
-            }
-
+            // update diagonal section
+            //for (int i = 0; i < M; i++)
+            //{
+            //    similarity[i, i] = 1.0;
+            //}
             return similarity;
         }
 
@@ -275,7 +261,10 @@ namespace RS.Algorithm
                 }
 
                 if (count > 0)
+                {
                     averageRating[i] = sum / count;
+                }
+                    
             }
 
             // Step 2. Upper triangular matrix
@@ -298,29 +287,30 @@ namespace RS.Algorithm
                             double numerator2 = matrix[j, item] - averageRating[j];
                             numerator += numerator1 * numerator2;
                         }
-
                         if (matrix[i, item] > 0)
-                            denominatorI += System.Math.Pow(matrix[i, item] - averageRating[i], 2.0);
-
+                        {
+                            denominatorI += Math.Pow(matrix[i, item] - averageRating[i], 2.0);
+                        }                          
                         if (matrix[j, item] > 0)
-                            denominatorJ += System.Math.Pow(matrix[j, item] - averageRating[j], 2.0);
+                        {
+                            denominatorJ += Math.Pow(matrix[j, item] - averageRating[j], 2.0);
+                        }                            
                     }
 
-                    double denominator = System.Math.Sqrt(denominatorI * denominatorJ);
+                    double denominator = Math.Sqrt(denominatorI * denominatorJ);
                     if (0 < denominator)
+                    {
                         similarity[i, j] = numerator / denominator;
+                        similarity[j, i] = similarity[i, j];     //  Copy to lower triangular matrix
+                    }
+                        
                 }
             }
-
-            // Step 3. Copy to lower triangular matrix
-            // 不在上面直接对称写，一定程度上可以提高程序的执行效率
-            for (int i = 0; i < M - 1; i++)
-                for (int j = i + 1; j < M; j++)
-                    similarity[j, i] = similarity[i, j];
-
+            // update diagonal section
             //for (int i = 0; i < M; i++)
+            //{
             //    similarity[i, i] = 1.0;
-
+            //}
             return similarity;
         }
 
@@ -381,18 +371,18 @@ namespace RS.Algorithm
 
                     double denominator = Math.Sqrt(denominatorI * denominatorJ);
                     if (0 < denominator)
-                        similarity[i, j] = numerator / denominator;
+                    {
+                        similarity[i, j] = numerator / denominator;  // Copy to lower triangular matrix
+                        similarity[j, i] = similarity[i, j];
+                    }
+                        
                 }
             }
-
-            // Step 3. Copy to lower triangular matrix
-            for (int i = 0; i < M - 1; i++)
-                for (int j = i + 1; j < M; j++)
-                    similarity[j, i] = similarity[i, j];
-
+            // update diagonal section
             //for (int i = 0; i < M; i++)
+            //{
             //    similarity[i, i] = 1.0;
-
+            //}
             return similarity;
         }
 
@@ -429,7 +419,7 @@ namespace RS.Algorithm
         }
 
         /// <summary>
-        /// Return the inverse of a matrix
+        /// Return the inverse of a matrix.
         /// </summary>
         /// <param name="matrix"></param>
         /// <returns></returns>

@@ -205,7 +205,7 @@ namespace RS.Data
         public void UpdateUsers(List<User> users)
         {
             foreach (User user in users)
-            {
+            {   
                 if (!UserTable.ContainsKey(user.UserId))
                 {
                     UserTable.Add(user.UserId, UserTable.Count);

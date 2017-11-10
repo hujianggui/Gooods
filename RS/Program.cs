@@ -1,7 +1,8 @@
 ﻿using System;
 
 using RS.Data;
-
+using System.Collections.Generic;
+using RS.DataType;
 
 namespace RS
 {
@@ -36,6 +37,10 @@ namespace RS
             // ml-10m
             //ML_10M.MatrixFactorizationTest(0.2);
             //ML_10M.BiasedMatrixFactorizationTest(0.2);
+
+
+            // book-crossing
+            BookCrossing.Preprocessing();
 
             // Epinions 2006
             //Epinions.MeanFillingTest();

@@ -74,6 +74,7 @@
     <Compile Include="Algorithm\FriendMatrixFactorization.cs" />
     <Compile Include="Algorithm\MatrixFactorization.cs" />
     <Compile Include="Algorithm\SocialMF.cs" />
+    <Compile Include="Data\BookCrossing.cs" />
     <Compile Include="Data\Douban.cs" />
     <Compile Include="Data\Epinions.cs" />
     <Compile Include="Data\Flixster.cs" />
