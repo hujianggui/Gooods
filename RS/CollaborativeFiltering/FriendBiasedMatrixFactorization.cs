@@ -123,7 +123,7 @@ namespace RS.CollaborativeFiltering
                         for (int i = 0; i < f; i++)
                         {
                             P[r.UserId, i] += gamma * (eui * (Q[r.ItemId, i] + X[r.UserId, i]) - lambda * P[r.UserId, i]);
-                            Q[r.ItemId, i] += gamma * (eui * (P[r.UserId, i]) - lambda * Q[r.ItemId, i]);
+                            Q[r.ItemId, i] += gamma * (eui * P[r.UserId, i] - lambda * Q[r.ItemId, i]);
                         }
                     }
                 }

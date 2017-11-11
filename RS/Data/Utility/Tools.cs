@@ -334,14 +334,15 @@ namespace RS.Data.Utility
             Hashtable userItemsTable = new Hashtable();
             foreach (Link l in links)
             {
-                if (userItemsTable.ContainsKey(l.From))
+                int key = l.From;
+                if (userItemsTable.ContainsKey(key))
                 {
-                    List<Link> list = (List<Link>)userItemsTable[l.From];
+                    List<Link> list = (List<Link>)userItemsTable[key];
                     list.Add(l);
                 }
                 else
                 {
-                    userItemsTable.Add(l.From, new List<Link>() { l });
+                    userItemsTable.Add(key, new List<Link>() { l });
                 }
             }
             return userItemsTable;
@@ -357,14 +358,15 @@ namespace RS.Data.Utility
             Hashtable userItemsTable = new Hashtable();
             foreach (Link l in links)
             {
-                if (userItemsTable.ContainsKey(l.From))
+                int key = l.To;
+                if (userItemsTable.ContainsKey(key))
                 {
-                    List<Link> list = (List<Link>)userItemsTable[l.To];
+                    List<Link> list = (List<Link>)userItemsTable[key];
                     list.Add(l);
                 }
                 else
                 {
-                    userItemsTable.Add(l.To, new List<Link>() { l });
+                    userItemsTable.Add(key, new List<Link>() { l });
                 }
             }
             return userItemsTable;

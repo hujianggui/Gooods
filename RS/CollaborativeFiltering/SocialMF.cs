@@ -81,6 +81,24 @@ namespace RS.CollaborativeFiltering
             }
         }
 
+        protected void PrintParameters(List<Rating> train, List<Rating> test, List<Link> links, int epochs = 100,
+            double gamma = 0.01, double lambda_U = 0.01, double lambda_V = 0.01, double lambda_T = 0.01, double decay = 1,
+            double minimumRating = 1.0, double maximumRating = 5.0)
+        {
+            Console.WriteLine(GetType().Name);
+            Console.WriteLine("train,{0}", train.Count);
+            Console.WriteLine("test,{0}", test.Count);
+            Console.WriteLine("links,{0}", links.Count);
+            Console.WriteLine("p,{0},q,{1},f,{2}", p, q, f);
+            Console.WriteLine("epochs,{0}", epochs);
+            Console.WriteLine("gamma,{0}", gamma);
+            Console.WriteLine("lambda_U,{0}", lambda_U);
+            Console.WriteLine("lambda_V,{0}", lambda_V);
+            Console.WriteLine("lambda_T,{0}", lambda_T);
+            Console.WriteLine("decay,{0}", decay);
+            Console.WriteLine("minimumRating,{0}", minimumRating);
+            Console.WriteLine("maximumRating,{0}", maximumRating);
+        }
         /// <summary>
         /// Update social regularizer term w.r.t. user connections regularization or 
         /// user reverse connections regularization.
@@ -100,7 +118,8 @@ namespace RS.CollaborativeFiltering
             double gamma = 0.01, double lambda_U = 0.01, double lambda_V = 0.01, double lambda_T = 0.01, double decay = 1,
             double minimumRating = 1.0, double maximumRating = 5.0)
         {
-            Console.WriteLine("epoch,loss,test:mae,test:rmse");
+            PrintParameters(train, test, links, epochs, lambda_U,lambda_V, lambda_T, decay, minimumRating, maximumRating);
+            Console.WriteLine("epoch,train:loss,test:mae,test:rmse");
 
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);
             Hashtable userLinksTable   = Tools.GetUserLinksTable(links); 
@@ -131,8 +150,8 @@ namespace RS.CollaborativeFiltering
                         double eui = r.Score - pui;
                         for (int i = 0; i < f; i++)
                         {
-                            P[r.UserId, i] += gamma * (eui * (Q[r.ItemId, i] + X[r.UserId, i]) - lambda_U * P[r.UserId, i]);
-                            Q[r.ItemId, i] += gamma * (eui * (P[r.UserId, i]) - lambda_V * Q[r.ItemId, i]);
+                            P[r.UserId, i] += gamma * (eui * Q[r.ItemId, i] - lambda_U * P[r.UserId, i] + lambda_T * (X[r.UserId, i] + Y[r.UserId, i]));
+                            Q[r.ItemId, i] += gamma * (eui * P[r.UserId, i] - lambda_V * Q[r.ItemId, i]);
                         }
                     }
                 }
