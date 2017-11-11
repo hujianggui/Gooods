@@ -22,7 +22,6 @@ namespace RS.Data
         public static int MaxItemId = 139738;  // 139738 items(1-139738)
 
 
-
         public static void MeanFillingTest()
         {
             List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile, " ");
@@ -142,7 +141,6 @@ namespace RS.Data
             AdaptiveFriendMatrixFactorization model = new AdaptiveFriendMatrixFactorization(MaxUserId, MaxItemId);
             model.TrySGD(baseRatings, testRatings, links, 100, 0.01, 0.01, 0.95);
         }
-
 
         public static void SocialMFTest()
         {
