@@ -56,7 +56,6 @@ namespace RS.CollaborativeFiltering
                 P = MathUtility.RandomUniform(p, f);
                 Q = MathUtility.RandomUniform(q, f);
             }
-
         }
 
         public virtual double Predict(int userId, int itemId, double miu)
@@ -166,7 +165,6 @@ namespace RS.CollaborativeFiltering
                 {
                     gamma *= decay;
                 }
-
 
                 if (lastLoss < loss)
                 {

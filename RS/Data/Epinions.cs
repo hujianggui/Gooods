@@ -140,6 +140,20 @@ namespace RS.Data
         }
 
 
+        public static void SocialMFTest()
+        {
+            List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile, " ");
+            List<Rating> testRatings = Tools.GetRatings(TestRatingFile, " ");
+            List<Link> links = Tools.GetLinks(DefaultLinkFile, " ");
+
+            Tools.UpdateIndexesToZeroBased(baseRatings);
+            Tools.UpdateIndexesToZeroBased(testRatings);
+            Tools.UpdateIndexesToZeroBased(links);
+
+            SocialMF model = new SocialMF(MaxUserId, MaxItemId);
+            model.TrySGD(baseRatings, testRatings, links, 100, 0.01, 0.01, 0.01, 0.01, 0.95);
+        }
+
         public static void MatrixFactorizationTopNTest()
         {
             List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile, " ");
