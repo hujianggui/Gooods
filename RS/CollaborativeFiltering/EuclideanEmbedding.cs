@@ -30,7 +30,8 @@ namespace RS.CollaborativeFiltering
             return bu[userId] + bi[itemId] + miu - _r;
         }
 
-        public override void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double minimumRating = 1.0, double maximumRating = 5.0)
+        public override void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, 
+            double lambda = 0.01, double decay = 1.0, double minimumRating = 1.0, double maximumRating = 5.0)
         {
             PrintParameters(train, test, epochs, gamma, lambda, decay, minimumRating, maximumRating);
             double miu = train.AsParallel().Average(r => r.Score);
