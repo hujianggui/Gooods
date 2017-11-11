@@ -3,6 +3,7 @@
 using RS.Data;
 using System.Collections.Generic;
 using RS.DataType;
+using RS.Data.Utility;
 
 namespace RS
 {
@@ -52,7 +53,7 @@ namespace RS
             //Epinions.AdaptiveFriendMatrixFactorizationTest();
             //Epinions.FriendBiasedMatrixFactorizationTest();
             //Epinions.AdaptiveFriendBiasedMatrixFactorizationTest();
-            Epinions.SocialMFTest();
+            //Epinions.SocialMFTest();
 
             //Epinions.MatrixFactorizationTopNTest();
             //Epinions.AdaptiveFriendMatrixFactorizationTopNTest();
@@ -64,12 +65,12 @@ namespace RS
             //Flixster.SVDPlusPlusTest();
             //Flixster.AdaptiveFriendMatrixFactorizationTest();
 
+
             // Douban 2011
             //Douban.MeanFillingTest();
             //Douban.MatrixFactorizationTest();
             //Douban.BiasedMatrixFactorizationTest();
             //Douban.SVDPlusPlusTest();
-
 
             // Yelp 2014
 

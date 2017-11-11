@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using RS.Data.Utility;
 using RS.DataType;
 using RS.CollaborativeFiltering;
+
 
 namespace RS.Data
 {
@@ -18,6 +20,8 @@ namespace RS.Data
 
         public static int MaxUserId = 49290;   // 40163 users(1-49289)
         public static int MaxItemId = 139738;  // 139738 items(1-139738)
+
+
 
         public static void MeanFillingTest()
         {

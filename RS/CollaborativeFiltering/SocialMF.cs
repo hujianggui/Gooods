@@ -147,7 +147,7 @@ namespace RS.CollaborativeFiltering
                     List<Rating> ratings = (List<Rating>)userItemsTable[userId]; 
                     foreach (Rating r in ratings)
                     {
-                        double pui = Predict(r.UserId, r.ItemId);
+                        double pui = Predict(r.UserId, r.ItemId);  // note that, the original paper used logistic function
                         double eui = r.Score - pui;
                         for (int i = 0; i < f; i++)
                         {
@@ -176,7 +176,5 @@ namespace RS.CollaborativeFiltering
             }
 
         }
-
-
     }
 }

@@ -324,6 +324,25 @@ namespace RS.Data.Utility
             writer.Close();
         }
 
+
+        /// <summary>
+        /// Get user id - linked user id - weight table.
+        /// </summary>
+        /// <param name="links"></param>
+        /// <returns></returns>
+        public static MyTable GetLinkTable(List<Link> links)
+        {
+            MyTable table = new MyTable();
+            foreach (Link l in links)
+            {
+                if (!table.ContainsKey(l.From, l.To))
+                {
+                    table.Add(l.From, l.To, l.Weight);
+                }
+            }
+            return table;
+        }
+
         /// <summary>
         /// Get user id - links hash table, a.k.a. trusters.
         /// </summary>
@@ -370,6 +389,33 @@ namespace RS.Data.Utility
                 }
             }
             return userItemsTable;
+        }
+
+        /// <summary>
+        /// Check a social matrix is asymmetric?
+        /// </summary>
+        /// <param name="links"></param>
+        /// <returns></returns>
+        public static bool IsAsymmetric(List<Link> links)
+        {
+            Console.WriteLine("links,{0}", links.Count);
+            MyTable table = Tools.GetLinkTable(links);
+
+            int counter = 0;
+            foreach (int f in table.Keys)
+            {
+                Hashtable subTable = (Hashtable)table[f];
+                foreach (int t in subTable.Keys)
+                {
+                    if (!table.ContainsKey(t, f))
+                    {
+                        // Console.WriteLine("{0},{1}", f, t);
+                        counter++;
+                    }
+                }
+            }
+            Console.WriteLine("counter,{0}", counter);
+            return counter == 0 ? true : false;
         }
 
         /// <summary>
