@@ -10,12 +10,48 @@ namespace RS.CollaborativeFiltering
     public class MeanFilling
     {
         /// <summary>
-        /// user mean to fill unknown ratings
+        /// Use global mean to fill unknown ratings.
         /// </summary>
         /// <param name="train"></param>
         /// <param name="test"></param>
+        /// <param name="verbose"></param>
         /// <returns>MAE, RMSE</returns>
-        public static Tuple<double, double> TryUserMean(List<Rating> train, List<Rating> test)
+        public static Tuple<double, double> TryGlobalMean(List<Rating> train, List<Rating> test, bool verbose = false)
+        {
+            double miu = train.AsParallel().Average(r => r.Score);
+            // Prediction and evaluation
+            double mae = 0.0;
+            double rmse = 0.0;
+
+            foreach (Rating r in test)
+            {
+                double error = miu - r.Score;        
+                mae += Math.Abs(error);
+                rmse += error * error;
+            }
+
+            if (test.Count > 0)
+            {
+                mae /= test.Count;
+                rmse = Math.Sqrt(rmse / test.Count);
+            }
+
+            if (verbose)
+            {
+                Console.WriteLine("GlobalMean,mae,{0},rmse,{1}", mae, rmse);
+            }
+
+            return Tuple.Create(mae, rmse);
+        }
+
+        /// <summary>
+        /// Use user mean to fill unknown ratings.
+        /// </summary>
+        /// <param name="train"></param>
+        /// <param name="test"></param>
+        /// <param name="verbose"></param>
+        /// <returns>MAE, RMSE</returns>
+        public static Tuple<double, double> TryUserMean(List<Rating> train, List<Rating> test, bool verbose = false)
         { 
             double miu = 0.0;           // global mean
 
@@ -72,16 +108,21 @@ namespace RS.CollaborativeFiltering
                 rmse = Math.Sqrt(rmse / test.Count);
             }
 
+            if (verbose)
+            {
+                Console.WriteLine("GlobalMean,mae,{0},rmse,{1}", mae, rmse);
+            }
             return Tuple.Create(mae, rmse);
         }
 
         /// <summary>
-        /// item mean to fill unknown ratings
+        /// Use item mean to fill unknown ratings.
         /// </summary>
         /// <param name="train"></param>
         /// <param name="test"></param>
-        /// <returns></returns>
-        public static Tuple<double, double> TryItemMean(List<Rating> train, List<Rating> test)
+        /// <param name="verbose"></param>
+        /// <returns>MAE, RMSE</returns>
+        public static Tuple<double, double> TryItemMean(List<Rating> train, List<Rating> test, bool verbose = false)
         {
             double miu = 0.0;           // global mean
 
@@ -137,10 +178,11 @@ namespace RS.CollaborativeFiltering
                 mae /= test.Count;
                 rmse = Math.Sqrt(rmse / test.Count);
             }
-
+            if (verbose)
+            {
+                Console.WriteLine("GlobalMean,mae,{0},rmse,{1}", mae, rmse);
+            }
             return Tuple.Create(mae, rmse);
         }
-
-
     }
 }

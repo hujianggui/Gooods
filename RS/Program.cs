@@ -43,7 +43,7 @@ namespace RS
             //BookCrossing.Preprocessing();
 
             // Epinions 2006
-            //Epinions.MeanFillingTest();
+            Epinions.MeanFillingTest();
             //Epinions.MatrixFactorizationTest();
             //Epinions.AlternatingLeastSquaresTest();
             //Epinions.BiasedMatrixFactorizationTest();
@@ -53,7 +53,7 @@ namespace RS
             //Epinions.AdaptiveFriendMatrixFactorizationTest();
             //Epinions.FriendBiasedMatrixFactorizationTest();
             //Epinions.AdaptiveFriendBiasedMatrixFactorizationTest();
-            Epinions.SocialMFTest();
+            //Epinions.SocialMFTest();
 
 
             //Epinions.MatrixFactorizationTopNTest();
