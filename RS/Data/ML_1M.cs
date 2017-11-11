@@ -29,6 +29,19 @@ namespace RS.Data
             MaxItemId = q.Item2;
         }
 
+        public static void MeanFillingTest()
+        {
+            List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile, "::");
+            List<Rating> testRatings = Tools.GetRatings(TestRatingFile, "::");
+
+            Tools.UpdateIndexesToZeroBased(baseRatings);
+            Tools.UpdateIndexesToZeroBased(testRatings);
+
+            MeanFilling.TryGlobalMean(baseRatings, testRatings, true);
+            MeanFilling.TryUserMean(baseRatings, testRatings, true);
+            MeanFilling.TryItemMean(baseRatings, testRatings, true);
+        }
+
         public static void UserKNNTest(double testSize = 0.1)
         {
             List<Rating> ratings = Tools.GetRatings(DefaultRatingFile, "::");
@@ -37,7 +50,6 @@ namespace RS.Data
             UserKNN knn = new UserKNN();
             knn.TryMaeRmse(data.Item1, data.Item2);
         }
-
 
         public static void Preprocess()
         {

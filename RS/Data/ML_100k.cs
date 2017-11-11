@@ -30,10 +30,9 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(baseRatings);
             Tools.UpdateIndexesToZeroBased(testRatings);
 
-            var t1 = MeanFilling.TryUserMean(baseRatings, testRatings);
-            var t2 = MeanFilling.TryItemMean(baseRatings, testRatings);
-            Console.WriteLine(t1);
-            Console.WriteLine(t2);
+            MeanFilling.TryGlobalMean(baseRatings, testRatings, true);
+            MeanFilling.TryUserMean(baseRatings, testRatings, true);
+            MeanFilling.TryItemMean(baseRatings, testRatings, true);
         }
 
         public static void UserKNNTest(double testSize = 0.1)

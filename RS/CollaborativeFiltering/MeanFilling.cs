@@ -110,7 +110,7 @@ namespace RS.CollaborativeFiltering
 
             if (verbose)
             {
-                Console.WriteLine("GlobalMean,mae,{0},rmse,{1}", mae, rmse);
+                Console.WriteLine("UserMean,mae,{0},rmse,{1}", mae, rmse);
             }
             return Tuple.Create(mae, rmse);
         }
@@ -180,7 +180,7 @@ namespace RS.CollaborativeFiltering
             }
             if (verbose)
             {
-                Console.WriteLine("GlobalMean,mae,{0},rmse,{1}", mae, rmse);
+                Console.WriteLine("ItemMean,mae,{0},rmse,{1}", mae, rmse);
             }
             return Tuple.Create(mae, rmse);
         }

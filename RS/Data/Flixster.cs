@@ -19,6 +19,7 @@ namespace RS.Data
         public static int MaxUserId = 1049511;   // 147612 users in (6-1049508),  max user id in link (1049491,1049511)
         public static int MaxItemId = 66726;   //  48794 items (1-66726)
 
+
         public static void MeanFillingTest()
         {
             List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
@@ -27,10 +28,9 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(baseRatings);
             Tools.UpdateIndexesToZeroBased(testRatings);
 
-            var t1 = MeanFilling.TryUserMean(baseRatings, testRatings);
-            var t2 = MeanFilling.TryItemMean(baseRatings, testRatings);
-            Console.WriteLine(t1);
-            Console.WriteLine(t2);
+            MeanFilling.TryGlobalMean(baseRatings, testRatings, true);
+            MeanFilling.TryUserMean(baseRatings, testRatings, true);
+            MeanFilling.TryItemMean(baseRatings, testRatings, true);
         }
 
         public static void MatrixFactorizationTest()

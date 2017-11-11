@@ -20,15 +20,18 @@ namespace RS.Data
         public static int MaxUserId = 129490;
         public static int MaxItemId = 58541;
 
+
         public static void MeanFillingTest()
         {
             List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile, " ");
             List<Rating> testRatings = Tools.GetRatings(TestRatingFile, " ");
 
-            var t1 = MeanFilling.TryUserMean(baseRatings, testRatings);
-            var t2 = MeanFilling.TryItemMean(baseRatings, testRatings);
-            Console.WriteLine(t1);
-            Console.WriteLine(t2);
+            Tools.UpdateIndexesToZeroBased(baseRatings);
+            Tools.UpdateIndexesToZeroBased(testRatings);
+
+            MeanFilling.TryGlobalMean(baseRatings, testRatings, true);
+            MeanFilling.TryUserMean(baseRatings, testRatings, true);
+            MeanFilling.TryItemMean(baseRatings, testRatings, true);
         }
 
         public static void MatrixFactorizationTest()

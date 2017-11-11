@@ -30,12 +30,9 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(baseRatings);
             Tools.UpdateIndexesToZeroBased(testRatings);
 
-            var t0 = MeanFilling.TryGlobalMean(baseRatings, testRatings);
-            var t1 = MeanFilling.TryUserMean(baseRatings, testRatings);
-            var t2 = MeanFilling.TryItemMean(baseRatings, testRatings);
-            Console.WriteLine(t0);
-            Console.WriteLine(t1);
-            Console.WriteLine(t2);
+            MeanFilling.TryGlobalMean(baseRatings, testRatings, true);
+            MeanFilling.TryUserMean(baseRatings, testRatings, true);
+            MeanFilling.TryItemMean(baseRatings, testRatings, true);
         }
 
         public static void MatrixFactorizationTest()

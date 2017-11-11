@@ -25,6 +25,7 @@ namespace RS
             //ML_100k.AlternatingLeastSquaresTopNTest();
 
             // ml-1m
+            //ML_1M.MeanFillingTest();
             //ML_1M.UserKNNTest();
             //ML_1M.MatrixFactorizationTest();
             //ML_1M.BiasedMatrixFactorizationTest(0.1);
@@ -43,7 +44,7 @@ namespace RS
             //BookCrossing.Preprocessing();
 
             // Epinions 2006
-            Epinions.MeanFillingTest();
+            //Epinions.MeanFillingTest();
             //Epinions.MatrixFactorizationTest();
             //Epinions.AlternatingLeastSquaresTest();
             //Epinions.BiasedMatrixFactorizationTest();

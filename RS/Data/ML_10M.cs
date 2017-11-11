@@ -57,7 +57,6 @@ namespace RS.Data
             return query.ToList();
         }
 
-
         // Algorithm testing
         public static void MatrixFactorizationTest(double testSize = 0.1)
         {
