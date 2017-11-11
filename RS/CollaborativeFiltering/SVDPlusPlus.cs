@@ -18,10 +18,10 @@ namespace RS.CollaborativeFiltering
         protected int f = 10;  // Number of features
         public double w = 1.0;  // weight of neighbors
 
-        public double[,] P = null;  // Matrix consists of user features
-        public double[,] Q = null;  // Matrix consists of item features
-        public double[,] Z = null;  // sum of Yj which j belongs to N(u), N(u) presents items rated by user u
-        public double[,] Y = null;
+        public double[,] P { get; protected set; }  // Matrix consists of user features
+        public double[,] Q { get; protected set; }   // Matrix consists of item features
+        public double[,] Z { get; protected set; }   // sum of Yj which j belongs to N(u), N(u) presents items rated by user u
+        public double[,] Y { get; protected set; }
 
         public double[] bu = null;  // bias of user u
         public double[] bi = null;  // bias of item i
@@ -176,7 +176,7 @@ namespace RS.CollaborativeFiltering
             }
         }
 
-        protected void PrintParameters(List<Rating> train, List<Rating> test = null, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
+        protected void PrintParameters(List<Rating> train, List<Rating> test = null, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double minimumRating = 1.0, double maximumRating = 5.0)
         {
             Console.WriteLine(GetType().Name);
             Console.WriteLine("train,{0}", train.Count);
@@ -186,19 +186,19 @@ namespace RS.CollaborativeFiltering
             Console.WriteLine("gamma,{0}", gamma);
             Console.WriteLine("lambda,{0}", lambda);
             Console.WriteLine("decay,{0}", decay);
-            Console.WriteLine("mimimumRating,{0}", mimimumRating);
+            Console.WriteLine("minimumRating,{0}", minimumRating);
             Console.WriteLine("maximumRating,{0}", maximumRating);
         }
 
-        public void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
+        public void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double minimumRating = 1.0, double maximumRating = 5.0)
         {
-            PrintParameters(train, test, epochs, gamma, lambda, decay, mimimumRating, maximumRating);
-            Console.WriteLine("epoch,loss,test:mae,test:rmse");
+            PrintParameters(train, test, epochs, gamma, lambda, decay, minimumRating, maximumRating);
+            Console.WriteLine("epoch,train:loss,test:mae,test:rmse");
             double miu = train.Average(r => r.Score);
             Hashtable userItemsTable = GetUserItemsTable(train);
             UpdataZ(userItemsTable);
 
-            double loss = Loss(test, lambda, miu);
+            double loss = Loss(train, lambda, miu);
 
             for (int epoch = 1; epoch <= epochs; epoch++)
             {
@@ -233,7 +233,7 @@ namespace RS.CollaborativeFiltering
                     }
                 }
 
-                double lastLoss = Loss(test, lambda, miu);
+                double lastLoss = Loss(train, lambda, miu);
                 double mae = 0.0, rmse = 0.0;
                 EvaluateMaeRmse(test, lambda, miu, out mae, out rmse);
                 Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, mae, rmse);

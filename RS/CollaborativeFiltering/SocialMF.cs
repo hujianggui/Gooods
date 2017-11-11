@@ -57,16 +57,103 @@ namespace RS.CollaborativeFiltering
             return loss;
         }
 
+        protected virtual void UpdateRegularizer(double[,] XorY, int userId, List<Link> links)
+        {
+            for (int i = 0; i < f; i++) // set to 0
+            {
+                XorY[userId, i] = 0;
+            }
+
+            foreach (Link t in links)
+            {
+                if (t.To > p)  // if linked user id not exist in dataset
+                {
+                    continue;
+                }
+                for (int i = 0; i < f; i++)
+                {
+                    XorY[userId, i] += P[t.To, i];
+                }
+            }
+            for (int i = 0; i < f; i++)
+            {
+                XorY[userId, i] = P[userId, i] - XorY[userId, i] / links.Count;
+            }
+        }
+
+        /// <summary>
+        /// Update social regularizer term w.r.t. user connections regularization or 
+        /// user reverse connections regularization.
+        /// </summary>
+        /// <param name="XorY">truster X, or trustee Y</param>
+        /// <param name="userLinksTableOrUserReverseLinksTable"></param>
+        protected void UpdateRegularizer(double[,] XorY, Hashtable userLinksTableOrUserReverseLinksTable)
+        {
+            foreach (int uId in userLinksTableOrUserReverseLinksTable.Keys)
+            {
+                List<Link> links = (List<Link>)userLinksTableOrUserReverseLinksTable[uId];
+                UpdateRegularizer(XorY, uId, links);
+            }
+        }
+
         public void TrySGD(List<Rating> train, List<Rating> test, List<Link> links, int epochs = 100, 
             double gamma = 0.01, double lambda_U = 0.01, double lambda_V = 0.01, double lambda_T = 0.01, double decay = 1,
             double minimumRating = 1.0, double maximumRating = 5.0)
         {
-            Hashtable userRatingsTable = Tools.GetUserItemsTable(train);
-            Hashtable userLinksTable   = Tools.GetUserLinksTable(links);
+            Console.WriteLine("epoch,loss,test:mae,test:rmse");
 
-            
+            Hashtable userItemsTable = Tools.GetUserItemsTable(train);
+            Hashtable userLinksTable   = Tools.GetUserLinksTable(links); 
+            Hashtable userReverseLinksTable = Tools.GetUserReverseLinksTable(links);
+            UpdateRegularizer(X, userLinksTable);
+            UpdateRegularizer(Y, userReverseLinksTable);
+            double loss = Loss(train, lambda_U, lambda_V, lambda_T);
 
+            for (int epoch = 1; epoch <= epochs; epoch++)
+            {
+                foreach (int userId in userItemsTable.Keys)
+                {
+                    if (userLinksTable.ContainsKey(userId))
+                    {
+                        List<Link> _links = (List<Link>)userLinksTable[userId];
+                        UpdateRegularizer(X, userId, _links);
+                    }
+                    if (userReverseLinksTable.ContainsKey(userId))
+                    {
+                        List<Link> _links = (List<Link>)userReverseLinksTable[userId];
+                        UpdateRegularizer(Y, userId, _links);
+                    }
 
+                    List<Rating> ratings = (List<Rating>)userItemsTable[userId]; 
+                    foreach (Rating r in ratings)
+                    {
+                        double pui = Predict(r.UserId, r.ItemId);
+                        double eui = r.Score - pui;
+                        for (int i = 0; i < f; i++)
+                        {
+                            P[r.UserId, i] += gamma * (eui * (Q[r.ItemId, i] + X[r.UserId, i]) - lambda_U * P[r.UserId, i]);
+                            Q[r.ItemId, i] += gamma * (eui * (P[r.UserId, i]) - lambda_V * Q[r.ItemId, i]);
+                        }
+                    }
+                }
+
+                double lastLoss = Loss(train, lambda_U, lambda_V, lambda_T);
+                var eval = EvaluateMaeRmse(test, minimumRating, maximumRating);
+                Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
+
+                if (decay != 1.0)
+                {
+                    gamma *= decay;
+                }
+                if (lastLoss < loss)
+                {
+                    loss = lastLoss;
+                }
+                else
+                {
+                    break;
+                }
+            }
 
         }
 

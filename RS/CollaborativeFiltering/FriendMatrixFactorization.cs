@@ -72,7 +72,7 @@ namespace RS.CollaborativeFiltering
             return _r;
         }
 
-        private void PrintParameters(List<Rating> train, List<Rating> test, List<Link> links, double w = 1.0, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
+        private void PrintParameters(List<Rating> train, List<Rating> test, List<Link> links, double w = 1.0, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double minimumRating = 1.0, double maximumRating = 5.0)
         {
             Console.WriteLine(GetType().Name);
             Console.WriteLine("train,{0}", train.Count);
@@ -84,13 +84,13 @@ namespace RS.CollaborativeFiltering
             Console.WriteLine("gamma,{0}", gamma);
             Console.WriteLine("lambda,{0}", lambda);
             Console.WriteLine("decay,{0}", decay);
-            Console.WriteLine("mimimumRating,{0}", mimimumRating);
+            Console.WriteLine("minimumRating,{0}", minimumRating);
             Console.WriteLine("maximumRating,{0}", maximumRating);
         }
 
-        public void TrySGD(List<Rating> train, List<Rating> test, List<Link> links, double w = 1.0, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
+        public void TrySGD(List<Rating> train, List<Rating> test, List<Link> links, double w = 1.0, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double minimumRating = 1.0, double maximumRating = 5.0)
         {
-            PrintParameters(train, test, links, w, epochs, gamma, lambda, decay, mimimumRating, maximumRating);
+            PrintParameters(train, test, links, w, epochs, gamma, lambda, decay, minimumRating, maximumRating);
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);
             Hashtable userLinksTable = Tools.GetUserLinksTable(links);
 
@@ -122,8 +122,8 @@ namespace RS.CollaborativeFiltering
                     }
                 }
 
-                double lastLoss = Loss(test, lambda);
-                var eval = EvaluateMaeRmse(test, mimimumRating, maximumRating);
+                double lastLoss = Loss(train, lambda);
+                var eval = EvaluateMaeRmse(test, minimumRating, maximumRating);
                 Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
 
                 if (decay != 1.0)
@@ -139,10 +139,6 @@ namespace RS.CollaborativeFiltering
                     break;
                 }
             }
-
-
         }
     }
-
-
 }

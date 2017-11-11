@@ -243,7 +243,10 @@ namespace RS.Data.Utility
             MyTable table = new MyTable();
             foreach (Rating r in ratings)
             {
-                table.Add(r.ItemId, r.UserId, r.Score);
+                if (!table.ContainsKey(r.ItemId, r.UserId))
+                {
+                    table.Add(r.ItemId, r.UserId, r.Score);
+                }
             }
             return table;
         }
@@ -322,7 +325,7 @@ namespace RS.Data.Utility
         }
 
         /// <summary>
-        /// Get user id - links hash table.
+        /// Get user id - links hash table, a.k.a. trusters.
         /// </summary>
         /// <param name="links"></param>
         /// <returns></returns>
@@ -339,6 +342,29 @@ namespace RS.Data.Utility
                 else
                 {
                     userItemsTable.Add(l.From, new List<Link>() { l });
+                }
+            }
+            return userItemsTable;
+        }
+
+        /// <summary>
+        /// Get reverse user id - links hash table, a.k.a. trustees.
+        /// </summary>
+        /// <param name="links"></param>
+        /// <returns></returns>
+        public static Hashtable GetUserReverseLinksTable(List<Link> links)
+        {
+            Hashtable userItemsTable = new Hashtable();
+            foreach (Link l in links)
+            {
+                if (userItemsTable.ContainsKey(l.From))
+                {
+                    List<Link> list = (List<Link>)userItemsTable[l.To];
+                    list.Add(l);
+                }
+                else
+                {
+                    userItemsTable.Add(l.To, new List<Link>() { l });
                 }
             }
             return userItemsTable;

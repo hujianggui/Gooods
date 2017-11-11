@@ -84,7 +84,7 @@ namespace RS.CollaborativeFiltering
             return loss;
         }
 
-        public Tuple<double, double> EvaluateMaeRmse(List<Rating> ratings, double mimimumRating = 1.0, double maximumRating = 5.0)
+        public Tuple<double, double> EvaluateMaeRmse(List<Rating> ratings, double minimumRating = 1.0, double maximumRating = 5.0)
         {
             double mae = 0.0;
             double rmse = 0.0;
@@ -93,9 +93,9 @@ namespace RS.CollaborativeFiltering
             {
                 double pui = Predict(r.UserId, r.ItemId);
 
-                if (pui < mimimumRating)
+                if (pui < minimumRating)
                 {
-                    pui = mimimumRating;
+                    pui = minimumRating;
                 }
                 else if (pui > maximumRating)
                 {
@@ -116,7 +116,7 @@ namespace RS.CollaborativeFiltering
             return Tuple.Create(mae, rmse);
         }
 
-        protected void PrintParameters(List<Rating> train, List<Rating> test = null, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
+        protected void PrintParameters(List<Rating> train, List<Rating> test = null, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double minimumRating = 1.0, double maximumRating = 5.0)
         {
             Console.WriteLine(GetType().Name);
             Console.WriteLine("train,{0}", train.Count);
@@ -126,13 +126,13 @@ namespace RS.CollaborativeFiltering
             Console.WriteLine("gamma,{0}", gamma);
             Console.WriteLine("lambda,{0}", lambda);
             Console.WriteLine("decay,{0}", decay);
-            Console.WriteLine("mimimumRating,{0}", mimimumRating);
+            Console.WriteLine("minimumRating,{0}", minimumRating);
             Console.WriteLine("maximumRating,{0}", maximumRating);
         }
 
-        public void TrySGD(List<Rating> train, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
+        public void TrySGD(List<Rating> train, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double minimumRating = 1.0, double maximumRating = 5.0)
         {
-            PrintParameters(train, null, epochs, gamma, lambda, decay, mimimumRating, maximumRating);
+            PrintParameters(train, null, epochs, gamma, lambda, decay, minimumRating, maximumRating);
             Console.WriteLine("epoch,loss,train:mae,train:rmse");
             double loss = Loss(train, lambda);
 
@@ -141,9 +141,9 @@ namespace RS.CollaborativeFiltering
                 foreach (Rating r in train)
                 {
                     double pui = Predict(r.UserId, r.ItemId);
-                    if (pui < mimimumRating)
+                    if (pui < minimumRating)
                     {
-                        pui = mimimumRating;
+                        pui = minimumRating;
                     }
                     else if (pui > maximumRating)
                     {
@@ -177,11 +177,11 @@ namespace RS.CollaborativeFiltering
             }
         }
 
-        public void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
+        public void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double minimumRating = 1.0, double maximumRating = 5.0)
         {
-            PrintParameters(train, test, epochs, gamma, lambda, decay, mimimumRating, maximumRating);
-            Console.WriteLine("epoch,loss,test:mae,test:rmse");
-            double loss = Loss(test, lambda);
+            PrintParameters(train, test, epochs, gamma, lambda, decay, minimumRating, maximumRating);
+            Console.WriteLine("epoch,train:loss,test:mae,test:rmse");
+            double loss = Loss(train, lambda);
 
             for (int epoch = 1; epoch <= epochs; epoch++)
             {
@@ -196,8 +196,8 @@ namespace RS.CollaborativeFiltering
                     }
                 }
 
-                double lastLoss = Loss(test, lambda);
-                var eval = EvaluateMaeRmse(test, mimimumRating, maximumRating);
+                double lastLoss = Loss(train, lambda);
+                var eval = EvaluateMaeRmse(test, minimumRating, maximumRating);
                 Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
 
                 if (decay != 1.0)
@@ -273,9 +273,9 @@ namespace RS.CollaborativeFiltering
             return recommendedItems;
         }
 
-        public virtual void TrySGDForTopN(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
+        public virtual void TrySGDForTopN(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double minimumRating = 1.0, double maximumRating = 5.0)
         {
-            PrintParameters(train, test, epochs, gamma, lambda, decay, mimimumRating, maximumRating);
+            PrintParameters(train, test, epochs, gamma, lambda, decay, minimumRating, maximumRating);
             Console.WriteLine("epoch#train:loss,N,P,R,Coverage,Popularity,MAP");
             double loss = Loss(train, lambda);
             MyTable ratingTable = Tools.GetRatingTable(train);

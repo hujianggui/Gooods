@@ -88,7 +88,7 @@ namespace RS.CollaborativeFiltering
             return loss;
         }
 
-        private void PrintParameters(List<Rating> train, List<Rating> test, List<Link> links, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
+        private void PrintParameters(List<Rating> train, List<Rating> test, List<Link> links, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double minimumRating = 1.0, double maximumRating = 5.0)
         {
             Console.WriteLine(GetType().Name);
             Console.WriteLine("train,{0}", train.Count);
@@ -99,13 +99,13 @@ namespace RS.CollaborativeFiltering
             Console.WriteLine("gamma,{0}", gamma);
             Console.WriteLine("lambda,{0}", lambda);
             Console.WriteLine("decay,{0}", decay);
-            Console.WriteLine("mimimumRating,{0}", mimimumRating);
+            Console.WriteLine("minimumRating,{0}", minimumRating);
             Console.WriteLine("maximumRating,{0}", maximumRating);
         }
 
-        public void TrySGD(List<Rating> train, List<Rating> test, List<Link> links, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
+        public void TrySGD(List<Rating> train, List<Rating> test, List<Link> links, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double minimumRating = 1.0, double maximumRating = 5.0)
         {
-            PrintParameters(train, test, links, epochs, gamma, lambda, decay, mimimumRating, maximumRating);
+            PrintParameters(train, test, links, epochs, gamma, lambda, decay, minimumRating, maximumRating);
             Console.WriteLine("epoch,train:loss,test:mae,test:rmse");
 
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);
@@ -153,8 +153,8 @@ namespace RS.CollaborativeFiltering
                     }
                 }
 
-                double lastLoss = Loss(test, lambda, miu);
-                var eval = EvaluateMaeRmse(test, miu, mimimumRating, maximumRating);
+                double lastLoss = Loss(train, lambda, miu);
+                var eval = EvaluateMaeRmse(test, miu, minimumRating, maximumRating);
                 Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
 
                 if (decay != 1.0)

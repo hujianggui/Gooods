@@ -38,8 +38,7 @@ namespace RS
             //ML_10M.MatrixFactorizationTest(0.2);
             //ML_10M.BiasedMatrixFactorizationTest(0.2);
 
-
-            // book-crossing
+            // book-crossing 2004
             //BookCrossing.Preprocessing();
 
             // Epinions 2006

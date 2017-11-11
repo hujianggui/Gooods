@@ -25,7 +25,7 @@ namespace RS.CollaborativeFiltering
             base.InitializeModel(p, q, f, fillMethod);
         }
 
-        protected void PrintParameters(List<Rating> train, List<Rating> test = null, int epochs = 100, double lambda = 0.01, double mimimumRating = 1.0, double maximumRating = 5.0)
+        protected void PrintParameters(List<Rating> train, List<Rating> test = null, int epochs = 100, double lambda = 0.01, double minimumRating = 1.0, double maximumRating = 5.0)
         {
             Console.WriteLine(GetType().Name);
             Console.WriteLine("train,{0}", train.Count);
@@ -33,7 +33,7 @@ namespace RS.CollaborativeFiltering
             Console.WriteLine("p,{0},q,{1},f,{2}", p, q, f);
             Console.WriteLine("epochs,{0}", epochs);
             Console.WriteLine("lambda,{0}", lambda);
-            Console.WriteLine("mimimumRating,{0}", mimimumRating);
+            Console.WriteLine("minimumRating,{0}", minimumRating);
             Console.WriteLine("maximumRating,{0}", maximumRating);
         }
 
@@ -130,9 +130,9 @@ namespace RS.CollaborativeFiltering
             }
         }
 
-        public void TryALS(List<Rating> train, List<Rating> test, int epochs = 100, double lambda = 0.01, double mimimumRating = 1.0, double maximumRating = 5.0)
+        public void TryALS(List<Rating> train, List<Rating> test, int epochs = 100, double lambda = 0.01, double minimumRating = 1.0, double maximumRating = 5.0)
         {
-            PrintParameters(train, test, epochs, lambda, mimimumRating, maximumRating);
+            PrintParameters(train, test, epochs, lambda, minimumRating, maximumRating);
             double loss = Loss(train, lambda);
             Hashtable userRatingsTable = Tools.GetUserItemsTable(train);
             Hashtable itemRatingsTable = Tools.GetItemUsersTable(train);
@@ -142,8 +142,8 @@ namespace RS.CollaborativeFiltering
                 PStep(userRatingsTable, lambda);
                 QStep(itemRatingsTable, lambda);
 
-                double lastLoss = Loss(test, lambda);
-                var eval = EvaluateMaeRmse(test, mimimumRating, maximumRating);
+                double lastLoss = Loss(train, lambda);
+                var eval = EvaluateMaeRmse(test, minimumRating, maximumRating);
                 Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
 
                 if (lastLoss < loss)
@@ -157,9 +157,9 @@ namespace RS.CollaborativeFiltering
             }
         }
 
-        public void TryALSForTopN(List<Rating> train, List<Rating> test, int epochs = 100, double lambda = 0.01, double mimimumRating = 1.0, double maximumRating = 5.0)
+        public void TryALSForTopN(List<Rating> train, List<Rating> test, int epochs = 100, double lambda = 0.01, double minimumRating = 1.0, double maximumRating = 5.0)
         {
-            PrintParameters(train, test, epochs,  lambda, mimimumRating, maximumRating);
+            PrintParameters(train, test, epochs,  lambda, minimumRating, maximumRating);
             Console.WriteLine("epoch,train:loss,N,P,R,Coverage,Popularity");
             double loss = Loss(train, lambda);
             int[] K = { 1, 5, 10, 15, 20, 25, 30 };  // recommdation list
@@ -173,7 +173,7 @@ namespace RS.CollaborativeFiltering
                 PStep(userRatingsTable, lambda);
                 QStep(itemRatingsTable, lambda);
 
-                double lastLoss = Loss(test, lambda);
+                double lastLoss = Loss(train, lambda);
                 if (epoch % 2 == 0)
                 {
                     Console.Write("{0}#{1}", epoch, lastLoss);

@@ -30,15 +30,15 @@ namespace RS.CollaborativeFiltering
             return bu[userId] + bi[itemId] + miu - _r;
         }
 
-        public override void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double mimimumRating = 1.0, double maximumRating = 5.0)
+        public override void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double minimumRating = 1.0, double maximumRating = 5.0)
         {
-            PrintParameters(train, test, epochs, gamma, lambda, decay, mimimumRating, maximumRating);
+            PrintParameters(train, test, epochs, gamma, lambda, decay, minimumRating, maximumRating);
             double miu = train.AsParallel().Average(r => r.Score);
             Console.WriteLine("epoch,loss,test:mae,test:rmse");
 
-            double loss = Loss(test, lambda, miu);
+            double loss = Loss(train, lambda, miu);
 
-            for (int epoch = 0; epoch < epochs; epoch++)
+            for (int epoch = 1; epoch <= epochs; epoch++)
             {
                 foreach (Rating r in train)
                 {
@@ -49,12 +49,13 @@ namespace RS.CollaborativeFiltering
 
                     for (int i = 0; i < f; i++)
                     {
-                        P[r.UserId, i] -= (gamma * (P[r.UserId, i] - Q[r.ItemId, i]) * (eui + lambda)); 
-                        Q[r.ItemId, i] += (gamma * (P[r.UserId, i] - Q[r.ItemId, i]) * (eui + lambda));                        
+                        double delta = (gamma * (P[r.UserId, i] - Q[r.ItemId, i]) * (eui + lambda));
+                        P[r.UserId, i] -= delta;
+                        Q[r.ItemId, i] += delta;                    
                     }
                 }
 
-                double lastLoss = Loss(test, lambda, miu);
+                double lastLoss = Loss(train, lambda, miu);
                 var eval = EvaluateMaeRmse(test, miu);
                 Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
 
