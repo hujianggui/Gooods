@@ -23,6 +23,7 @@
 	    
 	[9] Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
 	    Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
+	[10] SocialMF, rating prediction, top-N recommendation.
 
 ### Evaluation metrics
 	[1] error metrics: MAE, RMSE
@@ -34,7 +35,6 @@
 	[1] Moive data: ml-100k, ml-1m, ml-10m
 	[2] Social data: Douban, Epinions, Flixster
 	[3] Yelp
-
 
 ### License
 	GPLv3.
