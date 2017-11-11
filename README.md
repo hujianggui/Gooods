@@ -32,7 +32,7 @@
 
 ### Data collections (examples)
 	[1] Moive data: ml-100k, ml-1m, ml-10m
-	[2] Social data: Douban, Epinions, Flixster
+	[2] Social rating data: Douban, Epinions, Flixster
 	[3] Yelp
 
 ### Contact
