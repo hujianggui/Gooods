@@ -35,5 +35,12 @@
 	[2] Social data: Douban, Epinions, Flixster
 	[3] Yelp
 
+
+### License
+	GPLv3.
+
+### Startup
+	Vistual studio 2015. (Examples are allowed, download the ml-100k data and configure its path.)
+
 ### Contact
 	freepose@126.com
