@@ -118,7 +118,9 @@ namespace RS.CollaborativeFiltering
             double gamma = 0.01, double lambda_U = 0.01, double lambda_V = 0.01, double lambda_T = 0.01, double decay = 1,
             double minimumRating = 1.0, double maximumRating = 5.0)
         {
-            PrintParameters(train, test, links, epochs, lambda_U,lambda_V, lambda_T, decay, minimumRating, maximumRating);
+            PrintParameters(train, test, links, epochs, gamma, 
+                lambda_U,lambda_V, lambda_T, decay, 
+                minimumRating, maximumRating);
             Console.WriteLine("epoch,train:loss,test:mae,test:rmse");
 
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);
