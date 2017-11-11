@@ -183,7 +183,7 @@ namespace RS.CollaborativeFiltering
             Console.WriteLine("epoch,loss,test:mae,test:rmse");
             double loss = Loss(test, lambda);
 
-            for (int iter = 0; iter < epochs; iter++)
+            for (int epoch = 1; epoch <= epochs; epoch++)
             {
                 foreach (Rating r in train)
                 {
@@ -198,7 +198,7 @@ namespace RS.CollaborativeFiltering
 
                 double lastLoss = Loss(test, lambda);
                 var eval = EvaluateMaeRmse(test, mimimumRating, maximumRating);
-                Console.WriteLine("{0},{1},{2},{3}", iter + 1, lastLoss, eval.Item1, eval.Item2);
+                Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
 
                 if (decay != 1.0)
                 {

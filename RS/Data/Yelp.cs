@@ -241,7 +241,9 @@ namespace RS.Data
         public List<Business> GetBusinessesFromJsonFile(string jsonFile)
         {
             if (!new FileInfo(jsonFile).Exists)
+            {
                 throw new ArgumentException("File doesn't exist: " + jsonFile);
+            }                
 
             StreamReader reader = new StreamReader(jsonFile);
             List<Business> businesses = new List<Business>();
@@ -265,7 +267,9 @@ namespace RS.Data
         public List<User> GetUsersFromJsonFile(string jsonFile)
         {
             if (!new FileInfo(jsonFile).Exists)
+            {
                 throw new ArgumentException("File doesn't exist: " + jsonFile);
+            }               
 
             StreamReader reader = new StreamReader(jsonFile);
             List<User> users = new List<User>();
@@ -289,7 +293,9 @@ namespace RS.Data
         public List<Review> GetReviewsFromJsonFile(string jsonFile)
         {
             if (!new FileInfo(jsonFile).Exists)
+            {
                 throw new ArgumentException("File doesn't exist: " + jsonFile);
+            }                
 
             StreamReader reader = new StreamReader(jsonFile);
             List<Review> reviews = new List<Review>();
@@ -337,7 +343,9 @@ namespace RS.Data
         public void WriteLinks(List<User> users, string toFile, string separator = ",", bool append = false, string encoding = "GB2312")
         {
             if (null == users)
+            {
                 throw new ArgumentNullException();
+            }               
 
             StreamWriter writer = new StreamWriter(toFile, append, Encoding.GetEncoding(encoding));
             foreach (User user in users)
