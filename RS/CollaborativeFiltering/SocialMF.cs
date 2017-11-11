@@ -82,7 +82,7 @@ namespace RS.CollaborativeFiltering
         }
 
         protected void PrintParameters(List<Rating> train, List<Rating> test, List<Link> links, int epochs = 100,
-            double gamma = 0.01, double lambda_U = 0.01, double lambda_V = 0.01, double lambda_T = 0.01, double decay = 1,
+            double gamma = 0.01, double decay = 1, double lambda_U = 0.01, double lambda_V = 0.01, double lambda_T = 0.01,
             double minimumRating = 1.0, double maximumRating = 5.0)
         {
             Console.WriteLine(GetType().Name);
@@ -92,10 +92,10 @@ namespace RS.CollaborativeFiltering
             Console.WriteLine("p,{0},q,{1},f,{2}", p, q, f);
             Console.WriteLine("epochs,{0}", epochs);
             Console.WriteLine("gamma,{0}", gamma);
+            Console.WriteLine("decay,{0}", decay);
             Console.WriteLine("lambda_U,{0}", lambda_U);
             Console.WriteLine("lambda_V,{0}", lambda_V);
             Console.WriteLine("lambda_T,{0}", lambda_T);
-            Console.WriteLine("decay,{0}", decay);
             Console.WriteLine("minimumRating,{0}", minimumRating);
             Console.WriteLine("maximumRating,{0}", maximumRating);
         }
@@ -115,12 +115,11 @@ namespace RS.CollaborativeFiltering
         }
 
         public void TrySGD(List<Rating> train, List<Rating> test, List<Link> links, int epochs = 100, 
-            double gamma = 0.01, double lambda_U = 0.01, double lambda_V = 0.01, double lambda_T = 0.01, double decay = 1,
+            double gamma = 0.01, double decay = 1, double lambda_U = 0.01, double lambda_V = 0.01, double lambda_T = 0.01, 
             double minimumRating = 1.0, double maximumRating = 5.0)
         {
-            PrintParameters(train, test, links, epochs, gamma, 
-                lambda_U,lambda_V, lambda_T, decay, 
-                minimumRating, maximumRating);
+            PrintParameters(train, test, links, epochs, gamma, decay,
+                lambda_U,lambda_V, lambda_T, minimumRating, maximumRating);
             Console.WriteLine("epoch,train:loss,test:mae,test:rmse");
 
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);

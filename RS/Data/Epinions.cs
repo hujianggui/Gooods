@@ -151,7 +151,7 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(links);
 
             SocialMF model = new SocialMF(MaxUserId, MaxItemId);
-            model.TrySGD(baseRatings, testRatings, links, 200, 0.01, 0.01, 0.01, 0.01, 0.9);
+            model.TrySGD(baseRatings, testRatings, links, 200, 0.02, 0.9, 0.01, 0.01, 0.01);
         }
 
         public static void MatrixFactorizationTopNTest()
