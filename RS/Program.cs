@@ -18,7 +18,7 @@ namespace RS
             //ML_100k.BiasedMatrixFactorizationTest();
             //ML_100k.SVDPlusPlusTest();
             //ML_100k.AlternatingLeastSquaresTest();
-            ML_100k.EuclideanEmbeddingTest();
+            //ML_100k.EuclideanEmbeddingTest();
 
             //ML_100k.UserKNNv2Test();
             //ML_100k.MatrixFactorizationTopNTest();
@@ -37,7 +37,8 @@ namespace RS
             //ML_1M.BiasedMatrixFactorizationTopNTest();
 
             // ml-10m
-            //ML_10M.MatrixFactorizationTest(0.2);
+            //ML_10M.MeanFillingTest();
+            //ML_10M.MatrixFactorizationTest();
             //ML_10M.BiasedMatrixFactorizationTest(0.2);
 
             // book-crossing 2004

@@ -57,8 +57,42 @@ namespace RS.Data
             return query.ToList();
         }
 
+        public static void Split()
+        {
+            List<Rating> ratings = Tools.GetRatings(DefaultRatingFile, "::");
+            var data = Tools.TrainTestSplit(ratings, 0.2);
+            Tools.WriteTimedRatings(data.Item1, BaseRatingFile, "\t");
+            Tools.WriteTimedRatings(data.Item2, TestRatingFile, "\t");
+        }
+
+        public static void MeanFillingTest()
+        {
+            List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
+            List<Rating> testRatings = Tools.GetRatings(TestRatingFile);
+
+            Tools.UpdateIndexesToZeroBased(baseRatings);
+            Tools.UpdateIndexesToZeroBased(testRatings);
+
+            MeanFilling.TryGlobalMean(baseRatings, testRatings, true);
+            MeanFilling.TryUserMean(baseRatings, testRatings, true);
+            MeanFilling.TryItemMean(baseRatings, testRatings, true);
+        }
+
+
         // Algorithm testing
-        public static void MatrixFactorizationTest(double testSize = 0.1)
+        public static void MatrixFactorizationTest()
+        {
+            List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
+            List<Rating> testRatings = Tools.GetRatings(TestRatingFile);
+
+            Tools.UpdateIndexesToZeroBased(baseRatings);
+            Tools.UpdateIndexesToZeroBased(testRatings);
+
+            MatrixFactorization model = new MatrixFactorization(MaxUserId, MaxItemId);
+            model.TrySGD(baseRatings, testRatings, 100);
+        }
+
+        public static void MatrixFactorizationTest(double testSize = 0.2)
         {
             List<Rating> ratings = Tools.GetRatings(DefaultRatingFile, "::");
             Tools.UpdateIndexesToZeroBased(ratings);
@@ -66,8 +100,9 @@ namespace RS.Data
             var t = Tools.TrainTestSplit(ratings, testSize);
 
             MatrixFactorization model = new MatrixFactorization(MaxUserId, MaxItemId);
-            model.TrySGD(t.Item1, t.Item2, 100);
+            model.TrySGD(t.Item1, t.Item2, 100, 0.005);
         }
+
 
 
         public static void BiasedMatrixFactorizationTest(double testSize = 0.1)

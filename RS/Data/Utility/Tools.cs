@@ -136,7 +136,7 @@ namespace RS.Data.Utility
             StreamWriter writer = new StreamWriter(toFile, append, Encoding.GetEncoding(encoding));
             foreach (Rating r in ratings)
             {
-                writer.WriteLine("{0},{1},{2},{3},{4}", r.UserId, separator, r.ItemId, separator, r.Score, separator, r.Timestamp);
+                writer.WriteLine("{0}{1}{2}{3}{4}{5}{6}", r.UserId, separator, r.ItemId, separator, r.Score, separator, r.Timestamp);
             }
             writer.Close();
         }
