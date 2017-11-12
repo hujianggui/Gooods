@@ -25,7 +25,8 @@ namespace RS.CollaborativeFiltering
             base.InitializeModel(p, q, f, fillMethod);
         }
 
-        protected void PrintParameters(List<Rating> train, List<Rating> test = null, int epochs = 100, double lambda = 0.01, double minimumRating = 1.0, double maximumRating = 5.0)
+        protected void PrintParameters(List<Rating> train, List<Rating> test = null, int epochs = 100, 
+            double lambda = 0.01, double minimumRating = 1.0, double maximumRating = 5.0)
         {
             Console.WriteLine(GetType().Name);
             Console.WriteLine("train,{0}", train.Count);
