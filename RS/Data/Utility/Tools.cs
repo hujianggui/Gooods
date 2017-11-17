@@ -522,15 +522,15 @@ namespace RS.Data.Utility
         }
 
         /// <summary>
-        /// randomly sample negative ratings for each user from his/her rated ratings
+        /// Randomly sample negative ratings for each user from his/her rated ratings
         /// </summary>
-        /// <param name="ratings"></param>
+        /// <param name="ratings">positive ratings</param>
         /// <param name="ratio">ratio = #(negative samples) / #(positive samples)</param>
-        /// <param name="displayRatio"></param>
+        /// <param name="verbose"></param>
         /// <returns></returns>
-        public static List<Rating> RandomSelectNegativeSamples(List<Rating> ratings, int ratio = 1, bool displayRatio = false)
+        public static List<Rating> RandomSelectNegativeSamples(List<Rating> ratings, int ratio = 1, bool verbose = false)
         {
-            if (displayRatio)
+            if (verbose)
             {
                 Console.WriteLine("ratio,{0}", ratio);
             }

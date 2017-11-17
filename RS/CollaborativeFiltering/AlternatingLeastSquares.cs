@@ -2,11 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using RS.Data.Utility;
 using RS.DataType;
 using RS.Evaluation;
-using System.Threading.Tasks;
 
 namespace RS.CollaborativeFiltering
 {
@@ -25,12 +25,12 @@ namespace RS.CollaborativeFiltering
             base.InitializeModel(p, q, f, fillMethod);
         }
 
-        protected void PrintParameters(List<Rating> train, List<Rating> test = null, int epochs = 100, 
+        protected void PrintParameters(List<Rating> train, List<Rating> test, int epochs = 100, 
             double lambda = 0.01, double minimumRating = 1.0, double maximumRating = 5.0)
         {
             Console.WriteLine(GetType().Name);
             Console.WriteLine("train,{0}", train.Count);
-            Console.WriteLine("test,{0}", test == null ? 0 : test.Count);
+            Console.WriteLine("test,{0}", test.Count);
             Console.WriteLine("p,{0},q,{1},f,{2}", p, q, f);
             Console.WriteLine("epochs,{0}", epochs);
             Console.WriteLine("lambda,{0}", lambda);

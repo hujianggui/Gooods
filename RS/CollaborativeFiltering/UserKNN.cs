@@ -13,6 +13,12 @@ namespace RS.CollaborativeFiltering
     /// </summary>
     public class UserKNN
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ratings"></param>
+        /// <param name="numberOfUsers"></param>
+        /// <returns></returns>
         protected double[] CalcuateUserMeanRating(List<Rating> ratings, int numberOfUsers)
         {
             double[] userMeanRating = new double[numberOfUsers];
@@ -75,8 +81,8 @@ namespace RS.CollaborativeFiltering
 
         public void TryMaeRmse(List<Rating> train, List<Rating> test)
         {
-            int maxUserId = Math.Max(train.Max(r => r.UserId), test.Max(r => r.UserId));
-            int maxItemId = Math.Max(train.Max(r => r.ItemId), test.Max(r => r.ItemId));
+            int maxUserId = Math.Max(train.AsParallel().Max(r => r.UserId), test.AsParallel().Max(r => r.UserId));
+            int maxItemId = Math.Max(train.AsParallel().Max(r => r.ItemId), test.AsParallel().Max(r => r.ItemId));
             double[] userMeanRating = CalcuateUserMeanRating(train, maxUserId + 1);
 
             double[,] trainMatrix = Tools.Transform(train, maxUserId + 1, maxItemId + 1);

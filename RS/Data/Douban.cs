@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RS.Data
 {
+    /// <summary>
+    /// douban data collection
+    /// WSDM '11, Ma
+    /// http://dl.dropbox.com/u/17517913/Douban.zip
+    /// </summary>
     public class Douban
     {
         public static string DefalultDirectory = @"D:\data\dataset_dm\Douban\";
