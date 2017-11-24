@@ -79,7 +79,7 @@
     <Compile Include="Data\Douban.cs" />
     <Compile Include="Data\Epinions.cs" />
     <Compile Include="Data\Flixster.cs" />
-    <Compile Include="Evaluation\Metrics.cs" />
+    <Compile Include="DataType\Evaluation\Metrics.cs" />
     <Compile Include="CollaborativeFiltering\SVDPlusPlus.cs" />
     <Compile Include="CollaborativeFiltering\MeanFilling.cs" />
     <Compile Include="CollaborativeFiltering\UserKNN.cs" />

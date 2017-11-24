@@ -67,15 +67,27 @@ namespace RS.CollaborativeFiltering
             return sortedWeights.GetRange(0, Math.Min(weights.Count, K));
         }
 
+        protected Hashtable GetSimilarItems(MyTable W, int K = 80)
+        {
+            Hashtable similarItems = new Hashtable();
+            foreach(int itemId in W.Keys)
+            {
+                List<Link> selectedItems = GetSimilarItems(W, itemId, K); 
+                similarItems.Add(itemId, selectedItems);
+            }
+            return similarItems;
+        }
+
         protected List<Rating> GetRecommendations(MyTable ratingTable, MyTable W, int K = 80, int N = 10)
         {
             MyTable recommendedTable = new MyTable();
+            Hashtable similarItemsTable = GetSimilarItems(W, K);
             foreach (int userId in ratingTable.Keys)
             {
                 Hashtable Nu = (Hashtable)ratingTable[userId];      // ratings of user u
                 foreach (int itemId in Nu.Keys)
                 {
-                    List<Link> similarItems = GetSimilarItems(W, itemId, K);
+                    List<Link> similarItems = (List<Link>)similarItemsTable[itemId];    // 优化
                     foreach (Link l in similarItems)
                     {
                         int iId = l.To;
@@ -119,8 +131,8 @@ namespace RS.CollaborativeFiltering
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);
             Hashtable itemUsersTable = Tools.GetItemUsersTable(train);
 
-            MyTable coourrrenceTable = CalculateCooccurrences(userItemsTable);
-            MyTable wuv = CalculateSimilarities(coourrrenceTable, itemUsersTable);
+            MyTable coourrenceTable = CalculateCooccurrences(userItemsTable);
+            MyTable wuv = CalculateSimilarities(coourrenceTable, itemUsersTable);
 
             MyTable ratingTable = Tools.GetRatingTable(train);
 

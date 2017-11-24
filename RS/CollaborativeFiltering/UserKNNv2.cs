@@ -48,7 +48,7 @@ namespace RS.CollaborativeFiltering
                 List<Rating> uRatings = (List<Rating>)userItemsTable[uId];
                 foreach (int vId in subTable.Keys)
                 {
-                    double coourrences = (double)subTable[vId];                    
+                    double coourrences = (double)coourrencesTable[vId];                    
                     List<Rating> vRatings = (List<Rating>)userItemsTable[vId];
                     wuv.Add(uId, vId, coourrences / Math.Sqrt(uRatings.Count + vRatings.Count));
                 }
@@ -139,8 +139,8 @@ namespace RS.CollaborativeFiltering
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);
             Hashtable itemUsersTable = Tools.GetItemUsersTable(train);
 
-            MyTable coourrrenceTable = CalculateCooccurrences(itemUsersTable);
-            MyTable wuv = CalculateSimilarities(coourrrenceTable, userItemsTable);
+            MyTable coocurrenceTable = CalculateCooccurrences(itemUsersTable);
+            MyTable wuv = CalculateSimilarities(coocurrenceTable, userItemsTable);
 
             MyTable ratingTable = Tools.GetRatingTable(train);
 

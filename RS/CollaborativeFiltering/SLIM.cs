@@ -32,8 +32,31 @@ namespace RS.CollaborativeFiltering
             {
                 W[i, i] = 0.0;
             }
+        }
+
+        public double Predict(int userId, int itemId, int[] neighbors, int excludeItemId)
+        {
+            double sum = 0.0; // A ranking score
+            foreach(int n in neighbors)
+            {
+                if (n != excludeItemId)
+                {
+                    sum += W[itemId, n];
+                }
+            }
+            return 0;
+        }
 
 
+        public void TryLeastSquares(List<Rating> train, List<Rating> test, int maxItemId, double beta, double lambda)
+        {
+            ItemKNNv2 itemkNN = new ItemKNNv2();
+            
+
+            for(int itemId = 0; itemId <= maxItemId; itemId++)
+            {
+               
+            }
         }
 
     }

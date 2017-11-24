@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 
 using RS.CollaborativeFiltering;
@@ -60,7 +61,7 @@ namespace RS.Data
 
         public static void UserKNNv2Test(double testSize = 0.125)
         {
-            List<Rating> ratings = Tools.GetRatings(DefalultDirectory + "rat.dat", "::");
+            List<Rating> ratings = Tools.GetRatings(DefalultDirectory + "ratings.dat", "::");
             Tools.UpdateIndexesToZeroBased(ratings);
             var data = Tools.TrainTestSplit(ratings, testSize);
             UserKNNv2 knn = new UserKNNv2();

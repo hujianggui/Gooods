@@ -42,12 +42,12 @@ namespace RS.Data
         }
 
 
-        public static string DefaultDirectory  = @"D:\data\dataset_dm\BX-CSV-Dump\";
+        public static string DefaultDirectory = @"D:\data\dataset_dm\BX-CSV-Dump\";
         public static string DefaultRatingFile = DefaultDirectory + @"BX-Book-Ratings.csv";
-        public static string DefaultUserFile   = DefaultDirectory + @"BX-Users.csv";
-        public static string DefaultBookFile   = DefaultDirectory + @"BX-Books.csv";
+        public static string DefaultUserFile = DefaultDirectory + @"BX-Users.csv";
+        public static string DefaultBookFile = DefaultDirectory + @"BX-Books.csv";
 
-        public static string RatingFile     = DefaultDirectory + @"rating.csv";
+        public static string RatingFile = DefaultDirectory + @"rating.csv";
         public static string BaseRatingFile = DefaultDirectory + @"bx.base.csv";
         public static string TestRatingFile = DefaultDirectory + @"bx.test.csv ";
 
@@ -65,7 +65,7 @@ namespace RS.Data
             {
                 throw new ArgumentException("File doesn't exist: " + file);
             }
-                
+
             StreamReader reader = new StreamReader(file);
             List<User> users = new List<User>();
             string _l = reader.ReadLine();
@@ -210,7 +210,7 @@ namespace RS.Data
             int counter25 = 0, counter50 = 0;
 
             // Some statics
-            foreach(string userId in table.Keys)
+            foreach (string userId in table.Keys)
             {
                 if (usersTable.ContainsKey(userId))
                 {
@@ -233,6 +233,11 @@ namespace RS.Data
 
             Console.WriteLine("{0}", counter25);
             Console.WriteLine("{0}", counter50);
+        }
+
+        public static void Statistics()
+        {
+
         }
 
     }

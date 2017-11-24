@@ -25,6 +25,7 @@ namespace RS
             //ML_100k.AlternatingLeastSquaresTopNTest();
 
             // ml-1m
+            //ML_1M.UpdateDataInformation();
             //ML_1M.MeanFillingTest();
             //ML_1M.UserKNNTest();
             //ML_1M.MatrixFactorizationTest();
@@ -32,7 +33,7 @@ namespace RS
             //ML_1M.SVDPlusPlusTest();
 
             //ML_1M.UserKNNv2Test();
-            //ML_1M.ItemKNNv2Test();
+            ML_1M.ItemKNNv2Test();
             //ML_1M.MatrixFactorizationTopNTest();
             //ML_1M.BiasedMatrixFactorizationTopNTest();
 
