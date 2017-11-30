@@ -13,6 +13,7 @@ namespace RS.CollaborativeFiltering
     /// <summary>
     /// ICDM2011, p497, Ning
     /// SLIM: Sparse Linear Methods for Top-N Recommender Systems
+    /// 1. 全量 2. kNN
     /// </summary>
     public class SLIM
     {
