@@ -43,7 +43,8 @@ function ml_100k()
         set(gca,'FontSize',16);  % 设置坐标轴数字，图例，标题等字体大小
         %set(get(gca,'XLabel'),'FontSize',18);  % 设置x轴标签字体大小
         %set(get(gca,'YLabel'), 'FontSize',18);  % 设置y轴标签字体大小
-         print(h, strcat('img\', name, '_UserKNN'), '-depsc');
+        %print(h, strcat('img\', name, '_UserKNN'), '-depsc');
+        print(h, strcat('img\', name, '_UserKNN'), '-dpdf');
 
     end
 
@@ -88,7 +89,8 @@ function ml_100k()
             set(gca,'FontSize',16);  % 设置坐标轴数字，图例，标题等字体大小
             %set(get(gca,'XLabel'),'FontSize',18);  % 设置x轴标签字体大小
             %set(get(gca,'YLabel'), 'FontSize',18);  % 设置y轴标签字体大小
-            print(h, strcat('img\', name, '_ItemKNN'), '-depsc');
+            %print(h, strcat('img\', name, '_ItemKNN'), '-depsc');
+            print(h, strcat('img\', name, '_ItemKNN'), '-dpdf');
 
      end
  
