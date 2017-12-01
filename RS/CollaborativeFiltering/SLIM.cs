@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using RS.Data.Utility;
 using RS.DataType;
 using RS.Evaluation;
+using System.Collections;
 
 namespace RS.CollaborativeFiltering
 {
@@ -51,12 +52,27 @@ namespace RS.CollaborativeFiltering
 
         public void TryLeastSquares(List<Rating> train, List<Rating> test, int maxItemId, double beta, double lambda)
         {
-            ItemKNNv2 itemkNN = new ItemKNNv2();
-            
+            Hashtable userItemsTable = Tools.GetUserItemsTable(train);
+            Hashtable itemUsersTable = Tools.GetItemUsersTable(train);
 
-            for(int itemId = 0; itemId <= maxItemId; itemId++)
+            ItemKNNv2 itemkNN = new ItemKNNv2();
+            MyTable coourrenceTable = itemkNN.CalculateCooccurrences(userItemsTable, true);
+            MyTable wuv = itemkNN.CalculateSimilarities(coourrenceTable, itemUsersTable);
+            Hashtable similarItems = itemkNN.GetSimilarItems(wuv, 80);
+
+            foreach (int itemId in similarItems.Keys)
             {
-               
+                List<Link> list = (List<Link>)similarItems[itemId];
+                Console.Write("{0}", itemId);
+                foreach (Link l in list)
+                {
+                    Console.WriteLine(",{0},{1}", l.To, l.Weight);
+                }
+            }
+
+            for (int itemId = 0; itemId <= maxItemId; itemId++)
+            {
+
             }
         }
 

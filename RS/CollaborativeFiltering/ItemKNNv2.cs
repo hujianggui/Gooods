@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using RS.DataType;
 using RS.Data.Utility;
@@ -11,32 +12,66 @@ namespace RS.CollaborativeFiltering
 {
     public class ItemKNNv2
     {
-        protected MyTable CalculateCooccurrences(Hashtable userItemsTable)
+        public MyTable CalculateCooccurrences(Hashtable userItemsTable, bool multithread = false)
         {
             MyTable cooccurrences = new MyTable();
-            foreach (int uId in userItemsTable.Keys)
+
+            if (multithread)
             {
-                List<Rating> items = (List<Rating>)userItemsTable[uId];
-                foreach (Rating i in items)
+                int[] userIds = new int[userItemsTable.Keys.Count];
+                userItemsTable.Keys.CopyTo(userIds, 0);
+
+                Parallel.ForEach(userIds, uId => 
                 {
-                    foreach (Rating j in items)
+                    List<Rating> items = (List<Rating>)userItemsTable[uId];
+                    foreach (Rating i in items)
                     {
-                        if (i.ItemId == j.ItemId)
+                        foreach (Rating j in items)
                         {
-                            continue;
+                            if (i.ItemId == j.ItemId)
+                            {
+                                continue;
+                            }
+
+                            lock(cooccurrences)
+                            {
+                                if (!cooccurrences.ContainsKey(i.ItemId, j.ItemId))
+                                {
+                                    cooccurrences.Add(i.ItemId, j.ItemId, 0.0);
+                                }
+                                cooccurrences[i.ItemId, j.ItemId] = (double)cooccurrences[i.ItemId, j.ItemId] + 1.0;
+                            }
                         }
-                        if (!cooccurrences.ContainsKey(i.ItemId, j.ItemId))
+                    }
+
+                });
+            }
+            else
+            {
+                foreach (int uId in userItemsTable.Keys)
+                {
+                    List<Rating> items = (List<Rating>)userItemsTable[uId];
+                    foreach (Rating i in items)
+                    {
+                        foreach (Rating j in items)
                         {
-                            cooccurrences.Add(i.ItemId, j.ItemId, 0.0);
+                            if (i.ItemId == j.ItemId)
+                            {
+                                continue;
+                            }
+                            if (!cooccurrences.ContainsKey(i.ItemId, j.ItemId))
+                            {
+                                cooccurrences.Add(i.ItemId, j.ItemId, 0.0);
+                            }
+                            cooccurrences[i.ItemId, j.ItemId] = (double)cooccurrences[i.ItemId, j.ItemId] + 1.0;
                         }
-                        cooccurrences[i.ItemId, j.ItemId] = (double)cooccurrences[i.ItemId, j.ItemId] + 1.0;
                     }
                 }
             }
             return cooccurrences;
         }
 
-        protected MyTable CalculateSimilarities(MyTable coourrencesTable, Hashtable itemUsersTable)
+        public MyTable CalculateSimilarities(MyTable coourrencesTable, Hashtable itemUsersTable)
         {
             MyTable wuv = new MyTable();
             foreach (int iId in coourrencesTable.Keys)
@@ -47,7 +82,7 @@ namespace RS.CollaborativeFiltering
                 {
                     double coourrences = (double)subTable[jId];
                     List<Rating> jRatings = (List<Rating>)itemUsersTable[jId];
-                    wuv.Add(iId, jId, coourrences * 1.0 / Math.Sqrt(iRatings.Count + jRatings.Count));
+                    wuv.Add(iId, jId, coourrences * 1.0 / Math.Sqrt(iRatings.Count * jRatings.Count));
                 }
             }
             return wuv;
@@ -67,7 +102,7 @@ namespace RS.CollaborativeFiltering
             return sortedWeights.GetRange(0, Math.Min(weights.Count, K));
         }
 
-        protected Hashtable GetSimilarItems(MyTable W, int K = 80)
+        public Hashtable GetSimilarItems(MyTable W, int K = 80)
         {
             Hashtable similarItems = new Hashtable();
             foreach(int itemId in W.Keys)
@@ -78,7 +113,7 @@ namespace RS.CollaborativeFiltering
             return similarItems;
         }
 
-        protected List<Rating> GetRecommendations(MyTable ratingTable, MyTable W, int K = 80, int N = 10)
+        public List<Rating> GetRecommendations(MyTable ratingTable, MyTable W, int K = 80, int N = 10)
         {
             MyTable recommendedTable = new MyTable();
             Hashtable similarItemsTable = GetSimilarItems(W, K);
@@ -147,7 +182,7 @@ namespace RS.CollaborativeFiltering
         {
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);
             Hashtable itemUsersTable = Tools.GetItemUsersTable(train);
-            MyTable coourrrenceTable = CalculateCooccurrences(userItemsTable);
+            MyTable coourrrenceTable = CalculateCooccurrences(userItemsTable, true);
             MyTable wuv = CalculateSimilarities(coourrrenceTable, itemUsersTable);
             MyTable ratingTable = Tools.GetRatingTable(train);
 
@@ -166,11 +201,6 @@ namespace RS.CollaborativeFiltering
                     Console.WriteLine(",{0},{1},{2},{3},{4}", n, pr.Item1, pr.Item2, cp.Item1, cp.Item2);
                 }
             }            
-        }
-
-        // 重新设计
-
-        // 用纸和笔
-        
+        }        
     }
 }

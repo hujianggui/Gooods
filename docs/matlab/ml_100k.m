@@ -32,6 +32,12 @@ function ml_100k()
                 P5, R5, 'k^-', ...
                 P6, R6, 'rp-', ...
                 'LineWidth', 2,  'markersize', 8);
+            
+        x = P5 + 0.01;
+        y = R5 + 0.01;
+        for i=1:length(x)
+           text(x(i), y(i), num2str(N(i)), 'FontSize', 16)
+        end
         
         title('UserKNN on ml-100k');
         xlabel('Precision@N');
@@ -78,6 +84,12 @@ function ml_100k()
                     P5, R5, 'k^-', ...
                     P6, R6, 'rp-', ...
                     'LineWidth', 2,  'markersize', 8);
+            
+            x = P1 + 0.01;
+            y = R1 + 0.01;
+            for i=1:length(x)
+                text(x(i), y(i), num2str(N(i)), 'FontSize', 16)
+            end
 
             title('ItemKNN on ml-100k');
             xlabel('Precision@N');

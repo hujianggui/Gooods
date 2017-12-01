@@ -117,6 +117,19 @@ namespace RS.Data
             knn.TryTopN(baseRatings, testRatings);
         }
 
+        public static void ItemKNNv2Test()
+        {
+            List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
+            List<Rating> testRatings = Tools.GetRatings(TestRatingFile);
+
+            Tools.UpdateIndexesToZeroBased(baseRatings);
+            Tools.UpdateIndexesToZeroBased(testRatings);
+
+            ItemKNNv2 knn = new ItemKNNv2();
+            //knn.TryTopN(data.Item1, data.Item2, 80, 10);
+            knn.TryTopN(baseRatings, testRatings);
+        }
+
         public static void UserKNNv2Test(double testSize = 0.1)
         {
             List<Rating> ratings = Tools.GetRatings(DefaultRatingFile);
@@ -148,5 +161,19 @@ namespace RS.Data
             AlternatingLeastSquares model = new AlternatingLeastSquares(MaxUserId, MaxItemId, 10);
             model.TryALSForTopN(baseSamples, data.Item2, 100, 0.01, 0, 1);
         }
+
+
+        public static void SLIMTest()
+        {
+            List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
+            List<Rating> testRatings = Tools.GetRatings(TestRatingFile);
+
+            Tools.UpdateIndexesToZeroBased(baseRatings);
+            Tools.UpdateIndexesToZeroBased(testRatings);
+
+            SLIM knn = new SLIM();
+            knn.TryLeastSquares(baseRatings, testRatings, MaxItemId, 0.01, 0.01);
+        }
+
     }
 }

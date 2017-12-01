@@ -21,8 +21,10 @@ namespace RS
             //ML_100k.EuclideanEmbeddingTest();
 
             //ML_100k.UserKNNv2Test();
+            //ML_100k.ItemKNNv2Test();
             //ML_100k.MatrixFactorizationTopNTest();
             //ML_100k.AlternatingLeastSquaresTopNTest();
+            ML_100k.SLIMTest();
 
             // ml-1m
             //ML_1M.UpdateDataInformation();
@@ -33,7 +35,7 @@ namespace RS
             //ML_1M.SVDPlusPlusTest();
 
             //ML_1M.UserKNNv2Test();
-            ML_1M.ItemKNNv2Test();
+            //ML_1M.ItemKNNv2Test();
             //ML_1M.MatrixFactorizationTopNTest();
             //ML_1M.BiasedMatrixFactorizationTopNTest();
 
