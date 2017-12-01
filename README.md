@@ -2,8 +2,9 @@
 
 ### The algorithms
 	[0] Global mean, user mean, item mean filling methods. Those are used for rating prediction.
-	[1] UserKNN (user-based collaborative filtering), rating prediction, top-N recommendation.
-	[2] ItemKNN (item-based collaborative filtering), top-N recommendation.
+	[1] UserKNN (user-based collaborative filtering), rating prediction, 
+		UserKNNv2 (user-based collaborative filtering, multithread for W), top-N recommendation.
+	[2] ItemKNNv2 (item-based collaborative filtering, multithread for W), top-N recommendation.
 	[3] Matrix Factorization, rating prediction, top-N recommendation.
 	[4] Biased Matrix Factorization, rating prediction, top-N recommendation.
 	[5] SVD++ (speed up), rating prediction.
@@ -36,11 +37,13 @@
 	[2] Social data: Douban, Epinions, Flixster
 	[3] Location-based social network: Yelp
 
-### License
-	GPLv3.
-
 ### Startup
-	Vistual studio 2015. (Examples are allowed, download the ml-100k data and configure its path.)
-
+	Vistual studio 2015. 
+	Examples are allowed, please download the ml-100k data and configure its path.
+	http://grouplens.org/datasets/movielens/
+	
 ### Contact
 	freepose@126.com
+
+### License
+	GPLv3.
