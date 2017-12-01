@@ -85,8 +85,8 @@ function ml_100k()
                     P6, R6, 'rp-', ...
                     'LineWidth', 2,  'markersize', 8);
             
-            x = P1 + 0.01;
-            y = R1 + 0.01;
+            x = P3 + 0.01;
+            y = R3 + 0.01;
             for i=1:length(x)
                 text(x(i), y(i), num2str(N(i)), 'FontSize', 16)
             end

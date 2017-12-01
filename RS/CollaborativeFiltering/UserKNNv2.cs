@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using RS.DataType;
 using RS.Data.Utility;
@@ -14,28 +15,62 @@ namespace RS.CollaborativeFiltering
     /// </summary>
     public class UserKNNv2
     {
-        protected MyTable CalculateCooccurrences(Hashtable itemUsersTable)
+        protected MyTable CalculateCooccurrences(Hashtable itemUsersTable, bool multithread = false)
         {
             MyTable cooccurrences = new MyTable();
-            foreach (int iId in itemUsersTable.Keys)
+
+            if (multithread)
             {
-                List<Rating> users = (List<Rating>)itemUsersTable[iId];
-                foreach (Rating u in users)
+                int[] itemIds = new int[itemUsersTable.Keys.Count];
+                itemUsersTable.Keys.CopyTo(itemIds, 0);
+                Parallel.ForEach(itemIds, iId =>
                 {
-                    foreach (Rating v in users)
+                    List<Rating> users = (List<Rating>)itemUsersTable[iId];
+                    foreach (Rating u in users)
                     {
-                        if (u.UserId == v.UserId)
+                        foreach (Rating v in users)
                         {
-                            continue;
+                            if (u.UserId == v.UserId)
+                            {
+                                continue;
+                            }
+
+                            lock(cooccurrences)
+                            {
+                                if (!cooccurrences.ContainsKey(u.UserId, v.UserId))
+                                {
+                                    cooccurrences.Add(u.UserId, v.UserId, 0.0);
+                                }
+                                cooccurrences[u.UserId, v.UserId] = (double)cooccurrences[u.UserId, v.UserId] + 1.0 / Math.Log(1 + users.Count);
+                            }
+
                         }
-                        if (!cooccurrences.ContainsKey(u.UserId, v.UserId))
+                    }
+                });
+
+            }
+            else
+            {
+                foreach (int iId in itemUsersTable.Keys)
+                {
+                    List<Rating> users = (List<Rating>)itemUsersTable[iId];
+                    foreach (Rating u in users)
+                    {
+                        foreach (Rating v in users)
                         {
-                            cooccurrences.Add(u.UserId, v.UserId, 0.0);
+                            if (u.UserId == v.UserId)
+                            {
+                                continue;
+                            }
+                            if (!cooccurrences.ContainsKey(u.UserId, v.UserId))
+                            {
+                                cooccurrences.Add(u.UserId, v.UserId, 0.0);
+                            }
+                            cooccurrences[u.UserId, v.UserId] = (double)cooccurrences[u.UserId, v.UserId] + 1.0 / Math.Log(1 + users.Count);
                         }
-                        cooccurrences[u.UserId, v.UserId] = (double)cooccurrences[u.UserId, v.UserId] + 1.0 / Math.Log(1 + users.Count);
                     }
                 }
-            }
+            } 
             return cooccurrences;
         }
 
@@ -48,9 +83,9 @@ namespace RS.CollaborativeFiltering
                 List<Rating> uRatings = (List<Rating>)userItemsTable[uId];
                 foreach (int vId in subTable.Keys)
                 {
-                    double coourrences = (double)coourrencesTable[vId];                    
+                    double coourrences = (double)subTable[vId];                    
                     List<Rating> vRatings = (List<Rating>)userItemsTable[vId];
-                    wuv.Add(uId, vId, coourrences / Math.Sqrt(uRatings.Count + vRatings.Count));
+                    wuv.Add(uId, vId, coourrences / Math.Sqrt(uRatings.Count * vRatings.Count));
                 }
             }
             return wuv;
@@ -122,7 +157,7 @@ namespace RS.CollaborativeFiltering
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);
             Hashtable itemUsersTable = Tools.GetItemUsersTable(train);
 
-            MyTable coourrrenceTable = CalculateCooccurrences(itemUsersTable);
+            MyTable coourrrenceTable = CalculateCooccurrences(itemUsersTable, true);
             MyTable wuv = CalculateSimilarities(coourrrenceTable, userItemsTable);
 
             MyTable ratingTable = Tools.GetRatingTable(train);
@@ -139,9 +174,8 @@ namespace RS.CollaborativeFiltering
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);
             Hashtable itemUsersTable = Tools.GetItemUsersTable(train);
 
-            MyTable coocurrenceTable = CalculateCooccurrences(itemUsersTable);
+            MyTable coocurrenceTable = CalculateCooccurrences(itemUsersTable, true);
             MyTable wuv = CalculateSimilarities(coocurrenceTable, userItemsTable);
-
             MyTable ratingTable = Tools.GetRatingTable(train);
 
             List<int> Ks = new List<int>() { 5, 10, 20, 40, 80, 160 };
