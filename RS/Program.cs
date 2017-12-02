@@ -22,12 +22,7 @@ namespace RS
 
             //ML_100k.UserKNNv2Test();
             //ML_100k.ItemKNNv2Test();
-            ML_100k.MatrixFactorizationTopNTest(10); Console.WriteLine();
-            ML_100k.MatrixFactorizationTopNTest(20); Console.WriteLine();
-            ML_100k.MatrixFactorizationTopNTest(50); Console.WriteLine();
-            ML_100k.MatrixFactorizationTopNTest(100); Console.WriteLine();
-            ML_100k.MatrixFactorizationTopNTest(200); Console.WriteLine();
-            ML_100k.MatrixFactorizationTopNTest(500); Console.WriteLine();
+            //ML_100k.MatrixFactorizationTopNTest(10);
             //ML_100k.AlternatingLeastSquaresTopNTest();
             //ML_100k.SLIMTest();
 

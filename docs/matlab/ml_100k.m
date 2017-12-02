@@ -174,6 +174,59 @@ function ml_100k()
         %print(h, strcat('img\', name, '_UserKNN'), '-depsc');
         print(h, strcat('img\', name, '_MF'), '-dpdf');
     end
+    
+    function  ml_100k_MF_f(num, name)
+        %% plots for MF on ml-100k
+        h = figure('Name', name);
+        N  = num(1:7, 1);          % # of recommendation list
+        
+        P1 = num(1:7, 2);          % precision
+        R1 = num(1:7, 3);          %  recall
+        
+        P2 = num(8:14, 2);          % precision
+        R2 = num(8:14, 3);          %  recall
+        
+        P3 = num(15:21, 2);          % precision
+        R3 = num(15:21, 3);          %  recall
+        
+        P4 = num(22:28, 2);          % precision
+        R4 = num(22:28, 3);          %  recall
+        
+        P5 = num(29:35, 2);          % precision
+        R5 = num(29:35, 3);          %  recall
+        
+        P6 = num(36:42, 2);          % precision
+        R6 = num(36:42, 3);          %  recall
+
+        
+        plot(P1, R1,  'bd-',  ...
+                P2, R2, 'go-', ...
+                P3, R3, 'rx-', ...
+                P4, R4, 'c+-', ...
+                P5, R5, 'ms-', ...  
+                P6, R6, 'yv-', ...
+                'LineWidth', 2,  'markersize', 8);
+            
+        x = P5 + 0.01;
+        y = R5 + 0.01;
+        for i=1:length(x)
+           text(x(i), y(i), num2str(N(i)), 'FontSize', 16)
+        end
+        
+        title('MF on ml-100k(ratio = 4)');
+        xlabel('Precision@N');
+        ylabel('Recall@N');
+        legend('f=10', 'f=20',  'f=50',  'f=100',  'f=200',  'f=500');
+        grid on;
+        %set(h,'ytick',y_axis_set);         % 设置刻度线
+        %set(h,'yticklabel',y_axis_set);        %设置显示哪些刻度值
+        set(gca,'FontSize',16);  % 设置坐标轴数字，图例，标题等字体大小
+        %set(get(gca,'XLabel'),'FontSize',18);      % 设置x轴标签字体大小
+        %set(get(gca,'YLabel'), 'FontSize',18);      % 设置y轴标签字体大小
+        
+        %print(h, strcat('img\', name, '_UserKNN'), '-depsc');
+        print(h, strcat('img\', name, '_MF_f'), '-dpdf');
+    end
 
     clc;
     clear;
@@ -227,7 +280,9 @@ function ml_100k()
 %     num = xlsread('ml-100k',  3, 'AH3:AM72'); % u1
 %     ml_100k_MF(num, 'ml_100_u5');
 %     
-    
+
+    num = xlsread('ml-100k',  3, 'B77:G118'); % u1
+    ml_100k_MF_f(num, 'ml_100_u1');
     
 end
 
