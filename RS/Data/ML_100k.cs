@@ -139,7 +139,7 @@ namespace RS.Data
             knn.TryTopN(data.Item1, data.Item2);
         }
 
-        public static void MatrixFactorizationTopNTest(int ratio)
+        public static void MatrixFactorizationTopNTest(int f = 10)
         {
             List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
             List<Rating> testRatings = Tools.GetRatings(TestRatingFile);
@@ -147,14 +147,15 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(baseRatings);
             Tools.UpdateIndexesToZeroBased(testRatings);
 
-            var baseSamples = Tools.RandomSelectNegativeSamples(baseRatings, ratio, true);
+            var baseSamples = Tools.RandomSelectNegativeSamples(baseRatings, 4, true);
 
-            MatrixFactorization model = new MatrixFactorization(MaxUserId, MaxItemId, 100);
+            MatrixFactorization model = new MatrixFactorization(MaxUserId, MaxItemId, f);
             model.TrySGDForTopN(baseSamples, testRatings, 100, 0.02, 0.01, 0.9);
         }
 
-        public static void MatrixFactorizationTopNTest(double testSize = 0.125)
+        public static void MatrixFactorizationTopNTest()
         {
+            double testSize = 0.125;
             List<Rating> ratings = Tools.GetRatings(DefaultRatingFile);
             Tools.UpdateIndexesToZeroBased(ratings);
             var data = Tools.TrainTestSplit(ratings, testSize);
