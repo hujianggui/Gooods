@@ -3,7 +3,7 @@ function ml_100k()
     % plot figures for experiments on ml-100 data collection
     
     function  ml_100k_UserKNN(num, name)
-        %% plots for userknn on ml-100k
+        
         h = figure('Name', name);
         N  = num(1:7, 1);          % # of recommendation list
         
@@ -49,13 +49,13 @@ function ml_100k()
         set(gca,'FontSize',16);  % 设置坐标轴数字，图例，标题等字体大小
         %set(get(gca,'XLabel'),'FontSize',18);  % 设置x轴标签字体大小
         %set(get(gca,'YLabel'), 'FontSize',18);  % 设置y轴标签字体大小
-        
         %print(h, strcat('img\', name, '_UserKNN'), '-depsc');
         print(h, strcat('img\', name, '_UserKNN'), '-dpdf');
+
     end
 
     function  ml_100k_ItemKNN(num, name)
-            %% plots for itemKNN on ml-100k
+
             h = figure('Name', name);
             N  = num(1:7, 1);          % # of recommendation list
 
@@ -101,13 +101,13 @@ function ml_100k()
             set(gca,'FontSize',16);  % 设置坐标轴数字，图例，标题等字体大小
             %set(get(gca,'XLabel'),'FontSize',18);  % 设置x轴标签字体大小
             %set(get(gca,'YLabel'), 'FontSize',18);  % 设置y轴标签字体大小
-            
             %print(h, strcat('img\', name, '_ItemKNN'), '-depsc');
             print(h, strcat('img\', name, '_ItemKNN'), '-dpdf');
+
     end
 
     function  ml_100k_MF(num, name)
-        %% plots for MF on ml-100k
+        
         h = figure('Name', name);
         N  = num(1:7, 1);          % # of recommendation list
         
@@ -165,21 +165,20 @@ function ml_100k()
         legend('ratio=1', 'ratio=2',  'ratio=3',  'ratio=4',  'ratio=5', ...
                      'ratio=6', 'ratio=7',  'ratio=8',  'ratio=9',  'ratio=10');
         grid on;
-        %set(h,'ytick',y_axis_set);         % 设置刻度线
-        %set(h,'yticklabel',y_axis_set);        %设置显示哪些刻度值
+        %set(h,'ytick',y_axis_set);  % 设置刻度线
+        %set(h,'yticklabel',y_axis_set); %设置显示哪些刻度值
         set(gca,'FontSize',16);  % 设置坐标轴数字，图例，标题等字体大小
-        %set(get(gca,'XLabel'),'FontSize',18);      % 设置x轴标签字体大小
-        %set(get(gca,'YLabel'), 'FontSize',18);      % 设置y轴标签字体大小
-        
+        %set(get(gca,'XLabel'),'FontSize',18);  % 设置x轴标签字体大小
+        %set(get(gca,'YLabel'), 'FontSize',18);  % 设置y轴标签字体大小
         %print(h, strcat('img\', name, '_UserKNN'), '-depsc');
         print(h, strcat('img\', name, '_MF'), '-dpdf');
+
     end
 
     clc;
     clear;
-    close all;
  
-    %% UserKNN
+    % UserKNN
 %     num = xlsread('ml-100k',  1, 'B3:F44'); % u1
 %     ml_100k_UserKNN(num, 'ml_100_u1');
 %     
@@ -195,7 +194,7 @@ function ml_100k()
 %     num = xlsread('ml-100k',  1, 'AD3:AH44'); % u5
 %     ml_100k_UserKNN(num, 'ml_100_u5');
     
-    %% ItemKNN
+    % ItemKNN
 %     num = xlsread('ml-100k',  2, 'B3:F44'); % u1
 %     ml_100k_ItemKNN(num, 'ml_100_u1');
 %     
@@ -211,23 +210,18 @@ function ml_100k()
 %     num = xlsread('ml-100k',  2, 'AD3:AH44'); % u5
 %     ml_100k_ItemKNN(num, 'ml_100_u5');
 
-    %% Matrix factorization
+        %% Matrix 
 %     num = xlsread('ml-100k',  3, 'B3:G72'); % u1
 %     ml_100k_MF(num, 'ml_100_u1');
 %     
 %     num = xlsread('ml-100k',  3, 'J3:O72'); % u1
 %     ml_100k_MF(num, 'ml_100_u2');
-%     
-%     num = xlsread('ml-100k',  3, 'P3:W72'); % u1
-%     ml_100k_MF(num, 'ml_100_u3');
-%     
-%     num = xlsread('ml-100k',  3, 'Z3:AE72'); % u1
-%     ml_100k_MF(num, 'ml_100_u4');
-%    
-%     num = xlsread('ml-100k',  3, 'AH3:AM72'); % u1
-%     ml_100k_MF(num, 'ml_100_u5');
+
+    num = xlsread('ml-100k',  3, 'Z3:AE72'); % u1
+    ml_100k_MF(num, 'ml_100_u4');
     
-    
+    num = xlsread('ml-100k',  3, 'AH3:AM72'); % u1
+    ml_100k_MF(num, 'ml_100_u5');
     
 end
 
