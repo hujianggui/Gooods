@@ -295,7 +295,7 @@ namespace RS.CollaborativeFiltering
                 }
 
                 double lastLoss = Loss(train, lambda);
-                if (epoch % 2 == 0)
+                if (epoch % 2 == 0 && epoch >= 20)
                 {
                     Console.Write("{0}#{1}", epoch, lastLoss);  
                     List<Rating> recommendations = GetRecommendations(ratingTable, K[K.Length - 1], true);   // note that, the max K
