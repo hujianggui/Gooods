@@ -49,8 +49,7 @@ namespace RS.CollaborativeFiltering
             return 0;
         }
 
-
-        public void TryLeastSquares(List<Rating> train, List<Rating> test, int maxItemId, double beta, double lambda)
+        public void TryLeastSquare(List<Rating> train, List<Rating> test, int maxItemId, double beta, double lambda)
         {
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);
             Hashtable itemUsersTable = Tools.GetItemUsersTable(train);

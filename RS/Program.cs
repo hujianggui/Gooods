@@ -20,9 +20,9 @@ namespace RS
             //ML_100k.AlternatingLeastSquaresTest();
             //ML_100k.EuclideanEmbeddingTest();
 
-            ML_100k.UserKNNv2Test();
+            //ML_100k.UserKNNv2Test();
             //ML_100k.ItemKNNv2Test();
-            //ML_100k.MatrixFactorizationTopNTest();
+            ML_100k.MatrixFactorizationTopNTest(1);
             //ML_100k.AlternatingLeastSquaresTopNTest();
             //ML_100k.SLIMTest();
 

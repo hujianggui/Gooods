@@ -21,7 +21,6 @@ namespace RS.Data
         public static int MaxUserId = 943;
         public static int MaxItemId = 1682;
 
-
         public static void MeanFillingTest()
         {
             List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
@@ -140,6 +139,20 @@ namespace RS.Data
             knn.TryTopN(data.Item1, data.Item2);
         }
 
+        public static void MatrixFactorizationTopNTest(int ratio)
+        {
+            List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
+            List<Rating> testRatings = Tools.GetRatings(TestRatingFile);
+
+            Tools.UpdateIndexesToZeroBased(baseRatings);
+            Tools.UpdateIndexesToZeroBased(testRatings);
+
+            var baseSamples = Tools.RandomSelectNegativeSamples(baseRatings, ratio, true);
+
+            MatrixFactorization model = new MatrixFactorization(MaxUserId, MaxItemId, 100);
+            model.TrySGDForTopN(baseSamples, testRatings, 100, 0.02, 0.01, 0.9);
+        }
+
         public static void MatrixFactorizationTopNTest(double testSize = 0.125)
         {
             List<Rating> ratings = Tools.GetRatings(DefaultRatingFile);
@@ -172,7 +185,7 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(testRatings);
 
             SLIM knn = new SLIM();
-            knn.TryLeastSquares(baseRatings, testRatings, MaxItemId, 0.01, 0.01);
+            knn.TryLeastSquare(baseRatings, testRatings, MaxItemId, 0.01, 0.01);
         }
 
     }
