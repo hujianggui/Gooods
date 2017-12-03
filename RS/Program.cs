@@ -51,7 +51,8 @@ namespace RS
             // HetRec 2011 delicious 2k
             //HetRec2011Delicious2k.Test();
             //HetRec2011Delicious2k.UserKNNv2Test();
-            HetRec2011Delicious2k.TagBasedItemKNNTest();
+            //HetRec2011Delicious2k.TagBasedItemKNNTest();
+            HetRec2011Delicious2k.TagBasedFilteringTest();
 
             // Epinions 2006
             //Epinions.MeanFillingTest();

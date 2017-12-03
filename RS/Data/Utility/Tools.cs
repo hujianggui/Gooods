@@ -319,7 +319,7 @@ namespace RS.Data.Utility
             StreamWriter writer = new StreamWriter(toFile, append, Encoding.GetEncoding(encoding));
             foreach (Link l in links)
             {
-                writer.WriteLine("{0},{1},{2}", l.From, separator, l.To);
+                writer.WriteLine("{0}{1}{2}{3}{4}", l.From, separator, l.To, separator, l.Weight);
             }
             writer.Close();
         }
@@ -338,6 +338,24 @@ namespace RS.Data.Utility
                 if (!table.ContainsKey(l.From, l.To))
                 {
                     table.Add(l.From, l.To, l.Weight);
+                }
+            }
+            return table;
+        }
+
+        /// <summary>
+        /// Get linked user id - user id - weight table.
+        /// </summary>
+        /// <param name="links"></param>
+        /// <returns></returns>
+        public static MyTable GetReversedLinkTable(List<Link> links)
+        {
+            MyTable table = new MyTable();
+            foreach (Link l in links)
+            {
+                if (!table.ContainsKey(l.To, l.From))
+                {
+                    table.Add(l.To, l.From, l.Weight);
                 }
             }
             return table;

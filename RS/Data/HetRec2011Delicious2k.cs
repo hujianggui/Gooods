@@ -59,7 +59,7 @@ namespace RS.Data
                 if (elements.Length == 4)
                 {
                     int userId = Int32.Parse(elements[0]);
-                    int itemId = Int32.Parse(elements[1]);
+                    int itemId = Int32.Parse(elements[1]);  // bookmark id
                     int tagId  = Int32.Parse(elements[2]);
                     string timestamp = elements[3];
 
@@ -85,7 +85,7 @@ namespace RS.Data
         /// <summary>
         /// Get relation tables
         /// 1. user - item - #tags
-        /// 2. user - item - #tags
+        /// 2. user - tag - #tags
         /// 3. item - tag - #tag
         /// </summary>
         /// <param name="recordTable"></param>
@@ -188,12 +188,27 @@ namespace RS.Data
         public static void TagBasedItemKNNTest(double testSize = 0.1)
         {
             MyTable recordTable = GetRecords(DefaultRecordFile);
+            var v = GetRelations(recordTable);
+
             var tables = Tools.TrainTestSplit(recordTable, testSize);
             var v1 = GetRelations(tables.Item1);
             var v2 = GetRelations(tables.Item2);
 
             TagBasedItemKNN knn = new TagBasedItemKNN();
-            knn.TryTopN(v1.Item1, v2.Item1, v1.Item2, 80, 10);
+            knn.TryTopN(v1.Item1, v2.Item1, v1.Item3);
+        }
+
+        public static void TagBasedFilteringTest(double testSize = 0.1)
+        {
+            MyTable recordTable = GetRecords(DefaultRecordFile);
+            var v = GetRelations(recordTable);
+
+            var tables = Tools.TrainTestSplit(recordTable, testSize);
+            var v1 = GetRelations(tables.Item1);
+            var v2 = GetRelations(tables.Item2);
+
+            TagBasedFiltering f = new TagBasedFiltering();
+            f.TrySimpleTagBased(v1.Item1, v2.Item1, v1.Item2, v1.Item3);
         }
 
 
