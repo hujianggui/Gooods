@@ -493,6 +493,42 @@ namespace RS.Data.Utility
             return Tuple.Create(baseRatings, testRatings);
         }
 
+        /// <summary>
+        /// split up ratings into train and test set with percentage of test size.
+        /// </summary>
+        /// <param name="recordTable">user id - item id - list of tags for this item</param>
+        /// <param name="testSize"></param>
+        /// <returns></returns>
+        public static Tuple<MyTable, MyTable> TrainTestSplit(MyTable recordTable, double testSize = 0.1)
+        {
+            if (recordTable == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            Random random = new Random();
+            MyTable baseRecordTable = new MyTable();
+            MyTable testRecordTable = new MyTable();
+
+            foreach (int userId in recordTable.Keys)
+            {
+                Hashtable subTable = (Hashtable)recordTable[userId];
+                foreach (int itemId in subTable.Keys)
+                {
+                    var links = subTable[itemId];
+                    if (random.NextDouble() < testSize)
+                    {
+                        testRecordTable.Add(userId, itemId, links);
+                    }
+                    else
+                    {
+                        baseRecordTable.Add(userId, itemId, links);
+                    }
+                }
+            }
+            return Tuple.Create(baseRecordTable, testRecordTable);
+        }
+
         public static void WriteMatrix(double [,] matrix, string toFile, bool append = false, string encoding = "UTF-8")
         {
             int M = matrix.GetLength(0);

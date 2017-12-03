@@ -111,6 +111,12 @@ namespace RS.CollaborativeFiltering
             foreach (int userId in ratingTable.Keys)
             {
                 Hashtable Nu = (Hashtable)ratingTable[userId];      // ratings of user u
+
+                if (!W.ContainsMainKey(userId))     // NOTE: a user bought an item which had only rated by him.
+                {
+                    continue;
+                }
+
                 List<Link> similarUsers = GetSimilarUsers(W, userId, K);                
                 foreach (Link l in similarUsers)
                 {

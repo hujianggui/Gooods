@@ -167,12 +167,12 @@ namespace RS.CollaborativeFiltering
             Hashtable itemUsersTable = Tools.GetItemUsersTable(train);
 
             MyTable coourrenceTable = CalculateCooccurrences(userItemsTable);
-            MyTable wuv = CalculateSimilarities(coourrenceTable, itemUsersTable);
+            MyTable wij = CalculateSimilarities(coourrenceTable, itemUsersTable);
 
             MyTable ratingTable = Tools.GetRatingTable(train);
 
             Console.WriteLine("K(Cosine),N,P,R,Coverage,Popularity"); 
-            List<Rating> recommendations = GetRecommendations(ratingTable, wuv, K, N);
+            List<Rating> recommendations = GetRecommendations(ratingTable, wij, K, N);
             var pr = Metrics.PrecisionAndRecall(recommendations, test);
             var cp = Metrics.CoverageAndPopularity(recommendations, train);
             Console.WriteLine("{0},{1},{2},{3},{4}", K, pr.Item1, pr.Item2, cp.Item1, cp.Item2);
@@ -183,7 +183,7 @@ namespace RS.CollaborativeFiltering
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);
             Hashtable itemUsersTable = Tools.GetItemUsersTable(train);
             MyTable coourrrenceTable = CalculateCooccurrences(userItemsTable, true);
-            MyTable wuv = CalculateSimilarities(coourrrenceTable, itemUsersTable);
+            MyTable wij = CalculateSimilarities(coourrrenceTable, itemUsersTable);
             MyTable ratingTable = Tools.GetRatingTable(train);
 
             List<int> Ks = new List<int>() { 5, 10, 20, 40, 80, 160 };
@@ -195,7 +195,7 @@ namespace RS.CollaborativeFiltering
                 Console.Write(k);
                 foreach (int n in Ns)
                 {
-                    List<Rating> recommendations = GetRecommendations(ratingTable, wuv, k, n);
+                    List<Rating> recommendations = GetRecommendations(ratingTable, wij, k, n);
                     var pr = Metrics.PrecisionAndRecall(recommendations, test);
                     var cp = Metrics.CoverageAndPopularity(recommendations, train);
                     Console.WriteLine(",{0},{1},{2},{3},{4}", n, pr.Item1, pr.Item2, cp.Item1, cp.Item2);

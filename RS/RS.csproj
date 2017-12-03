@@ -75,6 +75,7 @@
     <Compile Include="CollaborativeFiltering\MatrixFactorization.cs" />
     <Compile Include="CollaborativeFiltering\SLIM.cs" />
     <Compile Include="CollaborativeFiltering\SocialMF.cs" />
+    <Compile Include="ContentBasedFiltering\TagBasedItemKNN.cs" />
     <Compile Include="Data\BookCrossing.cs" />
     <Compile Include="Data\Douban.cs" />
     <Compile Include="Data\Epinions.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="CollaborativeFiltering\MeanFilling.cs" />
     <Compile Include="CollaborativeFiltering\UserKNN.cs" />
     <Compile Include="CollaborativeFiltering\UserKNNv2.cs" />
+    <Compile Include="Data\HetRec2011Delicious2k.cs" />
     <Compile Include="Data\ML_100k.cs" />
     <Compile Include="Data\ML_10M.cs" />
     <Compile Include="Data\ML_1M.cs" />

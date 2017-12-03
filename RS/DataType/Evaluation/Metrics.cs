@@ -70,7 +70,7 @@ namespace RS.Evaluation
                 coverage = recommendedTable.Keys.Count * 1.0 / trainTable.Keys.Count;
             }
 
-            double popularity = 0.0; // TODO: need to be further considered. 2017.06.09
+            double popularity = 0.0;        // TODO: need to be further considered. 2017.06.09
             foreach (Rating r in recommended)
             {
                 List<Rating> li = (List<Rating>)trainTable[r.ItemId];

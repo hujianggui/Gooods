@@ -47,6 +47,12 @@ namespace RS
             // book-crossing 2004
             //BookCrossing.Preprocessing();
 
+
+            // HetRec 2011 delicious 2k
+            //HetRec2011Delicious2k.Test();
+            //HetRec2011Delicious2k.UserKNNv2Test();
+            HetRec2011Delicious2k.TagBasedItemKNNTest();
+
             // Epinions 2006
             //Epinions.MeanFillingTest();
             //Epinions.MatrixFactorizationTest();
@@ -70,7 +76,6 @@ namespace RS
             //Flixster.BiasedMatrixFactorizationTest();
             //Flixster.SVDPlusPlusTest();
             //Flixster.AdaptiveFriendMatrixFactorizationTest();
-
 
             // Douban 2011
             //Douban.MeanFillingTest();
