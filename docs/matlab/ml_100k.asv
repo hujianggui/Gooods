@@ -216,7 +216,7 @@ function ml_100k()
         title('MF on ml-100k(ratio = 4)');
         xlabel('Precision@N');
         ylabel('Recall@N');
-        legend('f=10', 'f=20',  'f=50',  'f=100',  'f=200',  'f=600');
+        legend('f=10', 'f=20',  'f=50',  'f=100',  'f=200',  'f=500');
         grid on;
         %set(h,'ytick',y_axis_set);         % 设置刻度线
         %set(h,'yticklabel',y_axis_set);        %设置显示哪些刻度值
@@ -287,14 +287,6 @@ function ml_100k()
     num = xlsread('ml-100k',  3, 'J77:O118'); % u1
     ml_100k_MF_f(num, 'ml_100_u2');
     
-    num = xlsread('ml-100k',  3, 'P77:W118'); % u1
-    ml_100k_MF_f(num, 'ml_100_u3');
-    
-    num = xlsread('ml-100k',  3, 'Z77:AE118'); % u1
-    ml_100k_MF_f(num, 'ml_100_u4');
-    
-    num = xlsread('ml-100k',  3, 'AH77:AM118'); % u1
-    ml_100k_MF_f(num, 'ml_100_u5');
 end
 
 
