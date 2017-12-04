@@ -183,9 +183,14 @@ namespace RS.CollaborativeFiltering
 
         public void TryLeastSquare(List<Rating> train, List<Rating> test, int epochs = 10, double reg_l1 = 0.01, double reg_l2 = 0.001)
         {
+            Console.WriteLine("train,{0}", train.Count);
+            Console.WriteLine("test,{0}", test.Count);
+            Console.WriteLine("epochs,{0}", epochs);
+            Console.WriteLine("reg_l1,{0}", reg_l1);
+            Console.WriteLine("reg_l2,{0}", reg_l2);
+
             this.reg_l1 = reg_l1;
             this.reg_l2 = reg_l2;
-         
 
             UserItemsTable = Tools.GetUserItemsTable(train);
             ItemUsersTable = Tools.GetItemUsersTable(train);
@@ -220,7 +225,6 @@ namespace RS.CollaborativeFiltering
                         Console.SetCursorPosition(0, Console.CursorTop);
                     }
                 });
-
 
                 if (e % 2 == 0 && e >= 10)
                 {
