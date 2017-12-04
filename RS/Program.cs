@@ -24,7 +24,9 @@ namespace RS
             //ML_100k.ItemKNNv2Test();
             //ML_100k.MatrixFactorizationTopNTest(10);
             //ML_100k.AlternatingLeastSquaresTopNTest();
-            //ML_100k.SLIMTest();
+            ML_100k.SLIMTest();
+
+            //ML_100k.Preprocess();
 
             // ml-1m
             //ML_1M.UpdateDataInformation();
@@ -52,7 +54,7 @@ namespace RS
             //HetRec2011Delicious2k.Test();
             //HetRec2011Delicious2k.UserKNNv2Test();
             //HetRec2011Delicious2k.TagBasedItemKNNTest();
-            HetRec2011Delicious2k.TagBasedFilteringTest();
+            //HetRec2011Delicious2k.TagBasedFilteringTest();
 
             // Epinions 2006
             //Epinions.MeanFillingTest();

@@ -279,7 +279,7 @@ namespace RS.CollaborativeFiltering
             Console.WriteLine("epoch#train:loss,N,P,R,Coverage,Popularity,MAP");
             double loss = Loss(train, lambda);
             MyTable ratingTable = Tools.GetRatingTable(train);
-            int[] K = { 1, 5, 10, 15, 20, 25, 30 };  // recommdation list
+            int[] Ns = { 1, 5, 10, 15, 20, 25, 30 };  // recommdation list
 
             for (int epoch = 1; epoch <= epochs; epoch++)
             {
@@ -298,14 +298,14 @@ namespace RS.CollaborativeFiltering
                 if (epoch % 2 == 0 && epoch >= 20)
                 {
                     Console.Write("{0}#{1}", epoch, lastLoss);  
-                    List<Rating> recommendations = GetRecommendations(ratingTable, K[K.Length - 1], true);   // note that, the max K
-                    foreach (int k in K)
+                    List<Rating> recommendations = GetRecommendations(ratingTable, Ns[Ns.Length - 1], true);   // note that, the max K
+                    foreach (int n in Ns)
                     {
-                        Console.Write(",{0}", k);
-                        List<Rating> subset = Tools.GetSubset(recommendations, k);
+                        Console.Write(",{0}", n);
+                        List<Rating> subset = Tools.GetSubset(recommendations, n);
                         var pr = Metrics.PrecisionAndRecall(subset, test);
                         var cp = Metrics.CoverageAndPopularity(subset, train);
-                        var map = Metrics.MAP(subset, test, k);
+                        var map = Metrics.MAP(subset, test, n);
                         Console.WriteLine(",{0},{1},{2},{3},{4}", pr.Item1, pr.Item2, cp.Item1, cp.Item2, map);
                     }
                 }

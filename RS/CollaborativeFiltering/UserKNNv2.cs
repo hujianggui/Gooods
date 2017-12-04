@@ -74,6 +74,7 @@ namespace RS.CollaborativeFiltering
             return cooccurrences;
         }
 
+
         protected MyTable CalculateSimilarities(MyTable coourrencesTable, Hashtable userItemsTable)
         {
             MyTable wuv = new MyTable();
@@ -90,6 +91,37 @@ namespace RS.CollaborativeFiltering
             }
             return wuv;
         }
+
+        protected int UnionOccurrences(Hashtable user1, Hashtable user2)
+        {
+            int sum = 0;
+            foreach(int itemId1 in user1.Keys)
+            {
+                if (user2.ContainsKey(itemId1))
+                {
+                    sum += 1;
+                }
+            }
+            return sum;
+        }
+
+        protected MyTable CalculateJaccardSimilarities(MyTable coourrencesTable, MyTable ratingTable)
+        {
+            MyTable wuv = new MyTable();
+            foreach (int uId in coourrencesTable.Keys)
+            {
+                Hashtable subTable = (Hashtable)coourrencesTable[uId];
+                Hashtable uRatings = (Hashtable)ratingTable[uId];
+                foreach (int vId in subTable.Keys)
+                {
+                    double coourrences = (double)subTable[vId];
+                    Hashtable vRatings = (Hashtable)ratingTable[vId];
+                    wuv.Add(uId, vId, coourrences / UnionOccurrences(uRatings, vRatings));  // Math.Sqrt(uRatings.Count * vRatings.Count));
+                }
+            }
+            return wuv;
+        }
+
 
         protected List<Link> GetSimilarUsers(MyTable W, int userId, int K = 80)
         {
@@ -162,11 +194,11 @@ namespace RS.CollaborativeFiltering
         {
             Hashtable userItemsTable = Tools.GetUserItemsTable(train);
             Hashtable itemUsersTable = Tools.GetItemUsersTable(train);
+            MyTable ratingTable = Tools.GetRatingTable(train);
 
             MyTable coourrrenceTable = CalculateCooccurrences(itemUsersTable, true);
+            //MyTable wuv = CalculateJaccardSimilarities(coourrrenceTable, ratingTable);
             MyTable wuv = CalculateSimilarities(coourrrenceTable, userItemsTable);
-
-            MyTable ratingTable = Tools.GetRatingTable(train);
 
             Console.WriteLine("K(Cosine),N,P,R,Coverage,Popularity");   
             List<Rating> recommendations = GetRecommendations(ratingTable, wuv, K, N);
@@ -184,8 +216,8 @@ namespace RS.CollaborativeFiltering
             MyTable wuv = CalculateSimilarities(coocurrenceTable, userItemsTable);
             MyTable ratingTable = Tools.GetRatingTable(train);
 
-            List<int> Ks = new List<int>() { 5, 10, 20, 40, 80, 160 };
-            List<int> Ns = new List<int>() { 1, 5, 10, 15, 20, 25, 30 };
+            int[] Ks = { 80 };  // { 5, 10, 20, 40, 80, 160 };
+            int[] Ns = { 1, 5, 10, 15, 20, 25, 30 };
 
             Console.WriteLine("K(Cosine),N,P,R,Coverage,Popularity");
             foreach (int k in Ks)

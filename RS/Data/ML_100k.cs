@@ -21,6 +21,21 @@ namespace RS.Data
         public static int MaxUserId = 943;
         public static int MaxItemId = 1682;
 
+        public static void Preprocess()
+        {
+            string file = DefalultDirectory + "u1.pred.K80N30.txt";
+            var pred = Tools.GetRatings(file, " ");
+            var test = Tools.GetRatings(TestRatingFile);
+
+            int[] Ns = { 1, 5, 10, 15, 20, 25, 30};
+            foreach(int n in Ns)
+            {
+                var recommend = Tools.GetSubset(pred, n);
+                var pr = Evaluation.Metrics.PrecisionAndRecall(recommend, test);
+                Console.WriteLine("{0},{1},{2}", n, pr.Item1, pr.Item2);
+            }
+        }
+
         public static void MeanFillingTest()
         {
             List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
@@ -112,7 +127,7 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(testRatings);
 
             UserKNNv2 knn = new UserKNNv2();
-            //knn.TryTopN(data.Item1, data.Item2, 80, 10);
+            //knn.TryTopN(baseRatings, testRatings, 80, 10);
             knn.TryTopN(baseRatings, testRatings);
         }
 
@@ -185,8 +200,8 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(baseRatings);
             Tools.UpdateIndexesToZeroBased(testRatings);
 
-            SLIM knn = new SLIM();
-            knn.TryLeastSquare(baseRatings, testRatings, MaxItemId, 0.01, 0.01);
+            SLIM knn = new SLIM(MaxUserId, MaxItemId);
+            knn.TryLeastSquare(baseRatings, testRatings, 100, 0.01, 0.01);
         }
 
     }
