@@ -10,7 +10,7 @@
 	[5] SVD++ (speed up), rating prediction.
 	[6] Alternating Least Lquares, rating prediction, top-N recommendation.
 	[7] Euclidean Embedding, rating prediction, top-N recommendation.
-	[8]	SLIM (sparse linear model), top-N recommendation.
+	[8] SLIM (sparse linear model), top-N recommendation.
 	[9] Friend Matrix Factorization, rating prediction, top-N recommendation.
 	    Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 		
