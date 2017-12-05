@@ -128,7 +128,7 @@ namespace RS.CollaborativeFiltering
         {
             if (K > 0)
             {
-                List<Link> items = (List<Link>)SimilarItemsTable[itemId];   // column
+                List<Link> items = (List<Link>)SimilarItemsTable[itemId];   
                 foreach (Link r in items)
                 {
                     if (r.To != itemId)

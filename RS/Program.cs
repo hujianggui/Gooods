@@ -18,13 +18,13 @@ namespace RS
             //ML_100k.BiasedMatrixFactorizationTest();
             //ML_100k.SVDPlusPlusTest();
             //ML_100k.AlternatingLeastSquaresTest();
-            ML_100k.EuclideanEmbeddingTest();
+            //ML_100k.EuclideanEmbeddingTest();
 
             //ML_100k.UserKNNv2Test();
             //ML_100k.ItemKNNv2Test();
             //ML_100k.MatrixFactorizationTopNTest(10);
             //ML_100k.AlternatingLeastSquaresTopNTest();
-            //ML_100k.SLIMTest();
+            ML_100k.SLIMTest();
 
             //ML_100k.Preprocess();
 
