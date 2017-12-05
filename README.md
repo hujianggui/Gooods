@@ -2,7 +2,7 @@
 
 ### The algorithms
 	[0] Global mean, user mean, item mean filling methods. Those are used for rating prediction.
-	[1] UserKNN (user-based collaborative filtering), rating prediction, 
+	[1] UserKNN (user-based collaborative filtering), rating prediction.
 	    UserKNNv2 (user-based collaborative filtering, multithread for W), top-N recommendation.
 	[2] ItemKNNv2 (item-based collaborative filtering, multithread for W), top-N recommendation.
 	[3] Matrix Factorization, rating prediction, top-N recommendation.
@@ -10,7 +10,7 @@
 	[5] SVD++ (speed up), rating prediction.
 	[6] Alternating Least Lquares, rating prediction, top-N recommendation.
 	[7] Euclidean Embedding, rating prediction, top-N recommendation.
-	[8]	SLIM (sparse linear model), top-N recommendation.
+	[8] SLIM (sparse linear model), top-N recommendation.
 	[9] Friend Matrix Factorization, rating prediction, top-N recommendation.
 	    Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 		
