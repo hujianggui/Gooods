@@ -33,7 +33,6 @@ namespace RS.Data
         public static int MaxItemId = 1682;
         public static int MaxTagId  = 1682;
 
-
         /// <summary>
         /// A record: userID	bookmarkID	tagID	timestamp
         /// </summary>
@@ -80,7 +79,6 @@ namespace RS.Data
             reader.Close();
             return recordsTable;
         }
-
 
         /// <summary>
         /// Get relation tables
@@ -160,7 +158,6 @@ namespace RS.Data
             }
             return Tuple.Create(userItemCount, userTagCount, itemTagCount);
         }
-
 
 
         public static void Test()

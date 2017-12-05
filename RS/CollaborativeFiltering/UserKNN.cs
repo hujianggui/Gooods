@@ -91,7 +91,6 @@ namespace RS.CollaborativeFiltering
             var result = EvaluateMaeRmse(userMeanRating, similarities, trainMatrix, test);
             Console.WriteLine("{0},{1}", result.Item1, result.Item2);
         }
-
     }
 
    
