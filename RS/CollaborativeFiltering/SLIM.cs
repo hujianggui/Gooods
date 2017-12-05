@@ -77,7 +77,7 @@ namespace RS.CollaborativeFiltering
             }
             else
             {
-                List<Rating> items = (List<Rating>)UserItemsTable[itemId];
+                List<Rating> items = (List<Rating>)UserItemsTable[userId];
                 foreach(Rating r in items)
                 {
                     if (r.ItemId != excludeItemId)
@@ -101,7 +101,7 @@ namespace RS.CollaborativeFiltering
                 {
                     gradientSum += 1;
                 }
-                gradientSum -= Predict(r.UserId, itemId, otherItemId);
+                gradientSum -= Predict(r.UserId, itemId, otherItemId);  // other item id is a similar item
             }
             double gradient = gradientSum / (UserItemsTable.Count + 1.0);
             if (reg_l1 < Math.Abs(gradient))
