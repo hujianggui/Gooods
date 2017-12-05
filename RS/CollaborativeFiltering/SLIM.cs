@@ -128,7 +128,7 @@ namespace RS.CollaborativeFiltering
         {
             if (K > 0)
             {
-                List<Link> items = (List<Link>)SimilarItemsTable[itemId];
+                List<Link> items = (List<Link>)SimilarItemsTable[itemId];   // column
                 foreach (Link r in items)
                 {
                     if (r.To != itemId)
@@ -136,7 +136,6 @@ namespace RS.CollaborativeFiltering
                         UpdateParameters(itemId, r.To);
                     }                        
                 }
-
             }
             else
             {
@@ -176,7 +175,7 @@ namespace RS.CollaborativeFiltering
                 {
                     recommendedItems.AddRange(selectedLi);
                 }
-            });           
+            });
 
             return recommendedItems;
         }
