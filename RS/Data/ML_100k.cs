@@ -201,7 +201,7 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(testRatings);
 
             SLIM knn = new SLIM(MaxUserId, MaxItemId);
-            knn.TryLeastSquare(baseRatings, testRatings, 100, 0.01, 0.01);
+            knn.TryLeastSquare(baseRatings, testRatings, 100, 0.01, 0.001);
         }
 
     }
