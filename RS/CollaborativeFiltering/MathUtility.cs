@@ -68,15 +68,17 @@ namespace RS.CollaborativeFiltering
             return Math.Sqrt(norm);
         }
 
-        public static double[,] RandomUniform(int rows, int columns)
+        // return values range in [low, high]
+        public static double[,] RandomUniform(int rows, int columns, double low = 0, double high = 1)
         {
+            double interval = high - low;
             double[,] matrix = new double[rows, columns];
             Random r = new Random();
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    matrix[i, j] = r.NextDouble();
+                    matrix[i, j] = r.NextDouble() * interval + low;
                 }
             }
             return matrix;
@@ -96,6 +98,7 @@ namespace RS.CollaborativeFiltering
             }
             return matrix;
         }
+
 
         public static double[,] RandomGaussian(int rows, int columns, double mean, double stdev)
         {

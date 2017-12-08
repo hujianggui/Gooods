@@ -195,7 +195,7 @@ namespace RS.CollaborativeFiltering
             ItemUsersTable = Tools.GetItemUsersTable(train);
             RatingTable    = Tools.GetRatingTable(train);
 
-            K = 80;
+            K = 80;     // the # of similar items (#neighbors)
 
             ItemKNNv2 itemkNN = new ItemKNNv2();
             MyTable coourrenceTable = itemkNN.CalculateCooccurrences(UserItemsTable, true);

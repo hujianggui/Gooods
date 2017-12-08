@@ -24,7 +24,7 @@ namespace RS
             //ML_100k.ItemKNNv2Test();
             //ML_100k.MatrixFactorizationTopNTest(10);
             //ML_100k.AlternatingLeastSquaresTopNTest();
-            ML_100k.SLIMTest();
+            //ML_100k.SLIMTest();
 
             //ML_100k.Preprocess();
 
@@ -33,7 +33,7 @@ namespace RS
             //ML_1M.MeanFillingTest();
             //ML_1M.UserKNNTest();
             //ML_1M.MatrixFactorizationTest();
-            //ML_1M.BiasedMatrixFactorizationTest(0.1);
+            ML_1M.BiasedMatrixFactorizationTest(0.1);
             //ML_1M.SVDPlusPlusTest();
 
             //ML_1M.UserKNNv2Test();

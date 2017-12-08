@@ -204,5 +204,16 @@ namespace RS.Data
             knn.TryLeastSquare(baseRatings, testRatings, 100, 0.01, 0.001);
         }
 
+        public static void FISMTest()
+        {
+            List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
+            List<Rating> testRatings = Tools.GetRatings(TestRatingFile);
+
+            Tools.UpdateIndexesToZeroBased(baseRatings);
+            Tools.UpdateIndexesToZeroBased(testRatings);
+
+            FISM knn = new FISM(MaxUserId, MaxItemId);
+            knn.TrySGD(baseRatings, testRatings, 100, 0.01, 0.001);
+        }
     }
 }

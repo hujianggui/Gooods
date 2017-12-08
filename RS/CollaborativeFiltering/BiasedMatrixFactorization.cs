@@ -20,10 +20,10 @@ namespace RS.CollaborativeFiltering
         protected int q = 0;   // Number of Items
         protected int f = 10;  // Number of features
 
-        public double[,] P = null;  // Matrix consists of user features
-        public double[,] Q = null;  // Matrix consists of item features
-        public double[] bu = null;
-        public double[] bi = null;
+        public double[,] P { get; private set; }    // Matrix consists of user features
+        public double[,] Q { get; private set; }    // Matrix consists of item features
+        public double[] bu { get; private set; }    // user biases
+        public double[] bi { get; private set; }    // item biases
 
         public BiasedMatrixFactorization() { }
 
