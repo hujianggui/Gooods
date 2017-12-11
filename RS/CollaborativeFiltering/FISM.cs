@@ -1,5 +1,7 @@
-﻿using RS.DataType;
+﻿using RS.Data.Utility;
+using RS.DataType;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +25,9 @@ namespace RS.CollaborativeFiltering
         public double[] bu { get; protected set; }  // user biases
         public double[] bi { get; protected set; }  // item biases
 
-        public double miu { get; protected set; }   // mean rating of train data
+
+        protected double[,] X { get; set; }   //  average item neighbors
+
 
         public FISM() { }
 
@@ -43,20 +47,31 @@ namespace RS.CollaborativeFiltering
 
             P = MathUtility.RandomUniform(p, f, -0.001, 0.001);
             Q = MathUtility.RandomUniform(q, f, -0.001, 0.001);
+            X = new double[p, f];
         }
 
-
+        /// <summary>
+        /// The pdf says: $$\hat(r_{ui}) = b_u + b_i + q_i^T x$$
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
         public virtual double Predict(int userId, int itemId)
         {
             double _r = 0.0;
             for (int i = 0; i < f; i++)
             {
-                _r += P[userId, i] * Q[itemId, i];
+                _r += X[userId, i] * Q[itemId, i];
             }
-            return _r + miu + bu[userId] + bi[itemId];
+            return _r + bu[userId] + bi[itemId];
         }
 
-        protected virtual double Loss(List<Rating> ratings, double lambda)
+        /// <summary>
+        /// Equ. (8)
+        /// </summary>
+        /// <param name="ratings"></param>
+        /// <returns></returns>
+        protected virtual double Loss(List<Rating> ratings, double lambda_P, double lambda_Q, double lambda_bu, double lambda_bi)
         {
             double loss = 0.0;
             foreach (Rating r in ratings)
@@ -72,13 +87,15 @@ namespace RS.CollaborativeFiltering
                     sum_p_i += P[r.UserId, i] * P[r.UserId, i];
                     sum_q_j += Q[r.ItemId, i] * Q[r.ItemId, i];
                 }
-                loss += lambda * 0.5 * (sum_p_i + sum_q_j + bu[r.UserId] * bu[r.UserId] + bi[r.ItemId] * bi[r.ItemId]);
+                sum_p_i *= lambda_P;
+                sum_q_j *= lambda_Q;
+                loss += 0.5 * (sum_p_i + sum_q_j + lambda_bu * bu[r.UserId] * bu[r.UserId] + lambda_bi * bi[r.ItemId] * bi[r.ItemId]);
             }
             return loss;
         }
 
 
-        public Tuple<double, double> EvaluateMaeRmse(List<Rating> ratings, double minimumRating = 1.0, double maximumRating = 5.0)
+        protected Tuple<double, double> EvaluateMaeRmse(List<Rating> ratings, double minimumRating = 1.0, double maximumRating = 5.0)
         {
             double mae = 0.0;
             double rmse = 0;
@@ -108,8 +125,8 @@ namespace RS.CollaborativeFiltering
             return Tuple.Create(mae, rmse);
         }
 
-        public void PrintParameters(List<Rating> train, List<Rating> test = null, int epochs = 100, 
-            double gamma = 0.01, double lambda = 0.01, double decay = 1.0, 
+        protected void PrintParameters(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double decay = 1.0,
+            double aplah = 1, double lambda_P = 0.01, double lambda_Q = 0.01, double lambda_bu = 0.01, double lambda_bi = 0.01, 
             double minimumRating = 1.0, double maximumRating = 5.0)
         {
             Console.WriteLine(GetType().Name);
@@ -118,25 +135,95 @@ namespace RS.CollaborativeFiltering
             Console.WriteLine("p,{0},q,{1},f,{2}", p, q, f);
             Console.WriteLine("epochs,{0}", epochs);
             Console.WriteLine("gamma,{0}", gamma);
-            Console.WriteLine("lambda,{0}", lambda);
             Console.WriteLine("decay,{0}", decay);
+            Console.WriteLine("aplah,{0}", aplah);
+            Console.WriteLine("lambda_P,{0}", lambda_P);
+            Console.WriteLine("lambda_Q,{0}", lambda_Q);
+            Console.WriteLine("lambda_bu,{0}", lambda_bu);
+            Console.WriteLine("lambda_bi,{0}", lambda_bi);
             Console.WriteLine("minimumRating,{0}", minimumRating);
             Console.WriteLine("maximumRating,{0}", maximumRating);
         }
 
-        public void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, 
-            double gamma = 0.01, double lambda = 0.01, double decay = 1.0)
+        protected void UpdateX(int userId, List<Rating> neighbors, int excludeItemId, double factor)
+        {
+            foreach(Rating r in neighbors)
+            {
+                if (r.ItemId != excludeItemId)
+                {
+                    for (int i = 0; i < f; i++)
+                    {
+                        X[userId, i] += Q[r.ItemId, i];
+                    }
+                }
+            }
+            for (int i = 0; i < f; i++)
+            {
+                X[userId, i] *= factor;
+            }
+
+        }
+
+        public void TrySGDForRMSE(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double decay = 1.0, 
+            double alpha = 1, double lambda_P = 0.01, double lambda_Q = 0.01, double lambda_bu = 0.01, double lambda_bi = 0.01)
         {
             double minimumRating = train.AsParallel().Min(r => r.Score);
             double maximumRating = train.AsParallel().Max(r => r.Score);
 
-            PrintParameters(train, test, epochs, gamma, lambda, decay, minimumRating, maximumRating);
+            PrintParameters(train, test, epochs, gamma, decay, alpha,
+                lambda_P, lambda_Q, lambda_bu, lambda_bi, 
+                minimumRating, maximumRating);
+
             Console.WriteLine("epoch,loss,test:mae,test:rmse");
-
             double miu = train.AsParallel().Average(r => r.Score);
-            double loss = Loss(train, lambda);
+            double loss = Loss(train, lambda_P, lambda_Q, lambda_bu, lambda_bi);
 
+            int rho = 3;
 
+            for (int epoch = 1; epoch <= epochs; epoch++)
+            {
+                var ratings = Tools.SampleZeros(train, rho, false);
+                Hashtable userItemsTable = Tools.GetUserItemsTable(ratings);
+
+                foreach (int uId in userItemsTable.Keys)
+                {
+                    List<Rating> li = (List<Rating>)userItemsTable[uId];
+                    double factor = Math.Pow(li.Count - 1, -alpha);
+
+                    foreach (Rating r in li)
+                    {
+                        UpdateX(r.UserId, li, r.ItemId, factor);
+                        double pui = Predict(r.UserId, r.ItemId);
+                        double eui = r.Score - pui;
+                        bu[r.UserId] += gamma * (eui - lambda_bu * bu[r.UserId]);
+                        bi[r.ItemId] += gamma * (eui - lambda_bi * bi[r.ItemId]);
+
+                        for (int i = 0; i < f; i++)
+                        {
+                            P[r.UserId, i] += gamma * (eui * Q[r.ItemId, i] * factor - lambda_P * P[r.UserId, i]);
+                            Q[r.ItemId, i] += gamma * (eui * P[r.UserId, i] - lambda_Q * Q[r.ItemId, i]);
+                        }
+                    }
+                }
+
+                double lastLoss = Loss(train, lambda_P, lambda_Q, lambda_bu, lambda_bi);
+                var evaluate = EvaluateMaeRmse(test, minimumRating, maximumRating);
+                Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, evaluate.Item1, evaluate.Item2);
+
+                if (decay != 1.0)
+                {
+                    gamma *= decay;
+                }
+
+                if (lastLoss < loss)
+                {
+                    loss = lastLoss;
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
 
 

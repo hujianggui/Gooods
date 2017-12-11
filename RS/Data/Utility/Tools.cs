@@ -625,7 +625,54 @@ namespace RS.Data.Utility
             }
 
             return samples;
-        } 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ratings"></param>
+        /// <param name="rho"></param>
+        /// <param name="verbose"></param>
+        /// <returns></returns>
+        public static List<Rating> SampleZeros(List<Rating> ratings, int rho = 3, bool verbose = false)
+        {
+            if (verbose)
+            {
+                Console.WriteLine("ratio,{0}", rho);
+            }
+
+            MyTable ratingTable = GetRatingTable(ratings);
+            int[] items = (int[])ratingTable.GetSubKeyList().ToArray(typeof(int));
+
+            Random random = new Random();
+            foreach (int uId in ratingTable.Keys)
+            {
+                Hashtable subTable = (Hashtable)ratingTable[uId];
+                int counter = 0, ratedItems = subTable.Count;
+                while ((counter < ratedItems * rho) && (counter < items.Length - ratedItems))
+                {
+                    int iId = items[random.Next(items.Length)];
+                    if (!subTable.ContainsKey(iId))
+                    {
+                        subTable.Add(iId, 0.0);   // negative samples
+                        counter++;
+                    }
+                }
+            }
+
+            List<Rating> samples = new List<Rating>();
+            foreach (int uId in ratingTable.Keys)
+            {
+                Hashtable subTable = (Hashtable)ratingTable[uId];
+                foreach (int iId in subTable.Keys)
+                {
+                    double score = (double)subTable[iId];
+                    samples.Add(new Rating(uId, iId, score));
+                }
+            }
+
+            return samples;
+        }
 
     }
 }
