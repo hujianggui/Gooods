@@ -640,5 +640,15 @@ namespace RS.Data.Utility
             return samples;
         }
 
+        public static List<Rating> ConvertToBinary(List<Rating> ratings, double threshold = 0)
+        {
+            List<Rating> binaryRatings = new List<Rating>();
+            foreach(Rating r in ratings)
+            {
+                binaryRatings.Add(new Rating(r.UserId, r.ItemId, r.Score > threshold ? 1.0 : 0.0));
+            }
+            return binaryRatings;
+        }
+
     }
 }

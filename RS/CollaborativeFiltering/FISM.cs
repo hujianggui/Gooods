@@ -93,6 +93,21 @@ namespace RS.CollaborativeFiltering
             }
         }
 
+        /// <summary>
+        /// update x for all users
+        /// </summary>
+        /// <param name="userItemsTable"></param>
+        /// <param name="excludeItemId"></param>
+        /// <param name="factor"></param>
+        protected void UpdateX(Hashtable userItemsTable, int excludeItemId, double factor)
+        {
+            foreach(int userId in userItemsTable.Keys)
+            {
+                List<Rating> neighbors = (List<Rating>)userItemsTable[userId];
+                UpdateX(userId, neighbors, excludeItemId, factor);
+            }
+        }
+
 
         /// <summary>
         /// Loss function for FISMrmse, see Equation
@@ -180,27 +195,72 @@ namespace RS.CollaborativeFiltering
 
 
         public void TrySGDForRMSE(List<Rating> train, List<Rating> test, int epochs = 100, int rho = 3, 
-            double yita = 0.01, double decay = 1.0, double alpha = 1, double beta = 2e-4, double lambda = 0.01, double gamma = 0.01)
+            double yita = 0.001, double decay = 1.0, double alpha = 1, double beta = 2e-4, double lambda = 0.01, double gamma = 0.01)
         {
-            var sampledRatings = Tools.RandomSelectNegativeSamples(train, rho, false);
-            var scoreBounds = Tools.GetMaxAndMinScore(sampledRatings);
+            test = Tools.ConvertToBinary(test);
+            var scoreBounds = Tools.GetMaxAndMinScore(test);
 
-            PrintParameters(sampledRatings, test, epochs, rho, yita, decay, 
+            PrintParameters(train, test, epochs, rho, yita, decay, 
                 alpha, beta, lambda, gamma, scoreBounds.Item1, scoreBounds.Item2);
-
 
             Console.WriteLine("epoch,loss#train,mae#test,rmse#test");
 
             for (int epoch = 1; epoch <= epochs; epoch++)
             {
-                Console.WriteLine("{0}", epoch);
-                // double factorOfX =
+                var sampledRatings = Tools.RandomSelectNegativeSamples(train, rho, false);
+                var userItemsTable = Tools.GetUserItemsTable(sampledRatings);
+                double loss = Loss(sampledRatings, beta, lambda, gamma);
 
+                foreach (Rating r in sampledRatings)
+                {
+                    var neighbors = (List<Rating>)userItemsTable[r.UserId];
+
+                    double factorOfX = Math.Pow(neighbors.Count - 1, -alpha);
+                    UpdateX(r.UserId, neighbors, r.ItemId, factorOfX);
+
+                    double pui = Predict(r.UserId, r.ItemId);
+                    double eui = r.Score - pui;
+
+                    bu[r.UserId] += yita * (eui - lambda * bu[r.UserId]);
+                    bi[r.ItemId] += yita * (eui - gamma  * bi[r.ItemId]);
+
+                    for (int i = 0; i < f; i++)
+                    {
+                        Q[r.ItemId, i] += yita * (eui * X[r.UserId, i] - beta * Q[r.ItemId, i]);
+                    }
+
+                    foreach(Rating j in neighbors)
+                    {
+                        if(j.ItemId != r.ItemId)
+                        {
+                            for (int i = 0; i < f; i++)
+                            {
+                                P[j.ItemId, i] += yita * (eui * factorOfX * Q[r.ItemId, i] - beta * P[j.ItemId, i]);
+                            }
+                        }
+                    }                  
+                }
+
+                double lastLoss = Loss(sampledRatings, beta, lambda, gamma);      
+                var eval = EvaluateMaeRmse(test, scoreBounds.Item1, scoreBounds.Item2);
+                Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
+                
+                if (decay != 1.0)
+                {
+                    gamma *= decay;
+                }
+
+                //if (lastLoss < loss)
+                //{
+                //    loss = lastLoss;
+                //}
+                //else
+                //{
+                //    break;
+                //}
             }
 
 
         }
-
-
     }
 }
