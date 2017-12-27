@@ -19,8 +19,8 @@ namespace RS.CollaborativeFiltering
         protected int q = 0;   // Number of Items
         protected int f = 10;  // Number of features
 
-        public double[,] P { get; protected set; }  // Matrix consists of user features
-        public double[,] Q { get; protected set; }  // Matrix consists of item features
+        public double[,] P { get; protected set; }  // Matrix consists of item features, left side
+        public double[,] Q { get; protected set; }  // Matrix consists of item features, right side
 
         public double[] bu { get; protected set; }  // user biases
         public double[] bi { get; protected set; }  // item biases
@@ -64,6 +64,24 @@ namespace RS.CollaborativeFiltering
                 _r += X[userId, i] * Q[itemId, i];
             }
             return _r + bu[userId] + bi[itemId];
+        }
+
+        protected void UpdateX(int userId, List<Rating> neighbors, int excludeItemId, double factor)
+        {
+            foreach (Rating r in neighbors)
+            {
+                if (r.ItemId != excludeItemId)
+                {
+                    for (int i = 0; i < f; i++)
+                    {
+                        X[userId, i] += Q[r.ItemId, i];
+                    }
+                }
+            }
+            for (int i = 0; i < f; i++)
+            {
+                X[userId, i] *= factor;
+            }
         }
 
         /// <summary>
@@ -125,54 +143,50 @@ namespace RS.CollaborativeFiltering
             return Tuple.Create(mae, rmse);
         }
 
-        protected void PrintParameters(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double decay = 1.0,
-            double aplah = 1, double lambda_P = 0.01, double lambda_Q = 0.01, double lambda_bu = 0.01, double lambda_bi = 0.01, 
-            double minimumRating = 1.0, double maximumRating = 5.0)
-        {
-            Console.WriteLine(GetType().Name);
-            Console.WriteLine("train,{0}", train.Count);
-            Console.WriteLine("test,{0}", test.Count);
-            Console.WriteLine("p,{0},q,{1},f,{2}", p, q, f);
-            Console.WriteLine("epochs,{0}", epochs);
-            Console.WriteLine("gamma,{0}", gamma);
-            Console.WriteLine("decay,{0}", decay);
-            Console.WriteLine("aplah,{0}", aplah);
-            Console.WriteLine("lambda_P,{0}", lambda_P);
-            Console.WriteLine("lambda_Q,{0}", lambda_Q);
-            Console.WriteLine("lambda_bu,{0}", lambda_bu);
-            Console.WriteLine("lambda_bi,{0}", lambda_bi);
-            Console.WriteLine("minimumRating,{0}", minimumRating);
-            Console.WriteLine("maximumRating,{0}", maximumRating);
-        }
+        //protected void PrintParameters(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double decay = 1.0,
+        //    double aplah = 1, double lambda_P = 0.01, double lambda_Q = 0.01, double lambda_bu = 0.01, double lambda_bi = 0.01, 
+        //    double minimumRating = 1.0, double maximumRating = 5.0)
+        //{
+        //    Console.WriteLine(GetType().Name);
+        //    Console.WriteLine("train,{0}", train.Count);
+        //    Console.WriteLine("test,{0}", test.Count);
+        //    Console.WriteLine("p,{0},q,{1},f,{2}", p, q, f);
+        //    Console.WriteLine("epochs,{0}", epochs);
+        //    Console.WriteLine("gamma,{0}", gamma);
+        //    Console.WriteLine("decay,{0}", decay);
+        //    Console.WriteLine("aplah,{0}", aplah);
+        //    Console.WriteLine("lambda_P,{0}", lambda_P);
+        //    Console.WriteLine("lambda_Q,{0}", lambda_Q);
+        //    Console.WriteLine("lambda_bu,{0}", lambda_bu);
+        //    Console.WriteLine("lambda_bi,{0}", lambda_bi);
+        //    Console.WriteLine("minimumRating,{0}", minimumRating);
+        //    Console.WriteLine("maximumRating,{0}", maximumRating);
+        //}
 
-        protected void UpdateX(int userId, List<Rating> neighbors, int excludeItemId, double factor)
-        {
-            foreach(Rating r in neighbors)
-            {
-                if (r.ItemId != excludeItemId)
-                {
-                    for (int i = 0; i < f; i++)
-                    {
-                        X[userId, i] += Q[r.ItemId, i];
-                    }
-                }
-            }
-            for (int i = 0; i < f; i++)
-            {
-                X[userId, i] *= factor;
-            }
 
-        }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="train"></param>
+        /// <param name="test"></param>
+        /// <param name="epochs"></param>
+        /// <param name="gamma"></param>
+        /// <param name="decay"></param>
+        /// <param name="alpha"></param>
+        /// <param name="lambda_P"></param>
+        /// <param name="lambda_Q"></param>
+        /// <param name="lambda_bu"></param>
+        /// <param name="lambda_bi"></param>
         public void TrySGDForRMSE(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double decay = 1.0, 
-            double alpha = 1, double lambda_P = 0.01, double lambda_Q = 0.01, double lambda_bu = 0.01, double lambda_bi = 0.01)
+            double alpha = 1, double lambda_P = 0.01, double lambda_Q = 0.01, double lambda_bias = 0.01)
         {
             double minimumRating = train.AsParallel().Min(r => r.Score);
             double maximumRating = train.AsParallel().Max(r => r.Score);
 
-            PrintParameters(train, test, epochs, gamma, decay, alpha,
-                lambda_P, lambda_Q, lambda_bu, lambda_bi, 
-                minimumRating, maximumRating);
+            //PrintParameters(train, test, epochs, gamma, decay, alpha,
+            //    lambda_P, lambda_Q, lambda_bu, lambda_bi, 
+            //    minimumRating, maximumRating);
 
             Console.WriteLine("epoch,loss,test:mae,test:rmse");
             double miu = train.AsParallel().Average(r => r.Score);
@@ -182,7 +196,9 @@ namespace RS.CollaborativeFiltering
 
             for (int epoch = 1; epoch <= epochs; epoch++)
             {
-                var ratings = Tools.SampleZeros(train, rho, false);
+                var ratings = Tools.RandomSelectNegativeSamples(train, rho, false); //Tools.SampleZeros(train, rho, false);
+
+
                 Hashtable userItemsTable = Tools.GetUserItemsTable(ratings);
 
                 foreach (int uId in userItemsTable.Keys)
