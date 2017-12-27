@@ -10,8 +10,10 @@
 	[5] SVD++ (speed up), rating prediction.
 	[6] Alternating Least Lquares, rating prediction, top-N recommendation.
 	[7] Euclidean Embedding, rating prediction, top-N recommendation.
-	[8] SLIM (sparse linear model), top-N recommendation.
-	[9] Friend Matrix Factorization, rating prediction, top-N recommendation.
+	[8] SLIM (sparse linear model) (train with multithread), top-N recommendation.
+	[9] FISM (Factored Item Similarity Models), top-N recommendation.
+	[10] SocialMF, rating prediction, top-N recommendation.
+	[11] Friend Matrix Factorization, rating prediction, top-N recommendation.
 	    Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 		
 	    @inproceedings{DBLP:conf/pakdd/WangYHH15,
@@ -23,9 +25,9 @@
 	      series    = {PAKDD'15},
 	    }
 	    
-	[10] Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
+	[12] Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
 	    Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
-	[11] SocialMF, rating prediction, top-N recommendation.
+
 
 
 ### Evaluation metrics
