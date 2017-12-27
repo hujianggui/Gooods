@@ -449,6 +449,18 @@ namespace RS.Data.Utility
         }
 
         /// <summary>
+        /// Get maximum score and minimum score in ratings.
+        /// </summary>
+        /// <param name="ratings"></param>
+        /// <returns></returns>
+        public static Tuple<double, double> GetMaxAndMinScore(List<Rating> ratings)
+        {
+            double maxScore = ratings.AsParallel().Max(r => r.Score);
+            double minScore = ratings.AsParallel().Min(r => r.Score);
+            return Tuple.Create(maxScore, minScore);
+        }
+
+        /// <summary>
         /// Get maximum user from link data, return in a tuple with two user ids.
         /// </summary>
         /// <param name="links"></param>
@@ -627,8 +639,6 @@ namespace RS.Data.Utility
 
             return samples;
         }
-
-
 
     }
 }

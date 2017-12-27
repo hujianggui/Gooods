@@ -212,8 +212,8 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(baseRatings);
             Tools.UpdateIndexesToZeroBased(testRatings);
 
-            FISM knn = new FISM(MaxUserId, MaxItemId);
-            knn.TrySGDForRMSE(baseRatings, testRatings, 100, 0.01, 1);
+            FISM f = new FISM(MaxUserId, MaxItemId);
+            f.TrySGDForRMSE(baseRatings, testRatings, 50, 1);
         }
     }
 }

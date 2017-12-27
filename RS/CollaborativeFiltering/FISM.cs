@@ -19,14 +19,15 @@ namespace RS.CollaborativeFiltering
         protected int q = 0;   // Number of Items
         protected int f = 10;  // Number of features
 
-        public double[,] P { get; protected set; }  // Matrix consists of item features, left side
-        public double[,] Q { get; protected set; }  // Matrix consists of item features, right side
+        // $$P * Q^T$$ denotes item-item similarity matrix
+        public double[,] P { get; protected set; }  // Matrix consists of latent item features, left side
+        public double[,] Q { get; protected set; }  // Matrix consists of latent item features, right side
 
         public double[] bu { get; protected set; }  // user biases
         public double[] bi { get; protected set; }  // item biases
 
 
-        protected double[,] X { get; set; }   //  average item neighbors
+        protected double[,] X { get; set; }   // each row in this matrix presents the weighted sum of item features in P.
 
 
         public FISM() { }
@@ -45,16 +46,16 @@ namespace RS.CollaborativeFiltering
             bu = new double[p];
             bi = new double[q];
 
-            P = MathUtility.RandomUniform(p, f, -0.001, 0.001);
-            Q = MathUtility.RandomUniform(q, f, -0.001, 0.001);
+            P = MathUtility.RandomUniform(q, f, -0.001, 0.001); // latent item matrix
+            Q = MathUtility.RandomUniform(q, f, -0.001, 0.001); // latent item matrix
             X = new double[p, f];
         }
 
         /// <summary>
-        /// The pdf says: $$\hat(r_{ui}) = b_u + b_i + q_i^T x$$
+        /// The pdf says: $$\hat(r_{ui}) = b_u + b_i + q_i^T x$$, see Equation (7).
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="itemId"></param>
+        /// <param name="userId">user ID</param>
+        /// <param name="itemId">item ID</param>
         /// <returns></returns>
         public virtual double Predict(int userId, int itemId)
         {
@@ -66,6 +67,14 @@ namespace RS.CollaborativeFiltering
             return _r + bu[userId] + bi[itemId];
         }
 
+
+        /// <summary>
+        /// update x for each user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="neighbors"></param>
+        /// <param name="excludeItemId"></param>
+        /// <param name="factor"></param>
         protected void UpdateX(int userId, List<Rating> neighbors, int excludeItemId, double factor)
         {
             foreach (Rating r in neighbors)
@@ -84,12 +93,16 @@ namespace RS.CollaborativeFiltering
             }
         }
 
+
         /// <summary>
-        /// Equ. (8)
+        /// Loss function for FISMrmse, see Equation
         /// </summary>
-        /// <param name="ratings"></param>
+        /// <param name="ratings">entries of R, both rated and unrated</param>
+        /// <param name="beta">regularization parameter for P and Q</param>
+        /// <param name="lambda">regularization parameter for bu</param>
+        /// <param name="gamma">regularization parameter for bi</param>
         /// <returns></returns>
-        protected virtual double Loss(List<Rating> ratings, double lambda_P, double lambda_Q, double lambda_bu, double lambda_bi)
+        protected virtual double Loss(List<Rating> ratings, double beta, double lambda, double gamma)
         {
             double loss = 0.0;
             foreach (Rating r in ratings)
@@ -105,9 +118,11 @@ namespace RS.CollaborativeFiltering
                     sum_p_i += P[r.UserId, i] * P[r.UserId, i];
                     sum_q_j += Q[r.ItemId, i] * Q[r.ItemId, i];
                 }
-                sum_p_i *= lambda_P;
-                sum_q_j *= lambda_Q;
-                loss += 0.5 * (sum_p_i + sum_q_j + lambda_bu * bu[r.UserId] * bu[r.UserId] + lambda_bi * bi[r.ItemId] * bi[r.ItemId]);
+
+                loss += beta * (sum_p_i + sum_q_j);
+                loss += lambda * (bu[r.UserId] * bu[r.UserId]);
+                loss += gamma * (bi[r.ItemId] * bi[r.ItemId]);
+                loss *= 0.5;
             }
             return loss;
         }
@@ -143,105 +158,48 @@ namespace RS.CollaborativeFiltering
             return Tuple.Create(mae, rmse);
         }
 
-        //protected void PrintParameters(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double decay = 1.0,
-        //    double aplah = 1, double lambda_P = 0.01, double lambda_Q = 0.01, double lambda_bu = 0.01, double lambda_bi = 0.01, 
-        //    double minimumRating = 1.0, double maximumRating = 5.0)
-        //{
-        //    Console.WriteLine(GetType().Name);
-        //    Console.WriteLine("train,{0}", train.Count);
-        //    Console.WriteLine("test,{0}", test.Count);
-        //    Console.WriteLine("p,{0},q,{1},f,{2}", p, q, f);
-        //    Console.WriteLine("epochs,{0}", epochs);
-        //    Console.WriteLine("gamma,{0}", gamma);
-        //    Console.WriteLine("decay,{0}", decay);
-        //    Console.WriteLine("aplah,{0}", aplah);
-        //    Console.WriteLine("lambda_P,{0}", lambda_P);
-        //    Console.WriteLine("lambda_Q,{0}", lambda_Q);
-        //    Console.WriteLine("lambda_bu,{0}", lambda_bu);
-        //    Console.WriteLine("lambda_bi,{0}", lambda_bi);
-        //    Console.WriteLine("minimumRating,{0}", minimumRating);
-        //    Console.WriteLine("maximumRating,{0}", maximumRating);
-        //}
-
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="train"></param>
-        /// <param name="test"></param>
-        /// <param name="epochs"></param>
-        /// <param name="gamma"></param>
-        /// <param name="decay"></param>
-        /// <param name="alpha"></param>
-        /// <param name="lambda_P"></param>
-        /// <param name="lambda_Q"></param>
-        /// <param name="lambda_bu"></param>
-        /// <param name="lambda_bi"></param>
-        public void TrySGDForRMSE(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double decay = 1.0, 
-            double alpha = 1, double lambda_P = 0.01, double lambda_Q = 0.01, double lambda_bias = 0.01)
+        protected void PrintParameters(List<Rating> train, List<Rating> test, int epochs, int rho,
+            double yita, double decay, double alpha, double beta, double lambda, double gamma, 
+            double maximumRating, double minimumRating)
         {
-            double minimumRating = train.AsParallel().Min(r => r.Score);
-            double maximumRating = train.AsParallel().Max(r => r.Score);
+            Console.WriteLine(GetType().Name);
+            Console.WriteLine("train,{0}", train.Count);
+            Console.WriteLine("test,{0}", test.Count);
+            Console.WriteLine("p,{0},q,{1},f,{2}", p, q, f);
+            Console.WriteLine("epochs,{0}", epochs);
+            Console.WriteLine("rho,{0}", rho);
+            Console.WriteLine("yita,{0}", yita);
+            Console.WriteLine("decay,{0}", decay);
+            Console.WriteLine("alpha,{0}", alpha);
+            Console.WriteLine("beta,{0}", beta);
+            Console.WriteLine("lambda,{0}", lambda);
+            Console.WriteLine("gamma,{0}", gamma);
+            Console.WriteLine("maximumRating,{0}", maximumRating);
+            Console.WriteLine("minimumRating,{0}", minimumRating);
+        }
 
-            //PrintParameters(train, test, epochs, gamma, decay, alpha,
-            //    lambda_P, lambda_Q, lambda_bu, lambda_bi, 
-            //    minimumRating, maximumRating);
 
-            Console.WriteLine("epoch,loss,test:mae,test:rmse");
-            double miu = train.AsParallel().Average(r => r.Score);
-            double loss = Loss(train, lambda_P, lambda_Q, lambda_bu, lambda_bi);
+        public void TrySGDForRMSE(List<Rating> train, List<Rating> test, int epochs = 100, int rho = 3, 
+            double yita = 0.01, double decay = 1.0, double alpha = 1, double beta = 2e-4, double lambda = 0.01, double gamma = 0.01)
+        {
+            var sampledRatings = Tools.RandomSelectNegativeSamples(train, rho, false);
+            var scoreBounds = Tools.GetMaxAndMinScore(sampledRatings);
 
-            int rho = 3;
+            PrintParameters(sampledRatings, test, epochs, rho, yita, decay, 
+                alpha, beta, lambda, gamma, scoreBounds.Item1, scoreBounds.Item2);
+
+
+            Console.WriteLine("epoch,loss#train,mae#test,rmse#test");
 
             for (int epoch = 1; epoch <= epochs; epoch++)
             {
-                var ratings = Tools.RandomSelectNegativeSamples(train, rho, false); //Tools.SampleZeros(train, rho, false);
+                Console.WriteLine("{0}", epoch);
+                // double factorOfX =
 
-
-                Hashtable userItemsTable = Tools.GetUserItemsTable(ratings);
-
-                foreach (int uId in userItemsTable.Keys)
-                {
-                    List<Rating> li = (List<Rating>)userItemsTable[uId];
-                    double factor = Math.Pow(li.Count - 1, -alpha);
-
-                    foreach (Rating r in li)
-                    {
-                        UpdateX(r.UserId, li, r.ItemId, factor);
-                        double pui = Predict(r.UserId, r.ItemId);
-                        double eui = r.Score - pui;
-                        bu[r.UserId] += gamma * (eui - lambda_bu * bu[r.UserId]);
-                        bi[r.ItemId] += gamma * (eui - lambda_bi * bi[r.ItemId]);
-
-                        for (int i = 0; i < f; i++)
-                        {
-                            P[r.UserId, i] += gamma * (eui * Q[r.ItemId, i] * factor - lambda_P * P[r.UserId, i]);
-                            Q[r.ItemId, i] += gamma * (eui * P[r.UserId, i] - lambda_Q * Q[r.ItemId, i]);
-                        }
-                    }
-                }
-
-                double lastLoss = Loss(train, lambda_P, lambda_Q, lambda_bu, lambda_bi);
-                var evaluate = EvaluateMaeRmse(test, minimumRating, maximumRating);
-                Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, evaluate.Item1, evaluate.Item2);
-
-                if (decay != 1.0)
-                {
-                    gamma *= decay;
-                }
-
-                if (lastLoss < loss)
-                {
-                    loss = lastLoss;
-                }
-                else
-                {
-                    break;
-                }
             }
-        }
 
+
+        }
 
 
     }
