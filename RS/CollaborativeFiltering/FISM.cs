@@ -1,11 +1,12 @@
-﻿using RS.Data.Utility;
-using RS.DataType;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+
+using RS.Data.Utility;
+using RS.DataType;
+using RS.Evaluation;
 
 namespace RS.CollaborativeFiltering
 {
@@ -94,22 +95,6 @@ namespace RS.CollaborativeFiltering
         }
 
         /// <summary>
-        /// update x for all users
-        /// </summary>
-        /// <param name="userItemsTable"></param>
-        /// <param name="excludeItemId"></param>
-        /// <param name="factor"></param>
-        protected void UpdateX(Hashtable userItemsTable, int excludeItemId, double factor)
-        {
-            foreach(int userId in userItemsTable.Keys)
-            {
-                List<Rating> neighbors = (List<Rating>)userItemsTable[userId];
-                UpdateX(userId, neighbors, excludeItemId, factor);
-            }
-        }
-
-
-        /// <summary>
         /// Loss function for FISMrmse, see Equation
         /// </summary>
         /// <param name="ratings">entries of R, both rated and unrated</param>
@@ -175,7 +160,7 @@ namespace RS.CollaborativeFiltering
 
         protected void PrintParameters(List<Rating> train, List<Rating> test, int epochs, int rho,
             double yita, double decay, double alpha, double beta, double lambda, double gamma, 
-            double maximumRating, double minimumRating)
+            double minimumRating, double maximumRating)
         {
             Console.WriteLine(GetType().Name);
             Console.WriteLine("train,{0}", train.Count);
@@ -189,27 +174,41 @@ namespace RS.CollaborativeFiltering
             Console.WriteLine("beta,{0}", beta);
             Console.WriteLine("lambda,{0}", lambda);
             Console.WriteLine("gamma,{0}", gamma);
-            Console.WriteLine("maximumRating,{0}", maximumRating);
             Console.WriteLine("minimumRating,{0}", minimumRating);
+            Console.WriteLine("maximumRating,{0}", maximumRating);
         }
 
-
+        /// <summary>
+        /// See Algorithm 1. 
+        /// Learning FISMrmse by using SGD.
+        /// </summary>
+        /// <param name="train"></param>
+        /// <param name="test"></param>
+        /// <param name="epochs">maximum epochs</param>
+        /// <param name="rho">#negative ratings / #postive ratings in sample negative samples</param>
+        /// <param name="yita">learning rate</param>
+        /// <param name="decay">decay for learning rate</param>
+        /// <param name="alpha">power of the factor of x</param>
+        /// <param name="beta">regularization parameter of P and Q</param>
+        /// <param name="lambda">regularization parameter of bu</param>
+        /// <param name="gamma">regularization parameter of bi</param>
         public void TrySGDForRMSE(List<Rating> train, List<Rating> test, int epochs = 100, int rho = 3, 
             double yita = 0.001, double decay = 1.0, double alpha = 1, double beta = 2e-4, double lambda = 0.01, double gamma = 0.01)
         {
+            var sampledRatings = Tools.RandomSelectNegativeSamples(train, rho, false);
+            var scoreBounds = Tools.GetMinAndMaxScore(sampledRatings);
+            double loss = Loss(sampledRatings, beta, lambda, gamma);
+
             test = Tools.ConvertToBinary(test);
-            var scoreBounds = Tools.GetMaxAndMinScore(test);
 
             PrintParameters(train, test, epochs, rho, yita, decay, 
                 alpha, beta, lambda, gamma, scoreBounds.Item1, scoreBounds.Item2);
-
             Console.WriteLine("epoch,loss#train,mae#test,rmse#test");
 
             for (int epoch = 1; epoch <= epochs; epoch++)
-            {
-                var sampledRatings = Tools.RandomSelectNegativeSamples(train, rho, false);
+            { 
+                sampledRatings = Tools.RandomSelectNegativeSamples(train, rho, false);
                 var userItemsTable = Tools.GetUserItemsTable(sampledRatings);
-                double loss = Loss(sampledRatings, beta, lambda, gamma);
 
                 foreach (Rating r in sampledRatings)
                 {
@@ -241,6 +240,7 @@ namespace RS.CollaborativeFiltering
                     }                  
                 }
 
+                // evaluate MAE & RMSE
                 double lastLoss = Loss(sampledRatings, beta, lambda, gamma);      
                 var eval = EvaluateMaeRmse(test, scoreBounds.Item1, scoreBounds.Item2);
                 Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
@@ -250,17 +250,137 @@ namespace RS.CollaborativeFiltering
                     gamma *= decay;
                 }
 
-                //if (lastLoss < loss)
-                //{
-                //    loss = lastLoss;
-                //}
-                //else
-                //{
-                //    break;
-                //}
+                if (lastLoss < loss)
+                {
+                    loss = lastLoss;
+                }
+                else
+                {
+                    break;
+                }
             }
-
-
         }
+
+        /// <summary>
+        /// Get recommendations based on the trained model?
+        /// </summary>
+        /// <param name="ratingTable"></param>
+        /// <param name="N"></param>
+        /// <returns></returns>
+        protected List<Rating> GetRecommendations(MyTable ratingTable, int N = 10)
+        {
+            List<Rating> recommendedItems = new List<Rating>();
+            ArrayList itemList = ratingTable.GetSubKeyList();            
+            int[] mainKeys = new int[ratingTable.Keys.Count];
+            ratingTable.Keys.CopyTo(mainKeys, 0);
+
+            Parallel.ForEach(mainKeys, userId =>
+            {
+                Hashtable Nu = (Hashtable)ratingTable[userId];      // ratings of user u
+                List<Rating> predictedRatings = new List<Rating>();
+                foreach (int itemId in itemList)
+                {
+                    if (!Nu.ContainsKey(itemId))
+                    {
+                        double p = Predict(userId, itemId);
+                        predictedRatings.Add(new Rating(userId, itemId, p));
+                    }
+                }
+                List<Rating> sortedLi = predictedRatings.OrderByDescending(r => r.Score).ToList();
+                lock (recommendedItems)
+                {
+                    recommendedItems.AddRange(sortedLi.GetRange(0, Math.Min(sortedLi.Count, N)));
+                }
+            });
+            
+            return recommendedItems;
+        }
+
+        /// <summary>
+        ///  Algorithm 1, optimized by Zhijin Wang, 2017.12.27 
+        /// Learning FISMrmse by using SGD.
+        /// </summary>
+        /// <param name="train"></param>
+        /// <param name="test"></param>
+        /// <param name="epochs">maximum epochs</param>
+        /// <param name="rho">#negative ratings / #postive ratings in sample negative samples</param>
+        /// <param name="yita">learning rate</param>
+        /// <param name="decay">decay for learning rate</param>
+        /// <param name="alpha">power of the factor of x</param>
+        /// <param name="beta">regularization parameter of P and Q</param>
+        /// <param name="lambda">regularization parameter of bu</param>
+        /// <param name="gamma">regularization parameter of bi</param>
+        public void TrySGDForRMSEv2(List<Rating> train, List<Rating> test, int epochs = 100, int rho = 3,
+            double yita = 0.01, double decay = 1.0, double alpha = 1, double beta = 2e-4, double lambda = 0.01, double gamma = 0.01)
+        {
+            var sampledRatings = Tools.RandomSelectNegativeSamples(train, rho, false);
+            var scoreBounds = Tools.GetMinAndMaxScore(sampledRatings);
+            double loss = Loss(sampledRatings, beta, lambda, gamma);
+            var userItemsTable = Tools.GetUserItemsTable(sampledRatings);
+
+            PrintParameters(sampledRatings, test, epochs, rho, yita, decay,
+                alpha, beta, lambda, gamma, scoreBounds.Item1, scoreBounds.Item2);
+            Console.WriteLine("epoch#loss(train),N,P,R,Coverage,Popularity");
+
+            MyTable ratingTable = Tools.GetRatingTable(train);
+            int[] Ns = { 1, 5, 10, 15, 20, 25, 30 }; 
+
+            for (int epoch = 1; epoch <= epochs; epoch++)
+            {
+                foreach(int userId in userItemsTable.Keys)
+                {
+                    var neighbors = (List<Rating>)userItemsTable[userId];
+                    double factorOfX = Math.Pow(neighbors.Count - 1, -alpha);
+
+                    foreach (Rating r in neighbors)
+                    {
+                        UpdateX(r.UserId, neighbors, r.ItemId, factorOfX);
+
+                        double pui = Predict(r.UserId, r.ItemId);
+                        double eui = r.Score - pui;
+                        bu[r.UserId] += yita * (eui - lambda * bu[r.UserId]);
+                        bi[r.ItemId] += yita * (eui - gamma  * bi[r.ItemId]);
+
+                        for (int i = 0; i < f; i++)
+                        {
+                            Q[r.ItemId, i] += yita * (eui * X[r.UserId, i] - beta * Q[r.ItemId, i]);
+                            P[r.ItemId, i] += yita * (eui * factorOfX * Q[r.ItemId, i] - beta * P[r.ItemId, i]);
+                        }
+                    }                 
+                }
+
+                double lastLoss = Loss(sampledRatings, beta, lambda, gamma);
+                if (epoch % 2 == 0 && epoch >= 1)
+                {
+                    Console.Write("{0}#{1}", epoch, lastLoss);
+                    List<Rating> recommendations = GetRecommendations(ratingTable, Ns[Ns.Length - 1]);   // note that, the max K
+                    foreach (int n in Ns)
+                    {
+                        Console.Write(",{0}", n);
+                        List<Rating> subset = Tools.GetSubset(recommendations, n);
+                        var pr = Metrics.PrecisionAndRecall(subset, test);
+                        var cp = Metrics.CoverageAndPopularity(subset, train);
+                        var map = Metrics.MAP(subset, test, n);
+                        Console.WriteLine(",{0},{1},{2},{3},{4}", pr.Item1, pr.Item2, cp.Item1, cp.Item2, map);
+                    }
+                }
+
+                if (decay != 1.0)
+                {
+                    gamma *= decay;
+                }
+
+                if (lastLoss < loss)
+                {
+                    loss = lastLoss;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+
     }
 }

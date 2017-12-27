@@ -453,11 +453,11 @@ namespace RS.Data.Utility
         /// </summary>
         /// <param name="ratings"></param>
         /// <returns></returns>
-        public static Tuple<double, double> GetMaxAndMinScore(List<Rating> ratings)
+        public static Tuple<double, double> GetMinAndMaxScore(List<Rating> ratings)
         {
             double maxScore = ratings.AsParallel().Max(r => r.Score);
             double minScore = ratings.AsParallel().Min(r => r.Score);
-            return Tuple.Create(maxScore, minScore);
+            return Tuple.Create(minScore, maxScore);
         }
 
         /// <summary>
