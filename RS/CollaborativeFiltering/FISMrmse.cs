@@ -15,7 +15,7 @@ namespace RS.CollaborativeFiltering
     /// FISM: Factored Item Similarity Models for Top-N Recommender Systems
     /// video http://slideplayer.com/slide/9347453/
     /// </summary>
-    public class FISM
+    public class FISMrmse
     {
         protected int p = 0;   // Number of Users
         protected int q = 0;   // Number of Items
@@ -31,9 +31,9 @@ namespace RS.CollaborativeFiltering
         protected double[,] X { get; set; }   // each row in this matrix presents the weighted sum of item features in P.
 
 
-        public FISM() { }
+        public FISMrmse() { }
 
-        public FISM(int p, int q, int f = 10)
+        public FISMrmse(int p, int q, int f = 10)
         {
             InitializeModel(p, q, f);
         }
@@ -191,7 +191,7 @@ namespace RS.CollaborativeFiltering
         /// <param name="beta">regularization parameter of P and Q</param>
         /// <param name="lambda">regularization parameter of bu</param>
         /// <param name="gamma">regularization parameter of bi</param>
-        public void TrySGDForRMSE(List<Rating> train, List<Rating> test, int epochs = 100, int rho = 3, 
+        public void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, int rho = 3, 
             double yita = 0.001, double decay = 1.0, double alpha = 0.5, double beta = 2e-4, double lambda = 0.01, double gamma = 0.01)
         {
             var sampledRatings = Tools.RandomSelectNegativeSamples(train, rho, false);
@@ -329,7 +329,7 @@ namespace RS.CollaborativeFiltering
         /// <param name="beta">regularization parameter of P and Q</param>
         /// <param name="lambda">regularization parameter of bu</param>
         /// <param name="gamma">regularization parameter of bi</param>
-        public void TrySGDForRMSEv2(List<Rating> train, List<Rating> test, int epochs = 100, int rho = 3,
+        public void TrySGDv2(List<Rating> train, List<Rating> test, int epochs = 100, int rho = 3,
             double yita = 0.001, double decay = 1.0, double alpha = 0.5, double beta = 2e-4, double lambda = 1e-4, double gamma = 1e-4)
         {
             var sampledRatings = Tools.RandomSelectNegativeSamples(train, rho, false);

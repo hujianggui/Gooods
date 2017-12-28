@@ -15,8 +15,8 @@ namespace RS.Data
         public static string DefaultItemFile   = DefalultDirectory + @"u.item";
         public static string DefaultUserFile   = DefalultDirectory + @"u.user";
 
-        public static string BaseRatingFile    = DefalultDirectory + @"u5.base";
-        public static string TestRatingFile    = DefalultDirectory + @"u5.test";
+        public static string BaseRatingFile    = DefalultDirectory + @"u1.base";
+        public static string TestRatingFile    = DefalultDirectory + @"u1.test";
 
         public static int MaxUserId = 943;
         public static int MaxItemId = 1682;
@@ -212,9 +212,9 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(baseRatings);
             Tools.UpdateIndexesToZeroBased(testRatings);
 
-            FISM f = new FISM(MaxUserId, MaxItemId, 10);
-            //f.TrySGDForRMSEv2(baseRatings, testRatings, 200, 2, 0.002, 1.0, 0.5, 2e-4, 1e-4, 1e-4);
-            f.TrySGDForRMSEv2(baseRatings, testRatings, 200, 3, 0.0005, 1, 0.9, 0.001, 0.001, 0.001);
+            FISMrmse f = new FISMrmse(MaxUserId, MaxItemId, 10);
+            //f.TrySGDv2(baseRatings, testRatings, 200, 2, 0.002, 1.0, 0.5, 2e-4, 1e-4, 1e-2);  // the literature
+            f.TrySGDv2(baseRatings, testRatings, 200, 3, 0.005, 1, 0.9, 0.001, 0.001, 0.001);
 
             // parameters given by Hong,2017.12.28
             //learnrate = 0.00001
