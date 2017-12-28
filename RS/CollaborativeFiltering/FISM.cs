@@ -13,6 +13,7 @@ namespace RS.CollaborativeFiltering
     /// <summary>
     /// KDD2013-p659-Kabbur
     /// FISM: Factored Item Similarity Models for Top-N Recommender Systems
+    /// video http://slideplayer.com/slide/9347453/
     /// </summary>
     public class FISM
     {
@@ -191,7 +192,7 @@ namespace RS.CollaborativeFiltering
         /// <param name="lambda">regularization parameter of bu</param>
         /// <param name="gamma">regularization parameter of bi</param>
         public void TrySGDForRMSE(List<Rating> train, List<Rating> test, int epochs = 100, int rho = 3, 
-            double yita = 0.001, double decay = 1.0, double alpha = 1, double beta = 2e-4, double lambda = 0.01, double gamma = 0.01)
+            double yita = 0.001, double decay = 1.0, double alpha = 0.5, double beta = 2e-4, double lambda = 0.01, double gamma = 0.01)
         {
             var sampledRatings = Tools.RandomSelectNegativeSamples(train, rho, false);
             var scoreBounds = Tools.GetMinAndMaxScore(sampledRatings);
@@ -201,7 +202,7 @@ namespace RS.CollaborativeFiltering
             MyTable ratingTable = Tools.GetRatingTable(train);
             int[] Ns = { 1, 5, 10, 15, 20, 25, 30 };
 
-            PrintParameters(train, test, epochs, rho, yita, decay, 
+            PrintParameters(sampledRatings, test, epochs, rho, yita, decay, 
                 alpha, beta, lambda, gamma, scoreBounds.Item1, scoreBounds.Item2);
             Console.WriteLine("epoch,loss#train,mae#test,rmse#test");
 
@@ -247,7 +248,7 @@ namespace RS.CollaborativeFiltering
                 //var eval = EvaluateMaeRmse(test, scoreBounds.Item1, scoreBounds.Item2);
                 //Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
 
-                if (epoch % 2 == 0 && epoch >= 1)
+                if (epoch % 1 == 0 && epoch >= 1)
                 {
                     //Console.Write("{0}#{1}", epoch, lastLoss);
                     Console.Write("{0}", epoch);
@@ -324,12 +325,12 @@ namespace RS.CollaborativeFiltering
         /// <param name="rho">#negative ratings / #postive ratings in sample negative samples</param>
         /// <param name="yita">learning rate</param>
         /// <param name="decay">decay for learning rate</param>
-        /// <param name="alpha">power of the factor of x</param>
+        /// <param name="alpha">power of the factor of x, neighborhood agreement constant</param>
         /// <param name="beta">regularization parameter of P and Q</param>
         /// <param name="lambda">regularization parameter of bu</param>
         /// <param name="gamma">regularization parameter of bi</param>
         public void TrySGDForRMSEv2(List<Rating> train, List<Rating> test, int epochs = 100, int rho = 3,
-            double yita = 0.01, double decay = 1.0, double alpha = 1, double beta = 2e-4, double lambda = 0.01, double gamma = 0.01)
+            double yita = 0.001, double decay = 1.0, double alpha = 0.5, double beta = 2e-4, double lambda = 1e-4, double gamma = 1e-4)
         {
             var sampledRatings = Tools.RandomSelectNegativeSamples(train, rho, false);
             var scoreBounds = Tools.GetMinAndMaxScore(sampledRatings);
@@ -378,7 +379,7 @@ namespace RS.CollaborativeFiltering
                 }
 
                 double lastLoss = Loss(sampledRatings, beta, lambda, gamma);
-                if (epoch % 2 == 0 && epoch >= 1)
+                if (epoch % 1 == 0 && epoch >= 1)
                 {
                     //Console.Write("{0}#{1}", epoch, lastLoss);
                     Console.Write("{0}", epoch);

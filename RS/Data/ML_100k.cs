@@ -213,9 +213,18 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(testRatings);
 
             FISM f = new FISM(MaxUserId, MaxItemId, 10);
-            //f.TrySGDForRMSE(baseRatings, testRatings, 50, 1);
-            //f.TrySGDForRMSEv2(baseRatings, testRatings, 100, 1, 0.02, 0.98);
-            f.TrySGDForRMSEv2(baseRatings, testRatings, 100, 2, 0.005);
+            //f.TrySGDForRMSEv2(baseRatings, testRatings, 200, 2, 0.002, 1.0, 0.5, 2e-4, 1e-4, 1e-4);
+            f.TrySGDForRMSEv2(baseRatings, testRatings, 200, 3, 0.0005, 1, 0.9, 0.001, 0.001, 0.001);
+
+            // parameters given by Hong,2017.12.28
+            //learnrate = 0.00001
+            //fismauc.rho = 0.5
+            //fismauc.alpha = 0.9
+            //fismauc.gamma = 0.1
+            //factor.number = 10
+            //user.regularization = 0.001
+            //item.regularization = 0.001
+            //bias.regularization = 0.001
         }
     }
 }
