@@ -27,7 +27,6 @@ namespace RS.CollaborativeFiltering
         public double[] bu { get; protected set; }  // user biases
         public double[] bi { get; protected set; }  // item biases
 
-
         protected double[,] X { get; set; }   // each row in this matrix presents the weighted sum of item features in P.
 
 
@@ -67,7 +66,6 @@ namespace RS.CollaborativeFiltering
             }
             return _r + bu[userId] + bi[itemId];
         }
-
 
         /// <summary>
         /// update x for each user
@@ -200,6 +198,8 @@ namespace RS.CollaborativeFiltering
             double loss = Loss(sampledRatings, beta, lambda, gamma);
 
             test = Tools.ConvertToBinary(test);
+            MyTable ratingTable = Tools.GetRatingTable(train);
+            int[] Ns = { 1, 5, 10, 15, 20, 25, 30 };
 
             PrintParameters(train, test, epochs, rho, yita, decay, 
                 alpha, beta, lambda, gamma, scoreBounds.Item1, scoreBounds.Item2);
@@ -240,11 +240,29 @@ namespace RS.CollaborativeFiltering
                     }                  
                 }
 
-                // evaluate MAE & RMSE
-                double lastLoss = Loss(sampledRatings, beta, lambda, gamma);      
-                var eval = EvaluateMaeRmse(test, scoreBounds.Item1, scoreBounds.Item2);
-                Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
                 
+                double lastLoss = Loss(sampledRatings, beta, lambda, gamma);
+
+                // evaluate MAE & RMSE 
+                //var eval = EvaluateMaeRmse(test, scoreBounds.Item1, scoreBounds.Item2);
+                //Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
+
+                if (epoch % 2 == 0 && epoch >= 1)
+                {
+                    //Console.Write("{0}#{1}", epoch, lastLoss);
+                    Console.Write("{0}", epoch);
+                    List<Rating> recommendations = GetRecommendations(ratingTable, Ns[Ns.Length - 1]);   // note that, the max K
+                    foreach (int n in Ns)
+                    {
+                        Console.Write(",{0}", n);
+                        List<Rating> subset = Tools.GetSubset(recommendations, n);
+                        var pr = Metrics.PrecisionAndRecall(subset, test);
+                        var cp = Metrics.CoverageAndPopularity(subset, train);
+                        var map = Metrics.MAP(subset, test, n);
+                        Console.WriteLine(",{0},{1},{2},{3},{4}", pr.Item1, pr.Item2, cp.Item1, cp.Item2, map);
+                    }
+                }
+
                 if (decay != 1.0)
                 {
                     gamma *= decay;
@@ -320,7 +338,7 @@ namespace RS.CollaborativeFiltering
 
             PrintParameters(sampledRatings, test, epochs, rho, yita, decay,
                 alpha, beta, lambda, gamma, scoreBounds.Item1, scoreBounds.Item2);
-            Console.WriteLine("epoch#loss(train),N,P,R,Coverage,Popularity");
+            Console.WriteLine("epoch#loss(train),N,P,R,Coverage,Popularity,MAP");
 
             MyTable ratingTable = Tools.GetRatingTable(train);
             int[] Ns = { 1, 5, 10, 15, 20, 25, 30 }; 
@@ -346,13 +364,24 @@ namespace RS.CollaborativeFiltering
                             Q[r.ItemId, i] += yita * (eui * X[r.UserId, i] - beta * Q[r.ItemId, i]);
                             P[r.ItemId, i] += yita * (eui * factorOfX * Q[r.ItemId, i] - beta * P[r.ItemId, i]);
                         }
+                        //foreach (Rating j in neighbors)
+                        //{
+                        //    if (j.ItemId != r.ItemId)
+                        //    {
+                        //        for (int i = 0; i < f; i++)
+                        //        {
+                        //            P[j.ItemId, i] += yita * (eui * factorOfX * Q[r.ItemId, i] - beta * P[j.ItemId, i]);
+                        //        }
+                        //    }
+                        //}
                     }                 
                 }
 
                 double lastLoss = Loss(sampledRatings, beta, lambda, gamma);
                 if (epoch % 2 == 0 && epoch >= 1)
                 {
-                    Console.Write("{0}#{1}", epoch, lastLoss);
+                    //Console.Write("{0}#{1}", epoch, lastLoss);
+                    Console.Write("{0}", epoch);
                     List<Rating> recommendations = GetRecommendations(ratingTable, Ns[Ns.Length - 1]);   // note that, the max K
                     foreach (int n in Ns)
                     {
