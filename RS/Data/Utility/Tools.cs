@@ -640,6 +640,12 @@ namespace RS.Data.Utility
             return samples;
         }
 
+        /// <summary>
+        /// Convert ratings to binary ratings
+        /// </summary>
+        /// <param name="ratings"></param>
+        /// <param name="threshold">if score > threshold then return 1 else 0</param>
+        /// <returns></returns>
         public static List<Rating> ConvertToBinary(List<Rating> ratings, double threshold = 0)
         {
             List<Rating> binaryRatings = new List<Rating>();
@@ -648,6 +654,45 @@ namespace RS.Data.Utility
                 binaryRatings.Add(new Rating(r.UserId, r.ItemId, r.Score > threshold ? 1.0 : 0.0));
             }
             return binaryRatings;
+        }
+
+        /// <summary>
+        /// user id - tuple(list of category one, list of category two).
+        /// </summary>
+        /// <param name="ratings">category one, positive ratings; category two, negative ratings.</param>
+        /// <returns></returns>
+        public static Hashtable GetClassifiedUserItemsTable(List<Rating> ratings)
+        {
+            Hashtable userItemsTable = new Hashtable();
+            foreach (Rating r in ratings)
+            {
+                if (userItemsTable.ContainsKey(r.UserId))
+                {
+                    var tuple = (Tuple<List<Rating>, List<Rating>>)userItemsTable[r.UserId];
+                    if (r.Score == 1)
+                    {
+                        tuple.Item1.Add(r);
+                    }
+                    else if(r.Score == 0)
+                    {
+                        tuple.Item2.Add(r);
+                    }                    
+                }
+                else
+                {
+                    var tuple = Tuple.Create(new List<Rating>(), new List<Rating>());
+                    if (r.Score == 1)
+                    {
+                        tuple.Item1.Add(r);
+                    }
+                    else if (r.Score == 0)
+                    {
+                        tuple.Item2.Add(r);
+                    }
+                    userItemsTable.Add(r.UserId, tuple);
+                }
+            }
+            return userItemsTable;
         }
 
     }

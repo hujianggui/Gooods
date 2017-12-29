@@ -26,7 +26,8 @@ namespace RS
             //ML_100k.AlternatingLeastSquaresTopNTest();
             //ML_100k.SLIMTest();
 
-            ML_100k.FISMTest();
+            //ML_100k.FISMrmseTest();
+            ML_100k.FISMaucTest();
 
             //ML_100k.Preprocess();
 

@@ -114,15 +114,15 @@ namespace RS.CollaborativeFiltering
 
                 for (int i = 0; i < f; i++)
                 {
-                    sum_p_i += P[r.UserId, i] * P[r.UserId, i];
+                    sum_p_i += P[r.ItemId, i] * P[r.ItemId, i];
                     sum_q_j += Q[r.ItemId, i] * Q[r.ItemId, i];
                 }
 
                 loss += beta * (sum_p_i + sum_q_j);
                 loss += lambda * (bu[r.UserId] * bu[r.UserId]);
                 loss += gamma * (bi[r.ItemId] * bi[r.ItemId]);
-                loss *= 0.5;
             }
+            loss *= 0.5;
             return loss;
         }
 
@@ -198,7 +198,7 @@ namespace RS.CollaborativeFiltering
             var scoreBounds = Tools.GetMinAndMaxScore(sampledRatings);
             double loss = Loss(sampledRatings, beta, lambda, gamma);
 
-            test = Tools.ConvertToBinary(test);
+            //test = Tools.ConvertToBinary(test);
             MyTable ratingTable = Tools.GetRatingTable(train);
             int[] Ns = { 1, 5, 10, 15, 20, 25, 30 };
 

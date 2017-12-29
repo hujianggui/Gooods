@@ -191,7 +191,6 @@ namespace RS.Data
             model.TryALSForTopN(baseSamples, data.Item2, 100, 0.01, 0, 1);
         }
 
-
         public static void SLIMTest()
         {
             List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
@@ -204,7 +203,7 @@ namespace RS.Data
             knn.TryLeastSquare(baseRatings, testRatings, 100, 0.01, 0.001);
         }
 
-        public static void FISMTest()
+        public static void FISMrmseTest()
         {
             List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
             List<Rating> testRatings = Tools.GetRatings(TestRatingFile);
@@ -225,6 +224,18 @@ namespace RS.Data
             //user.regularization = 0.001
             //item.regularization = 0.001
             //bias.regularization = 0.001
+        }
+
+        public static void FISMaucTest()
+        {
+            List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
+            List<Rating> testRatings = Tools.GetRatings(TestRatingFile);
+
+            Tools.UpdateIndexesToZeroBased(baseRatings);
+            Tools.UpdateIndexesToZeroBased(testRatings);
+
+            FISMauc f = new FISMauc(MaxUserId, MaxItemId, 10);
+            f.TrySGD(baseRatings, testRatings);
         }
     }
 }
