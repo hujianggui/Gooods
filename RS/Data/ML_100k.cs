@@ -235,7 +235,7 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(testRatings);
 
             FISMauc f = new FISMauc(MaxUserId, MaxItemId, 10);
-            f.TrySGD(baseRatings, testRatings);
+            f.TrySGD(baseRatings, testRatings, 300, 2);
         }
     }
 }

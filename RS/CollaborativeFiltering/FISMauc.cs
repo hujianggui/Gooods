@@ -78,7 +78,7 @@ namespace RS.CollaborativeFiltering
                 {
                     for (int i = 0; i < f; i++)
                     {
-                        T[userId, i] += Q[r.ItemId, i];
+                        T[userId, i] += P[r.ItemId, i];
                     }
                 }
             }
@@ -192,7 +192,7 @@ namespace RS.CollaborativeFiltering
         /// <param name="lambda">regularization parameter of bu</param>
         /// <param name="gamma">regularization parameter of bi</param>
         public void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, int rho = 1,
-            double yita = 0.00001, double decay = 1.0, double alpha = 0.5, double beta = 2e-5, double gamma = 1e-4)
+            double yita = 0.0001, double decay = 1.0, double alpha = 0.5, double beta = 2e-4, double gamma = 1e-4)
         {
             var sampledRatings = Tools.RandomSelectNegativeSamples(train, rho, false);
             var scoreBounds = Tools.GetMinAndMaxScore(sampledRatings);
@@ -216,7 +216,6 @@ namespace RS.CollaborativeFiltering
 
                     //Tools.WriteRatings(positives, @"D:\p.csv");
                     //Tools.WriteRatings(negatives, @"D:\n.csv");
-                    double[] x = new double[f];
 
                     double factorOfX = Math.Pow(positives.Count - 1, -alpha);
 
@@ -224,37 +223,40 @@ namespace RS.CollaborativeFiltering
                     {
                         UpdateT(i.UserId, positives, i.ItemId, factorOfX);  // can be optimized
                         double pui = Predict(i.UserId, i.ItemId);
-                        foreach(Rating j in negatives)
+
+                        double[] x = new double[f]; // what is the problem?
+
+                        foreach (Rating j in negatives)
                         {
                             double puj = Predict(j.UserId, j.ItemId);
                             double eij = (i.Score - j.Score) - (pui - puj);
 
                             bi[i.ItemId] += yita * (eij - gamma * bi[i.ItemId]);
-                            bi[j.ItemId] += yita * (eij - gamma * bi[j.ItemId]);
+                            bi[j.ItemId] -= yita * (eij - gamma * bi[j.ItemId]);
 
                             for (int index = 0; index < f; index++)
                             {
                                 Q[i.ItemId, index] += yita * (eij * T[i.UserId, index] - beta * Q[i.ItemId, index]);
-                                Q[j.ItemId, index] += yita * (eij * T[j.UserId, index] - beta * Q[j.ItemId, index]);
+                                Q[j.ItemId, index] -= yita * (eij * T[j.UserId, index] - beta * Q[j.ItemId, index]);
                                 x[index] += eij * (Q[i.ItemId, index] - Q[j.ItemId, index]);
                             }
                         }
 
-                        for (int index = 0; index < f; index++)
-                        {
-                            P[i.ItemId, index] += yita * (factorOfX * x[index] / rho - beta * P[i.ItemId, index]);
-                        }
-
-                        //foreach (Rating k in positives)
+                        //for (int index = 0; index < f; index++)
                         //{
-                        //    if (k.ItemId != i.ItemId)
-                        //    {
-                        //        for (int index = 0; index < f; index++)
-                        //        {
-                        //            P[k.ItemId, index] += yita * (factorOfX * x[index] / rho - beta * P[k.ItemId, index]);
-                        //        }
-                        //    }
+                        //    P[i.ItemId, index] += yita * (factorOfX * x[index] / rho - beta * P[i.ItemId, index]);
                         //}
+
+                        foreach (Rating k in positives)
+                        {
+                            if (k.ItemId != i.ItemId)
+                            {
+                                for (int index = 0; index < f; index++)
+                                {
+                                    P[k.ItemId, index] += yita * (factorOfX * x[index] / rho - beta * P[k.ItemId, index]);
+                                }
+                            }
+                        }
                     }
                 }
 

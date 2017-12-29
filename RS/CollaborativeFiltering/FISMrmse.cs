@@ -83,7 +83,7 @@ namespace RS.CollaborativeFiltering
                 {
                     for (int i = 0; i < f; i++)
                     {
-                        X[userId, i] += Q[r.ItemId, i];
+                        X[userId, i] += P[r.ItemId, i];
                     }
                 }
             }
