@@ -10,7 +10,7 @@
 	[5] SVD++ (speed up), rating prediction.
 	[6] Alternating Least Lquares, rating prediction, top-N recommendation.
 	[7] Euclidean Embedding, rating prediction, top-N recommendation.
-	[8] SLIM (sparse linear model) (train with multithread), top-N recommendation.
+	[8] SLIM (Sparse LInear Model) (train with multithread), top-N recommendation.
 	[9] FISM (Factored Item Similarity Models), top-N recommendation. This including:
 	    FISMrmse which uses an element-wise update for a SE loss function.
 	    FISMauc which uses a pair-wise update for a AUC loss function.
@@ -33,9 +33,9 @@
 
 
 ### Evaluation metrics
-	[1] error metrics: MAE, RMSE
-	[2] accuracy metrics: Precision@N, Recall@N
-	[3] Rank metrics: MAP@N
+	[1] Error metrics: MAE, RMSE
+	[2] Accuracy metrics: Precision@N, Recall@N
+	[3] Ranking metrics: MAP@N
 	[4] Others: Coverage, Popularity
 
 ### Data collections (examples)
