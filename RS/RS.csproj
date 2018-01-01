@@ -74,6 +74,7 @@
     <Compile Include="CollaborativeFiltering\FriendBiasedMatrixFactorization.cs" />
     <Compile Include="CollaborativeFiltering\FriendMatrixFactorization.cs" />
     <Compile Include="CollaborativeFiltering\MatrixFactorization.cs" />
+    <Compile Include="CollaborativeFiltering\PageRank.cs" />
     <Compile Include="CollaborativeFiltering\SLIM.cs" />
     <Compile Include="CollaborativeFiltering\SocialMF.cs" />
     <Compile Include="ContentBasedFiltering\TagBasedFiltering.cs" />

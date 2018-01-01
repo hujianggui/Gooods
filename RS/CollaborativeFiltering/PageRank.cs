@@ -6,7 +6,7 @@ using System.Linq;
 using RS.DataType;
 using RS.Evaluation;
 
-namespace RS.Algorithm
+namespace RS.CollaborativeFiltering
 {
 
     /// <summary>
@@ -40,6 +40,7 @@ namespace RS.Algorithm
     /// class PageRank
     /// url: http://blog.jobbole.com/71431/
     /// http://zh.wikipedia.org/wiki/PageRank
+    /// Need to be refactored.
     /// </summary>
     public class PageRank
     {
@@ -49,7 +50,7 @@ namespace RS.Algorithm
 
         protected int NumberOfNodes { get; set; }
 
-        protected double[] PR { get; set; } // 1-based, result
+        public double[] PR { get; protected set; } // 1-based, result
 
         protected double[] P0 { get; set; } // 1-based, initial value
 

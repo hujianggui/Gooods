@@ -154,6 +154,20 @@ namespace RS.Data
             knn.TryTopN(data.Item1, data.Item2);
         }
 
+
+        public static void PageRankTopNTest()
+        {
+            List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
+            List<Rating> testRatings = Tools.GetRatings(TestRatingFile);
+
+            Tools.UpdateIndexesToZeroBased(baseRatings);
+            Tools.UpdateIndexesToZeroBased(testRatings);
+
+            //PageRank pr = new PageRank();
+
+                         
+        }
+
         public static void MatrixFactorizationTopNTest(int f = 10)
         {
             List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);

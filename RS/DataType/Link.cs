@@ -2,21 +2,21 @@
 {
     public class Link
     {
-        public int From = 0;
-        public int To = 0;
-        public double Weight = 1;   // default
+        public int From { get; set; }
+        public int To { get; set; }
+        public double Weight { get; set; }  
 
         public Link(int from, int to)
         {
-            this.From = from;
-            this.To = to;
+            From = from;
+            To = to;
         }
 
         public Link(int from, int to, double weight)
         {
-            this.From = from;
-            this.To = to;
-            this.Weight = weight;
+            From = from;
+            To = to;
+            Weight = weight;
         }
     }
 }
