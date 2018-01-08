@@ -79,6 +79,7 @@
     <Compile Include="CollaborativeFiltering\SocialMF.cs" />
     <Compile Include="ContentBasedFiltering\TagBasedFiltering.cs" />
     <Compile Include="ContentBasedFiltering\TagBasedItemKNN.cs" />
+    <Compile Include="DataType\Node.cs" />
     <Compile Include="Data\BookCrossing.cs" />
     <Compile Include="Data\Douban.cs" />
     <Compile Include="Data\Epinions.cs" />

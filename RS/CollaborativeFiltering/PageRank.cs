@@ -5,305 +5,114 @@ using System.Linq;
 
 using RS.DataType;
 using RS.Evaluation;
+using RS.Data.Utility;
 
 namespace RS.CollaborativeFiltering
 {
-
     /// <summary>
-    /// class Node
-    /// </summary>
-    public class Node
-    {
-        public int Id { get; private set; }
-        public double Weight { get; set; }
-
-        public int InDegree { get; set; }   // Number of in links
-
-        public int OutDegree { get; set; }  // Number of out links
-
-        // Constructor
-        public Node(int id)
-        {
-            this.Id = id;
-        }
-
-        public Node(int id, double weight)
-        {
-            this.Id = id;
-            this.Weight = weight;
-        }
-
-    }
-
-
-    /// <summary>
-    /// class PageRank
-    /// url: http://blog.jobbole.com/71431/
-    /// http://zh.wikipedia.org/wiki/PageRank
-    /// Need to be refactored.
+    /// The PageRank algorithm, used for top-N recommendation.
+    /// http://blog.jobbole.com/71431/
     /// </summary>
     public class PageRank
     {
-        protected List<Link> Edges { get; set; }
+        public double[] P0 { get; protected set; } // 0-based, initial value, V0
 
-        protected List<Node> Nodes { get; set; }
+        public double[] PR { get; protected set; } // 0-based, final result
 
-        protected int NumberOfNodes { get; set; }
-
-        public double[] PR { get; protected set; } // 1-based, result
-
-        protected double[] P0 { get; set; } // 1-based, initial value
-
-
-        public int MaxEpoch = 10;
-
-        public double Convergency = 10e-6;
-
-        public double Alpha = 0.8;
-
-        // Constructor functions
-
-        public PageRank(List<Link> edges, List<Node> nodes)
+        public PageRank(int nodes)
         {
-            this.Edges = edges;
-            this.Nodes = nodes;
+            P0 = new double[nodes];
+            PR = new double[nodes];
         }
-
-        public PageRank(List<Link> edges, int nodes)
-        {
-            this.Edges = edges;
-            this.NumberOfNodes = nodes;
-        }
-
-        // Memeber functions
 
         /// <summary>
-        /// Update weight of an edge using out-links (or out-degree)
-        /// Have a try on Linq.
+        /// $$V_{t+1} = \alpha * M * V_t + (1 - \alpha) * V_t$$
         /// </summary>
-        private void Initial()
-        {
-            if (this.Edges == null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            //var outLinkCount = (from e in Edges group e by e.From into g
-            //                select new {g.Key, NumOutLinks = g.Count()});
-
-            //foreach (Edge e in this.Edges)
-            //{
-            //    e.Weight = 1.0 / (outLinkCount.SingleOrDefault( g => g.Key == e.From).NumOutLinks);
-            //}
-
-            Hashtable outLinkTable = new Hashtable();
-            foreach (Link e in this.Edges)
-            {
-                if (!outLinkTable.ContainsKey(e.From))
-                {
-                    outLinkTable.Add(e.From, new List<int>() { e.To });
-                }
-                else
-                {
-                    List<int> outlinks = (List<int>)outLinkTable[e.From];
-                    outlinks.Add(e.To);
-                }
-            }
-            foreach (Link e in this.Edges)
-            {
-                List<int> outlinks = (List<int>)outLinkTable[e.From];
-                e.Weight = 1.0 / outlinks.Count;
-            }
-
-            PR = new double[NumberOfNodes + 1];
-            P0 = new double[NumberOfNodes + 1];
-            foreach(int f in outLinkTable.Keys)
-            {
-                P0[f] = PR[f] = 1.0 / outLinkTable.Count;
-            }
-        }
-
-        private double SumOfSquareDifference(double[] array1, double[] array2)
-        {
-            double sum = 0.0;
-            int length = array1.Length;
-            for (int i = 0; i < length; i++)
-            {
-                double error = array1[i] - array2[i];
-                sum += (error * error);
-            }
-            return sum;
-        }
-
-        protected double[] Epoch(Hashtable inLinkTable, double[] rank)
+        /// <param name="links">matrix M, note that M[i][j] denotes a link from j -> i.</param>
+        /// <param name="rank">column vector V_t</param>
+        /// <param name="alpha">restart probability</param>
+        /// <returns></returns>
+        protected double[] Iterate(List<Link> links, double[] rank, double alpha = 1.0)
         {
             double[] result = new double[rank.Length];
-            foreach (int id in inLinkTable.Keys)
+            foreach (Link l in links)
             {
-                List<Link> inLinks = (List<Link>)inLinkTable[id];
-                double sum = 0.0;
-                foreach (Link e in inLinks)
+                result[l.To] += l.Weight * rank[l.From];
+            }
+
+            if (alpha > 0)
+            {
+                for (int i = 0; i < rank.Length; i++)
                 {
-                    sum += (rank[e.From] * e.Weight);
+                    if (P0[i] > 0)
+                    {
+                        result[i] = alpha * result[i] + (1.0 - alpha) * P0[i];
+                    }
                 }
-                result[id] = sum * Alpha + (1 - Alpha) * P0[id];
             }
             return result;
         }
 
-        public void TryRanking()
+        public void Train(List<Link> train, int epochs = 20, double alpha = 0.8, double convergency = 1e-5)
         {
-            Initial();
+            var outLinksTable = Tools.GetUserLinksTable(train);
 
-            Hashtable inLinkTable = new Hashtable();
-            foreach (Link e in this.Edges)
+            // Update weights for edges, and a weight of an edge is the inverse of #(out links). 
+            // Matrix M
+            foreach (Link e in train)
             {
-                if (!inLinkTable.ContainsKey(e.To))
-                {
-                    inLinkTable.Add(e.To, new List<Link>() { e });
-                }
-                else
-                {
-                    List<Link> outlinks = (List<Link>)inLinkTable[e.To];
-                    outlinks.Add(e);
-                }
+                List<Link> outlinks = (List<Link>)outLinksTable[e.From];
+                e.Weight = 1.0 / outlinks.Count;
             }
 
-            PR = Epoch(inLinkTable, P0);
-            double difference = SumOfSquareDifference(PR, P0);
-            Console.WriteLine("Epoch, {0}, Difference, {1}", 1, difference);
-
-            for (int epoch = 2; epoch < MaxEpoch && difference > Convergency; epoch++)
+            // Initialize V0
+            foreach (int f in outLinksTable.Keys)
             {
-                double[] ranking = Epoch(inLinkTable, PR);
-                difference = SumOfSquareDifference(PR, ranking);
-                Console.WriteLine("Epoch, {0}, Difference, {1}", epoch, difference);
-                PR = ranking;
+                P0[f] = PR[f] = 1.0 / outLinksTable.Count;
             }
 
-            // Get item part, node id as item id
-            List<Node> nodes = new List<Node>();
-            for (int i = 1; i < this.NumberOfNodes + 1; i++)
+            Console.WriteLine("Epoch,S");
+            for(int epoch = 1; epoch <= epochs; epoch++)
             {
-                nodes.Add(new Node(i, PR[i]));
+                double[] PR1 = Iterate(train, PR, alpha);
+                double differences = MathUtility.SumOfSquaredDifference(PR, PR1);
+                Console.WriteLine("{0},{1:f10}", epoch, differences);
+                //Console.WriteLine("{0},{1:f6},{2:f6},{3:f6},{4:f6},{5:f6}", epoch, differences, PR1[0], PR1[1], PR1[2], PR1[3]);
+                PR = PR1;
             }
-
-            // Sort, descending
-            var rankNodes = nodes.OrderByDescending(n => n.Weight);
-
-            this.Nodes = rankNodes.ToList();
-        }
-
-        public double[] GetPR()
-        {
-            return this.PR;
-        }
-
-        // Design for movielens
-        public void TryListRecommendation(List<Rating> baseRatings, List<Rating> testRatings, int userNumber, int itemNumber, int k)
-        {
-            // Get item part, node id as item id
-            List<Node> nodes = new List<Node>();
-            for (int i = userNumber + 1; i < userNumber + itemNumber + 1; i++)
-            {
-                nodes.Add(new Node(i - userNumber, PR[i]));
-            }
-
-            // Sort, descending
-            var rankedItems = nodes.OrderByDescending(n => n.Weight);
-
-            // Get u not rate item ralate value from Pk
-            MyTable table = new MyTable();
-            foreach (Rating r in baseRatings) 
-            {
-                if (!table.ContainsKey(r.UserId, r.ItemId))
-                {
-                    table.Add(r.UserId, r.ItemId, r.Score);
-                }
-            }
-
-            List<Rating> recommendations = new List<Rating>();
-            foreach (int uId in table.Keys)
-            {
-                int counter = 0;
-                foreach (Node n in rankedItems)
-                {
-                    if (!table.ContainsKey(uId, n.Id))  // u not rate
-                    {
-                        recommendations.Add(new Rating(uId, n.Id, 1.0));
-                        counter++;
-                    }
-                    if (counter > k)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            // Evaluation
-            var pr = Metrics.PrecisionAndRecall(recommendations, testRatings);
-            Console.WriteLine("{0}, {1}, {2}", k, pr.Item1, pr.Item2);
-        }
-
-        // Design for Facebook
-        public void TryListRecommendation(List<Link> baseEdges, List<Link> testEdges, int userNumber, int k)
-        {
-            // Get u not rate item ralate value from Pk
-            MyTable table = new MyTable();
-            foreach (Link e in baseEdges)
-            {
-                if (!table.ContainsKey(e.From, e.To))
-                {
-                    table.Add(e.From, e.To, null);
-                }
-            }
-
-            List<Link> recommendations = new List<Link>();
-            foreach (int uId in table.Keys)
-            {
-                int counter = 0;
-                foreach (Node n in this.Nodes)
-                {
-                    if (!table.ContainsKey(uId, n.Id))  // u not rate
-                    {
-                        recommendations.Add(new Link(uId, n.Id, 1.0));
-                        counter++;
-                    }
-                    if (counter > k)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            Console.Write("{0}, ", k);
-            Evaluation(recommendations, testEdges);
         }
 
 
-        public static void Evaluation(List<Link> recommendations, List<Link> test)
+        public static void Example()
         {
-            MyTable table = new MyTable();
-            foreach (Link e in test)
-            {
-                if (!table.ContainsKey(e.From, e.To))
-                {
-                    table.Add(e.From, e.To, null);
-                }
-            }
+            List<Link> links = new List<Link>();
+            links.Add(new Link(0, 1));
+            links.Add(new Link(0, 2));
+            links.Add(new Link(0, 3));
+            links.Add(new Link(1, 0));
+            links.Add(new Link(1, 3));
+            links.Add(new Link(2, 0));  // try to comment this edge? all PR would be zero
+            links.Add(new Link(3, 1));
+            links.Add(new Link(3, 2));
 
-            int hit = 0;
-            foreach (Link e in recommendations)
-            { 
-                if (table.ContainsKey(e.From, e.To))
-                {
-                    hit++;
-                }
-            }
-
-            Console.WriteLine("{0}, {1}", hit * 1.0 / recommendations.Count, hit * 1.0 / test.Count);
-
+            PageRank pr = new PageRank(4);
+            pr.Train(links, 100);
         }
 
-    }   
+        public static void Example2()
+        {
+            List<Link> links = new List<Link>();
+            links.Add(new Link(0, 1));
+            links.Add(new Link(0, 2));
+            links.Add(new Link(0, 3));
+            links.Add(new Link(1, 0));
+            links.Add(new Link(1, 3));
+            links.Add(new Link(2, 2));  // note, this needs to be restart. RWR
+            links.Add(new Link(3, 1));
+            links.Add(new Link(3, 2));
+
+            PageRank pr = new PageRank(4);
+            pr.Train(links, 100);
+        }
+    }
 }

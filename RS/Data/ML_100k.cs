@@ -154,17 +154,24 @@ namespace RS.Data
             knn.TryTopN(data.Item1, data.Item2);
         }
 
-
         public static void PageRankTopNTest()
         {
-            List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
-            List<Rating> testRatings = Tools.GetRatings(TestRatingFile);
+            List<Link> baseRatings = Tools.GetLinks(BaseRatingFile);
+            List<Link> testRatings = Tools.GetLinks(TestRatingFile);
 
             Tools.UpdateIndexesToZeroBased(baseRatings);
             Tools.UpdateIndexesToZeroBased(testRatings);
 
-            //PageRank pr = new PageRank();
-                                     
+            var maxIds = Tools.GetMaxNodeId(baseRatings);
+            int nodes = Tools.TransformLinkedToId(baseRatings, maxIds.Item1, maxIds.Item2);
+            Tools.TransformLinkedToId(testRatings, maxIds.Item1, maxIds.Item2);
+
+            //PageRank pr = new PageRank(nodes);
+            //pr.Train(baseRatings, 20, 0.8, 1e-5);
+
+            PageRank.Example2();
+
+
         }
 
         public static void MatrixFactorizationTopNTest(int f = 10)

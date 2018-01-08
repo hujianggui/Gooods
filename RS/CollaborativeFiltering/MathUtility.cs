@@ -68,6 +68,24 @@ namespace RS.CollaborativeFiltering
             return Math.Sqrt(norm);
         }
 
+        /// <summary>
+        /// The sum of squared differences between two vectors.
+        /// </summary>
+        /// <param name="v1"></param>
+        /// <param name="v2"></param>
+        /// <returns></returns>
+        public static double SumOfSquaredDifference(double[] v1, double[] v2)
+        {
+            double sum = 0.0;
+            int length = v1.Length;
+            for (int i = 0; i < length; i++)
+            {
+                double error = v1[i] - v2[i];
+                sum += (error * error);
+            }
+            return sum;
+        }
+
         // return values range in [low, high]
         public static double[,] RandomUniform(int rows, int columns, double low = 0, double high = 1)
         {

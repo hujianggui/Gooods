@@ -12,7 +12,7 @@ namespace RS
         static void Main(string[] args)
         {
             // ml-100k
-            ML_100k.MeanFillingTest();
+            //ML_100k.MeanFillingTest();
             //ML_100k.UserKNNTest(0.1);
             //ML_100k.MatrixFactorizationTest();
             //ML_100k.BiasedMatrixFactorizationTest();
@@ -26,10 +26,10 @@ namespace RS
             //ML_100k.AlternatingLeastSquaresTopNTest();
             //ML_100k.SLIMTest();
 
-
-
             //ML_100k.FISMrmseTest();
             //ML_100k.FISMaucTest();
+
+            ML_100k.PageRankTopNTest();
 
             //ML_100k.Preprocess();
 
@@ -73,7 +73,6 @@ namespace RS
             //Epinions.FriendBiasedMatrixFactorizationTest();
             //Epinions.AdaptiveFriendBiasedMatrixFactorizationTest();
             //Epinions.SocialMFTest();
-
 
             //Epinions.MatrixFactorizationTopNTest();
             //Epinions.AdaptiveFriendMatrixFactorizationTopNTest();

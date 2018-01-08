@@ -291,13 +291,31 @@ namespace RS.Data.Utility
                 string line = reader.ReadLine();
                 string[] elements = line.Split(separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-                int from = Int32.Parse(elements[0]);
-                int to = Int32.Parse(elements[1]);
-
                 // update
-
-                Link r = new Link(from, to);
-                links.Add(r);
+                if (elements.Length == 2)
+                {
+                    int from = Int32.Parse(elements[0]);
+                    int to = Int32.Parse(elements[1]);
+                    Link l = new Link(from, to);
+                    links.Add(l);
+                }
+                else if (elements.Length == 3)
+                {
+                    int from = Int32.Parse(elements[0]);
+                    int to = Int32.Parse(elements[1]);
+                    double weight = Double.Parse(elements[2]);
+                    Link l = new Link(from, to, weight);
+                    links.Add(l);
+                }
+                else if (elements.Length == 4)
+                {
+                    // ignore elements[3]
+                    int from = Int32.Parse(elements[0]);
+                    int to = Int32.Parse(elements[1]);
+                    double weight = Double.Parse(elements[2]);
+                    Link l = new Link(from, to, weight);
+                    links.Add(l);
+                }
             }
             reader.Close();
             return links;
@@ -463,15 +481,15 @@ namespace RS.Data.Utility
         }
 
         /// <summary>
-        /// Get maximum user from link data, return in a tuple with two user ids.
+        /// Get maximum node from link data, return in a tuple with two node ids.
         /// </summary>
         /// <param name="links"></param>
         /// <returns></returns>
-        public static Tuple<int, int> GetMaxUserId(List<Link> links)
+        public static Tuple<int, int> GetMaxNodeId(List<Link> links)
         {
-            int maxUserId = links.AsParallel().Max(l => l.From);
-            int maxUserId2 = links.AsParallel().Max(l => l.To);
-            return Tuple.Create(maxUserId, maxUserId2);
+            int maxNodeId = links.AsParallel().Max(l => l.From);
+            int maxNodeId2 = links.AsParallel().Max(l => l.To);
+            return Tuple.Create(maxNodeId, maxNodeId2);
         }
 
         /// <summary>
@@ -492,6 +510,22 @@ namespace RS.Data.Utility
                 _matrix[r.UserId, r.ItemId] = r.Score;
             }
             return _matrix;
+        }
+
+        /// <summary>
+        /// link.To += maximum of link.From + 1
+        /// </summary>
+        /// <param name="links">ratings read as List<Link>, where user id and item id in ratings are both 0-based.</param>
+        /// <param name="maxFrom"></param>
+        /// <param name="maxTo"></param>
+        /// <returns>number of nodes.</returns>
+        public static int TransformLinkedToId(List<Link> links, int maxFrom, int maxTo)
+        {
+            foreach (Link l in links)
+            {
+                l.To += (maxFrom + 1);
+            }
+            return maxFrom + maxTo + 2;
         }
 
         /// <summary>
