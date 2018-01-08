@@ -294,6 +294,8 @@ namespace RS.Data.Utility
                 int from = Int32.Parse(elements[0]);
                 int to = Int32.Parse(elements[1]);
 
+                // update
+
                 Link r = new Link(from, to);
                 links.Add(r);
             }

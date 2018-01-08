@@ -164,8 +164,7 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(testRatings);
 
             //PageRank pr = new PageRank();
-
-                         
+                                     
         }
 
         public static void MatrixFactorizationTopNTest(int f = 10)

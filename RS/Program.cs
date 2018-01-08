@@ -12,7 +12,7 @@ namespace RS
         static void Main(string[] args)
         {
             // ml-100k
-            //ML_100k.MeanFillingTest();
+            ML_100k.MeanFillingTest();
             //ML_100k.UserKNNTest(0.1);
             //ML_100k.MatrixFactorizationTest();
             //ML_100k.BiasedMatrixFactorizationTest();
