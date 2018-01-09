@@ -29,7 +29,7 @@
 	    }
 	    
 	[13] Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
-	    Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
+	     Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 
 
 
