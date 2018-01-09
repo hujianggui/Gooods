@@ -5,17 +5,18 @@
 	[1] UserKNN (user-based collaborative filtering), rating prediction.
 	    UserKNNv2 (user-based collaborative filtering, multithread for W), top-N recommendation.
 	[2] ItemKNNv2 (item-based collaborative filtering, multithread for W), top-N recommendation.
-	[3] Matrix Factorization, rating prediction, top-N recommendation.
-	[4] Biased Matrix Factorization, rating prediction, top-N recommendation.
-	[5] SVD++ (speed up), rating prediction.
-	[6] Alternating Least Lquares, rating prediction, top-N recommendation.
-	[7] Euclidean Embedding, rating prediction, top-N recommendation.
-	[8] SLIM (Sparse LInear Model) (train with multithread), top-N recommendation.
-	[9] FISM (Factored Item Similarity Models), top-N recommendation. This including:
-	    FISMrmse which uses an element-wise update for a SE loss function.
-	    FISMauc which uses a pair-wise update for a AUC loss function.
-	[10] SocialMF, rating prediction, top-N recommendation.
-	[11] Friend Matrix Factorization, rating prediction, top-N recommendation.
+	[3] PageRank (Restart Random Walk), top-N recommendation.
+	[4] Matrix Factorization, rating prediction, top-N recommendation.
+	[5] Biased Matrix Factorization, rating prediction, top-N recommendation.
+	[6] SVD++ (speed up), rating prediction.
+	[7] Alternating Least Lquares, rating prediction, top-N recommendation.
+	[8] Euclidean Embedding, rating prediction, top-N recommendation.
+	[9] SLIM (Sparse LInear Model) (train with multithread), top-N recommendation.
+	[10] FISM (Factored Item Similarity Models), top-N recommendation. This including:
+	     FISMrmse which uses an element-wise update for a SE loss function.
+	     FISMauc which uses a pair-wise update for a AUC loss function.
+	[11] SocialMF, rating prediction, top-N recommendation.
+	[12] Friend Matrix Factorization, rating prediction, top-N recommendation.
 	    Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 		
 	    @inproceedings{DBLP:conf/pakdd/WangYHH15,
@@ -27,15 +28,15 @@
 	      series    = {PAKDD'15},
 	    }
 	    
-	[12] Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
+	[13] Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
 	    Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 
 
 
 ### Evaluation metrics
-	[1] Error metrics: MAE, RMSE
-	[2] Accuracy metrics: Precision@N, Recall@N
-	[3] Ranking metrics: MAP@N
+	[1] error metrics: MAE, RMSE
+	[2] accuracy metrics: Precision@N, Recall@N
+	[3] ranking metrics: MAP@N
 	[4] Others: Coverage, Popularity
 
 ### Data collections (examples)
