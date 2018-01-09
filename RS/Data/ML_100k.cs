@@ -156,22 +156,27 @@ namespace RS.Data
 
         public static void PageRankTopNTest()
         {
-            List<Link> baseRatings = Tools.GetLinks(BaseRatingFile);
-            List<Link> testRatings = Tools.GetLinks(TestRatingFile);
+            // PageRank algirthm could be converged in top-N recommendation.
+            List<Link> baseLinks = Tools.GetLinks(BaseRatingFile);
+            List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
+            List<Rating> testRatings = Tools.GetRatings(TestRatingFile);
 
+            Tools.UpdateIndexesToZeroBased(baseLinks);
             Tools.UpdateIndexesToZeroBased(baseRatings);
             Tools.UpdateIndexesToZeroBased(testRatings);
 
-            var maxIds = Tools.GetMaxNodeId(baseRatings);
-            int nodes = Tools.TransformLinkedToId(baseRatings, maxIds.Item1, maxIds.Item2);
-            Tools.TransformLinkedToId(testRatings, maxIds.Item1, maxIds.Item2);
+            var maxIds = Tools.GetMaxNodeId(baseLinks);
+            int nodes = Tools.TransformLinkedToId(baseLinks, maxIds.Item1, maxIds.Item2);
 
-            //PageRank pr = new PageRank(nodes);
-            //pr.Train(baseRatings, 20, 0.8, 1e-5);
+            PageRank pr = new PageRank(nodes);
 
-            PageRank.Example2();
-
-
+            double[] steps = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 0.9 };            
+            foreach (double step in steps)
+            {
+                pr.TryTopN(baseLinks, baseRatings, testRatings, maxIds.Item1, 50, step, 1e-6);
+                Console.WriteLine();
+            }
+            pr.TryTopN(baseLinks, baseRatings, testRatings, maxIds.Item1, 50, 0.9, 1e-6);
         }
 
         public static void MatrixFactorizationTopNTest(int f = 10)

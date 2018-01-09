@@ -525,6 +525,14 @@ namespace RS.Data.Utility
             {
                 l.To += (maxFrom + 1);
             }
+
+            // Filling the reverse links in G
+            int length = links.Count;
+            for(int i = 0; i < length; i++)
+            {
+                links.Add(new Link(links[i].To, links[i].From, links[i].Weight));
+            }
+
             return maxFrom + maxTo + 2;
         }
 
