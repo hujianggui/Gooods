@@ -31,6 +31,9 @@ namespace RS
 
             //ML_100k.PageRankTopNTest();
 
+            //ML_100k.MatrixFactorizationTopNTestTemp();
+            ML_100k.SLIMTemp();
+
             //ML_100k.Preprocess();
 
             // ml-1m
@@ -53,6 +56,7 @@ namespace RS
 
             // book-crossing 2004
             //BookCrossing.Preprocessing();
+
 
             // HetRec 2011 delicious 2k
             //HetRec2011Delicious2k.Test();

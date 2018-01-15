@@ -182,6 +182,7 @@ namespace RS.CollaborativeFiltering
 
         public void TryLeastSquare(List<Rating> train, List<Rating> test, int epochs = 10, double reg_l1 = 0.01, double reg_l2 = 0.001)
         {
+            Console.WriteLine(GetType().Name);
             Console.WriteLine("train,{0}", train.Count);
             Console.WriteLine("test,{0}", test.Count);
             Console.WriteLine("epochs,{0}", epochs);

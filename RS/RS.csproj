@@ -68,7 +68,6 @@
     <Compile Include="CollaborativeFiltering\AlternatingLeastSquares.cs" />
     <Compile Include="CollaborativeFiltering\BiasedMatrixFactorization.cs" />
     <Compile Include="CollaborativeFiltering\AdaptiveFriendMatrixFactorization.cs" />
-    <Compile Include="CollaborativeFiltering\BPRMF.cs" />
     <Compile Include="CollaborativeFiltering\EuclideanEmbedding.cs" />
     <Compile Include="CollaborativeFiltering\AdaptiveFriendBiasedMatrixFactorization.cs" />
     <Compile Include="CollaborativeFiltering\FISMrmse.cs" />

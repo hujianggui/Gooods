@@ -193,6 +193,35 @@ namespace RS.Data
             model.TrySGDForTopN(baseSamples, testRatings, 100, 0.02, 0.01, 0.9);
         }
 
+        // kdd 2016, poi recommendation
+        public static void MatrixFactorizationTopNTestTemp(int f = 10)
+        {
+            List<Rating> baseRatings = Tools.GetRatings(@"D:\study\papers\kdd 2016\Rating_Train");
+            List<Rating> testRatings = Tools.GetRatings(@"D:\study\papers\kdd 2016\Rating_Test");
+
+            var baseSamples = Tools.RandomSelectNegativeSamples(baseRatings, 3, true);
+
+            var max1 = Tools.GetMaxUserIdAndItemId(baseRatings);
+            var max2 = Tools.GetMaxUserIdAndItemId(testRatings);
+
+            MatrixFactorization model = new MatrixFactorization(2550 + 1, 13473 + 1, f);
+            model.TrySGDForTopN(baseSamples, testRatings, 100, 0.02, 0.01, 0.9);
+        }
+
+        public static void SLIMTemp(int f = 10)
+        {
+            List<Rating> baseRatings = Tools.GetRatings(@"D:\study\papers\kdd 2016\Rating_Train");
+            List<Rating> testRatings = Tools.GetRatings(@"D:\study\papers\kdd 2016\Rating_Test");
+
+            var baseSamples = Tools.RandomSelectNegativeSamples(baseRatings, 3, true);
+
+            var max1 = Tools.GetMaxUserIdAndItemId(baseRatings);
+            var max2 = Tools.GetMaxUserIdAndItemId(testRatings);
+
+            SLIM model = new SLIM(2550 + 1, 13473 + 1);
+            model.TryLeastSquare(baseRatings, testRatings, 100, 0.01, 0.001);
+        }
+
         public static void MatrixFactorizationTopNTest()
         {
             double testSize = 0.125;
