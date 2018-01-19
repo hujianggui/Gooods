@@ -4,6 +4,17 @@
 	[0] Global mean, user mean, item mean filling methods. Those are used for rating prediction.
 	[1] UserKNN (user-based collaborative filtering), rating prediction.
 	    UserKNNv2 (user-based collaborative filtering, multithread for W), top-N recommendation.
+
+		@article{journals/kbs/WangH16,
+		  author    = {Zhijin Wang and
+		               Liang He},
+		  title     = {User identification for enhancing {IP-TV} recommendation},
+		  journal   = {Knowl.-Based Syst.},
+		  volume    = {98},
+		  pages     = {68--75},
+		  year      = {2016},
+		}
+
 	[2] ItemKNNv2 (item-based collaborative filtering, multithread for W), top-N recommendation.
 	[3] PageRank (Restart Random Walk), top-N recommendation.
 	[4] Matrix Factorization, rating prediction, top-N recommendation.
@@ -13,13 +24,13 @@
 	[8] Euclidean Embedding, rating prediction, top-N recommendation.
 	[9] SLIM (Sparse LInear Model) (train with multithread), top-N recommendation.
 	[10] FISM (Factored Item Similarity Models), top-N recommendation. This including:
-	     FISMrmse which uses an element-wise update for a SE loss function.
-	     FISMauc which uses a pair-wise update for a AUC loss function.
+	    FISMrmse which uses an element-wise update for a SE loss function.
+	    FISMauc which uses a pair-wise update for a AUC loss function.
 	[11] SocialMF, rating prediction, top-N recommendation.
-	[12] Friend Matrix Factorization, rating prediction, top-N recommendation.
+	[11] Friend Matrix Factorization, rating prediction, top-N recommendation.
 	    Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 		
-	    @inproceedings{DBLP:conf/pakdd/WangYHH15,
+	    @inproceedings{conf/pakdd/WangYHH15,
 	      author    = {Zhijin Wang and Yan Yang and Qinmin Hu and Liang He},
 	      title     = {An Empirical Study of Personal Factors and Social Effects on Rating Prediction},
 	      booktitle = {Proceedings of the 19th Pacific-Asia Conference on Knowledge Discovery and Data Mining},
@@ -28,8 +39,8 @@
 	      series    = {PAKDD'15},
 	    }
 	    
-	[13] Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
-	     Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
+	[12] Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
+	    Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 
 
 
