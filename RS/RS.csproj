@@ -68,6 +68,7 @@
     <Compile Include="CollaborativeFiltering\AlternatingLeastSquares.cs" />
     <Compile Include="CollaborativeFiltering\BiasedMatrixFactorization.cs" />
     <Compile Include="CollaborativeFiltering\AdaptiveFriendMatrixFactorization.cs" />
+    <Compile Include="CollaborativeFiltering\BPRMF.cs" />
     <Compile Include="CollaborativeFiltering\EuclideanEmbedding.cs" />
     <Compile Include="CollaborativeFiltering\AdaptiveFriendBiasedMatrixFactorization.cs" />
     <Compile Include="CollaborativeFiltering\FISMrmse.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="CollaborativeFiltering\PageRank.cs" />
     <Compile Include="CollaborativeFiltering\SLIM.cs" />
     <Compile Include="CollaborativeFiltering\SocialMF.cs" />
+    <Compile Include="CollaborativeFiltering\WRMF.cs" />
     <Compile Include="ContentBasedFiltering\TagBasedFiltering.cs" />
     <Compile Include="ContentBasedFiltering\TagBasedItemKNN.cs" />
     <Compile Include="DataType\Node.cs" />

@@ -96,7 +96,7 @@ namespace RS.CollaborativeFiltering
                 // du
                 double[] di = new double[f];
 
-                foreach (Rating r in ratings)    // O(Nu * K^2), rating number of user u
+                foreach (Rating r in ratings)    // O(Nu * K^2), Nu denotes the rating number of user u
                 {
                     for (int i = 0; i < f; i++)
                     {
