@@ -5,7 +5,7 @@
 	[1] UserKNN (user-based collaborative filtering), rating prediction.
 	    UserKNNv2 (user-based collaborative filtering, multithread for W), top-N recommendation.
 
-		@article{DBLP:journals/kbs/WangH16,
+		@article{journals/kbs/WangH16,
 		  author    = {Zhijin Wang and
 		               Liang He},
 		  title     = {User identification for enhancing {IP-TV} recommendation},
@@ -30,7 +30,7 @@
 	[11] Friend Matrix Factorization, rating prediction, top-N recommendation.
 	    Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 		
-	    @inproceedings{DBLP:conf/pakdd/WangYHH15,
+	    @inproceedings{conf/pakdd/WangYHH15,
 	      author    = {Zhijin Wang and Yan Yang and Qinmin Hu and Liang He},
 	      title     = {An Empirical Study of Personal Factors and Social Effects on Rating Prediction},
 	      booktitle = {Proceedings of the 19th Pacific-Asia Conference on Knowledge Discovery and Data Mining},
