@@ -529,5 +529,26 @@ namespace RS.CollaborativeFiltering
             return 1.0 / (1.0 + Math.Exp(-x));
         }
 
+
+        /// <summary>
+        /// cui, see ICDM2009-p263-Hu&Koren
+        /// </summary>
+        /// <param name="rating"></param>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public static double WeightedRating(double r, double alpha = 40, string method = "linear")
+        {
+            double c = 0;
+            if (method == "linear")
+            {
+                c = 1 + alpha * r;
+            }
+            else if (method == "log")
+            {
+                c = 1 + alpha * Math.Log(1 +  r); 
+            }
+            return c;
+        }
+
     }
 }

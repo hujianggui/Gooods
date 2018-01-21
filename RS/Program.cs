@@ -24,6 +24,8 @@ namespace RS
             //ML_100k.ItemKNNv2Test();
             //ML_100k.MatrixFactorizationTopNTest(10);
             //ML_100k.AlternatingLeastSquaresTopNTest();
+            ML_100k.WRMFTopNTest();
+
             //ML_100k.SLIMTest();
 
             //ML_100k.FISMrmseTest();
@@ -32,7 +34,7 @@ namespace RS
             //ML_100k.PageRankTopNTest();
 
             //ML_100k.MatrixFactorizationTopNTestTemp();
-            ML_100k.SLIMTemp();
+            //ML_100k.SLIMTemp();
 
             //ML_100k.Preprocess();
 
