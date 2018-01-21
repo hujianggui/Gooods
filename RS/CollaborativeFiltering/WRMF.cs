@@ -130,16 +130,18 @@ namespace RS.CollaborativeFiltering
         }
 
 
-        public void TryALSForTopN(List<Rating> train, List<Rating> test, int epochs = 100, double lambda = 0.01, double alpha = 40)
+        public void TryALSForTopN(List<Rating> train, List<Rating> test, int epochs = 100, int ratio = 2, double lambda = 0.01, double alpha = 40)
         {
             PrintParameters(train, test, epochs, lambda, alpha);
+            var baseSamples = Tools.RandomSelectNegativeSamples(train, ratio, true);
+
             Console.WriteLine("epoch,train:loss,N,P,R,Coverage,Popularity");
             double loss = Loss(train, lambda);
             int[] K = { 1, 5, 10, 15, 20, 25, 30 };  // recommdation list
 
-            Hashtable userRatingsTable = Tools.GetUserItemsTable(train);
-            Hashtable itemRatingsTable = Tools.GetItemUsersTable(train);
-            MyTable ratingTable = Tools.GetRatingTable(train);
+            Hashtable userRatingsTable = Tools.GetUserItemsTable(baseSamples);
+            Hashtable itemRatingsTable = Tools.GetItemUsersTable(baseSamples);
+            MyTable ratingTable = Tools.GetRatingTable(baseSamples);
 
             for (int epoch = 1; epoch <= epochs; epoch++)
             {

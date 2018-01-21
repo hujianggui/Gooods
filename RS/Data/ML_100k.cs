@@ -250,12 +250,9 @@ namespace RS.Data
             List<Rating> ratings = Tools.GetRatings(DefaultRatingFile);
             Tools.UpdateIndexesToZeroBased(ratings);
             var data = Tools.TrainTestSplit(ratings, testSize);
-            var baseSamples = Tools.RandomSelectNegativeSamples(data.Item1, 2, true);
 
             WRMF model = new WRMF(MaxUserId, MaxItemId, 10);
-
-            // TODO
-            model.TryALSForTopN(baseSamples, data.Item2, 100, 0.01, 2);
+            model.TryALSForTopN(data.Item1, data.Item2, 100, 2, 0.01, 40);
         }
 
         public static void SLIMTest()
