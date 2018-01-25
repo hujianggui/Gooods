@@ -50,14 +50,13 @@ namespace RS.CollaborativeFiltering
 
                 foreach (Rating r in ratings)    // O(Nu * K^2), rating number of user u
                 {
-                    double cui = MathUtility.WeightedRating(r.Score, alpha, weightedMethod);
                     for (int i = 0; i < f; i++)
                     {
                         for (int j = 0; j < f; j++)
                         {
-                            Au[i, j] += Q[r.ItemId, i] * Q[r.ItemId, j] * cui; 
+                            Au[i, j] += Q[r.ItemId, i] * Q[r.ItemId, j] * r.Confidence; 
                         }
-                        du[i] += r.Score * Q[r.ItemId, i] * cui;
+                        du[i] += r.Score * Q[r.ItemId, i] * r.Confidence;
                     }                    
                 }               
 
@@ -96,15 +95,14 @@ namespace RS.CollaborativeFiltering
                 double[] di = new double[f];
 
                 foreach (Rating r in ratings)    // O(Nu * K^2), Nu denotes the rating number of user u
-                {
-                    double cui = MathUtility.WeightedRating(r.Score, alpha, weightedMethod);
+                {                   
                     for (int i = 0; i < f; i++)
                     {
                         for (int j = 0; j < f; j++)
                         {
-                            Ai[i, j] += P[r.UserId, i] * P[r.UserId, j] * cui;
+                            Ai[i, j] += P[r.UserId, i] * P[r.UserId, j] * r.Confidence;
                         }
-                        di[i] += r.Score * P[r.UserId, i] * cui;
+                        di[i] += r.Score * P[r.UserId, i] * r.Confidence;
                     }
                 }
 
@@ -130,9 +128,10 @@ namespace RS.CollaborativeFiltering
         }
 
 
-        public void TryALSForTopN(List<Rating> train, List<Rating> test, int epochs = 100, int ratio = 2, double lambda = 0.01, double alpha = 40)
+        public void TryALSForTopN(List<Rating> train, List<Rating> test, int epochs = 100, int ratio = 2, double lambda = 0.01, double alpha = 40, string method = "linear")
         {
             PrintParameters(train, test, epochs, lambda, alpha);
+            Tools.UpdateConfidences(train, alpha, method);
             var baseSamples = Tools.RandomSelectNegativeSamples(train, ratio, true);
 
             Console.WriteLine("epoch,train:loss,N,P,R,Coverage,Popularity");
@@ -145,8 +144,8 @@ namespace RS.CollaborativeFiltering
 
             for (int epoch = 1; epoch <= epochs; epoch++)
             {
-                PStep(userRatingsTable, lambda, alpha, "linear");
-                QStep(itemRatingsTable, lambda, alpha, "linear");
+                PStep(userRatingsTable, lambda, alpha, method);
+                QStep(itemRatingsTable, lambda, alpha, method);
 
                 double lastLoss = Loss(train, lambda);
                 if (epoch % 2 == 0)

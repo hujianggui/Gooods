@@ -12,6 +12,7 @@ namespace RS.DataType
         public int UserId = 0;
         public int ItemId = 0;
         public double Score = 0;
+        public double Confidence = 1.0;
         public string Timestamp { get; set; }
         public int TimeInterval { get; set; }    // Example: 24 hours of a day.
 
