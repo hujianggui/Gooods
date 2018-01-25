@@ -36,7 +36,7 @@ namespace RS.CollaborativeFiltering
             Console.WriteLine("alpha,{0}", alpha);
         }
 
-        protected void PStep(Hashtable userRatingsTable, double lambda, double alpha = 40, string weightedMethod = "linear")
+        protected void PStep(Hashtable userRatingsTable, double lambda)
         {
             foreach (int uId in userRatingsTable.Keys)
             {
@@ -84,7 +84,7 @@ namespace RS.CollaborativeFiltering
 
         }
 
-        protected void QStep(Hashtable itemRatingsTable, double lambda, double alpha = 40, string weightedMethod = "linear")
+        protected void QStep(Hashtable itemRatingsTable, double lambda)
         {
             foreach (int iId in itemRatingsTable.Keys)
             {
@@ -144,8 +144,8 @@ namespace RS.CollaborativeFiltering
 
             for (int epoch = 1; epoch <= epochs; epoch++)
             {
-                PStep(userRatingsTable, lambda, alpha, method);
-                QStep(itemRatingsTable, lambda, alpha, method);
+                PStep(userRatingsTable, lambda);
+                QStep(itemRatingsTable, lambda);
 
                 double lastLoss = Loss(train, lambda);
                 if (epoch % 2 == 0)
