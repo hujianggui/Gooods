@@ -16,18 +16,19 @@
 		}
 
 	[2] ItemKNNv2 (item-based collaborative filtering, multithread for W), top-N recommendation.
-	[3] PageRank (Restart Random Walk), top-N recommendation.
+	[3] PageRank (Restart with Random Walk), top-N recommendation.
 	[4] Matrix Factorization, rating prediction, top-N recommendation.
 	[5] Biased Matrix Factorization, rating prediction, top-N recommendation.
 	[6] SVD++ (speed up), rating prediction.
 	[7] Alternating Least Lquares, rating prediction, top-N recommendation.
-	[8] Euclidean Embedding, rating prediction, top-N recommendation.
-	[9] SLIM (Sparse LInear Model) (train with multithread), top-N recommendation.
-	[10] FISM (Factored Item Similarity Models), top-N recommendation. This including:
-	    FISMrmse which uses an element-wise update for a SE loss function.
-	    FISMauc which uses a pair-wise update for a AUC loss function.
-	[11] SocialMF, rating prediction, top-N recommendation.
-	[11] Friend Matrix Factorization, rating prediction, top-N recommendation.
+	[8] WRMF (weighted regularized matrix factorization), top-N recommendation.
+	[9] Euclidean Embedding, rating prediction, top-N recommendation.
+	[10] SLIM (Sparse LInear Model) (train with multithread), top-N recommendation. 
+	[11] FISM (Factored Item Similarity Models), top-N recommendation. This including:
+		FISMrmse which uses an element-wise update for a SE loss function.
+		FISMauc which uses a pair-wise update for a AUC loss function.
+	[12] SocialMF, rating prediction, top-N recommendation.
+	[13] Friend Matrix Factorization, rating prediction, top-N recommendation.
 	    Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 		
 	    @inproceedings{conf/pakdd/WangYHH15,
@@ -39,7 +40,7 @@
 	      series    = {PAKDD'15},
 	    }
 	    
-	[12] Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
+	[14] Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
 	    Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 
 
