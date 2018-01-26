@@ -128,11 +128,11 @@ namespace RS.CollaborativeFiltering
         }
 
 
-        public void TryALSForTopN(List<Rating> train, List<Rating> test, int epochs = 100, int ratio = 2, double lambda = 0.01, double alpha = 40, string method = "linear")
+        public void TryALSForTopN(List<Rating> train, List<Rating> test, int epochs = 100, double lambda = 0.01, int ratio = 2, double alpha = 40, string method = "linear")
         {
-            // 流程还是有错：todo 2018.01.25
             PrintParameters(train, test, epochs, lambda, alpha);
             Tools.UpdateConfidences(train, alpha, method);
+            Tools.TransferToImplicitRatings(train, 0);
             var baseSamples = Tools.RandomSelectNegativeSamples(train, ratio, true);
 
             Console.WriteLine("epoch,train:loss,N,P,R,Coverage,Popularity");

@@ -252,7 +252,7 @@ namespace RS.Data
             var data = Tools.TrainTestSplit(ratings, testSize);
 
             WRMF model = new WRMF(MaxUserId, MaxItemId, 10);
-            model.TryALSForTopN(data.Item1, data.Item2, 100, 2, 0.01, 1, "linear");
+            model.TryALSForTopN(data.Item1, data.Item2, 100, 0.01, 2, 40, "linear");
         }
 
         public static void SLIMTest()

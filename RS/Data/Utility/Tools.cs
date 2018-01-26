@@ -721,11 +721,31 @@ namespace RS.Data.Utility
             return c;
         }
 
+        /// <summary>
+        /// Calculate confidence of each rating.
+        /// </summary>
+        /// <param name="ratings"></param>
+        /// <param name="alpha"></param>
+        /// <param name="method"></param>
         public static void UpdateConfidences(List<Rating> ratings, double alpha = 40, string method = "linear")
         {
             foreach(Rating r in ratings)
             {
                 r.Confidence = WeightedRating(r.Score, alpha, method);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ratings"></param>
+        /// <param name="alpha"></param>
+        /// <param name="method"></param>
+        public static void TransferToImplicitRatings(List<Rating> ratings, double threshold = 0)
+        {
+            foreach (Rating r in ratings)
+            {
+                r.Score = (r.Score > threshold ? 1 : 0);
             }
         }
 
