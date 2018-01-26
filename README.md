@@ -25,8 +25,8 @@
 	[9] Euclidean Embedding, rating prediction, top-N recommendation.
 	[10] SLIM (Sparse LInear Model) (train with multithread), top-N recommendation. 
 	[11] FISM (Factored Item Similarity Models), top-N recommendation. This including:
-		FISMrmse which uses an element-wise update for a SE loss function.
-		FISMauc which uses a pair-wise update for a AUC loss function.
+        FISMrmse which uses an element-wise update for a SE loss function.
+        FISMauc which uses a pair-wise update for a AUC loss function.
 	[12] SocialMF, rating prediction, top-N recommendation.
 	[13] Friend Matrix Factorization, rating prediction, top-N recommendation.
 	    Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
