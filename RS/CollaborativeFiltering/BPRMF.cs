@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace RS.CollaborativeFiltering
 {
+    /// <summary>
+    /// UAI2009, p452, Stefen Rendle, BPR: Bayesian Personalized Ranking from Implicit Feedback
+    /// </summary>
     public class BPRMF
     {
 
