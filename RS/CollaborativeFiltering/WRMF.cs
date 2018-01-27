@@ -127,7 +127,16 @@ namespace RS.CollaborativeFiltering
             }
         }
 
-
+        /// <summary>
+        /// Train WRMF using alternating least square to generate top N recommendations.
+        /// </summary>
+        /// <param name="train">training set</param>
+        /// <param name="test">test set</param>
+        /// <param name="epochs">maximum iterations</param>
+        /// <param name="lambda"> $$\lambda * I$$</param>
+        /// <param name="ratio">sampling ratio: negative / positive</param>
+        /// <param name="alpha">parameter for generating cui</param>
+        /// <param name="method">method for generating cui</param>
         public void TryALSForTopN(List<Rating> train, List<Rating> test, int epochs = 100, double lambda = 0.01, int ratio = 2, double alpha = 40, string method = "linear")
         {
             PrintParameters(train, test, epochs, lambda, alpha);

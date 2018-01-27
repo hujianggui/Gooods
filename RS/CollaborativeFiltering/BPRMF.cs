@@ -14,6 +14,8 @@ namespace RS.CollaborativeFiltering
     public class BPRMF
     {
 
+
+
         Tuple<int, int, int> SampleTriple(List<Rating> userItems, ArrayList itemList)
         {
 
