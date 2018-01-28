@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Collections;
 
-using RS.Core;
 using RS.DataType;
 
 namespace RS.Data.Utility

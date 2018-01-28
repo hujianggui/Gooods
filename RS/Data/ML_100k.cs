@@ -255,6 +255,18 @@ namespace RS.Data
             model.TryALSForTopN(data.Item1, data.Item2, 100, 0.01, 2, 40, "linear");
         }
 
+        public static void BPRMFTopNTest()
+        {
+            List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
+            List<Rating> testRatings = Tools.GetRatings(TestRatingFile);
+
+            Tools.UpdateIndexesToZeroBased(baseRatings);
+            Tools.UpdateIndexesToZeroBased(testRatings);
+
+            BPRMF mf = new BPRMF(MaxUserId, MaxItemId);
+            //mf.TryLeastSquare(baseRatings, testRatings, 100, 0.01, 0.001);
+        }
+
         public static void SLIMTest()
         {
             List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);

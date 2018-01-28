@@ -11,27 +11,13 @@ namespace RS.CollaborativeFiltering
     /// <summary>
     /// UAI2009, p452, Stefen Rendle, BPR: Bayesian Personalized Ranking from Implicit Feedback
     /// </summary>
-    public class BPRMF
+    public class BPRMF : MatrixFactorization
     {
+        public BPRMF() { }
 
-
-
-        Tuple<int, int, int> SampleTriple(List<Rating> userItems, ArrayList itemList)
+        public BPRMF(int p, int q, int f = 10, string fillMethod = "uniform_df")
         {
-
-
-
-
-            return Tuple.Create(1, 1, 1);
-        }
-
-        Tuple<int, int, int> SampleTriple(Hashtable userItemsTable, ArrayList items)
-        {
-
-
-
-
-            return Tuple.Create(1, 1, 1);
+            base.InitializeModel(p, q, f, fillMethod);
         }
 
         /// <summary>
@@ -39,7 +25,7 @@ namespace RS.CollaborativeFiltering
         /// </summary>
         /// <param name="ratingTable">user id - item id - score table</param>
         /// <returns></returns>
-        Tuple<int, int, int> SampleTriple(MyTable ratingTable)
+        protected Tuple<int, int, int> SampleTriple(MyTable ratingTable)
         {
 
 

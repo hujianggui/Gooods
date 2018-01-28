@@ -22,16 +22,15 @@ namespace RS
 
             //ML_100k.UserKNNv2Test();
             //ML_100k.ItemKNNv2Test();
+            //ML_100k.PageRankTopNTest();
             //ML_100k.MatrixFactorizationTopNTest(10);
             //ML_100k.AlternatingLeastSquaresTopNTest();
             //ML_100k.WRMFTopNTest();
-
+            ML_100k.BPRMFTopNTest();
             //ML_100k.SLIMTest();
-
             //ML_100k.FISMrmseTest();
             //ML_100k.FISMaucTest();
 
-            //ML_100k.PageRankTopNTest();
 
             //ML_100k.MatrixFactorizationTopNTestTemp();
             //ML_100k.SLIMTemp();
