@@ -8,6 +8,7 @@ using RS.Data.Utility;
 using RS.DataType;
 using RS.Evaluation;
 using System.Collections;
+using RS.Core;
 
 namespace RS.CollaborativeFiltering
 {

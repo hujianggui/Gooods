@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using RS.DataType;
 using RS.Data.Utility;
 using RS.Evaluation;
-
+using RS.Core;
 
 namespace RS.CollaborativeFiltering
 {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Collections;
 
+using RS.Core;
 using RS.DataType;
 
 namespace RS.Data.Utility
@@ -550,7 +551,7 @@ namespace RS.Data.Utility
                 throw new ArgumentNullException();
             }
 
-            Random random = new Random();
+            var random = Core.Random.GetInstance();
             List<Rating> baseRatings = new List<Rating>();
             List<Rating> testRatings = new List<Rating>();
             foreach(Rating r in ratings)
@@ -581,7 +582,7 @@ namespace RS.Data.Utility
                 throw new ArgumentNullException();
             }
 
-            Random random = new Random();
+            var random = Core.Random.GetInstance();
             MyTable baseRecordTable = new MyTable();
             MyTable testRecordTable = new MyTable();
 
@@ -655,7 +656,7 @@ namespace RS.Data.Utility
             MyTable ratingTable = GetRatingTable(positiveRatings);
             int[] items = (int[])ratingTable.GetSubKeyList().ToArray(typeof(int));
 
-            Random random = new Random();
+            var random = Core.Random.GetInstance();
             foreach (int uId in ratingTable.Keys)
             {
                 Hashtable subTable = (Hashtable)ratingTable[uId];

@@ -6,6 +6,7 @@ using System.Linq;
 using RS.DataType;
 using RS.Evaluation;
 using RS.Data.Utility;
+using RS.Core;
 
 namespace RS.CollaborativeFiltering
 {

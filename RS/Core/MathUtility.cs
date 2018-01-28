@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RS.CollaborativeFiltering
+namespace RS.Core
 {
     public static class MathUtility
     {
@@ -8,7 +8,7 @@ namespace RS.CollaborativeFiltering
         {
             // Joseph L. Leva: A fast normal Random number generator
             double u, v, x, y, Q;
-            Random random = new Random();
+            Random random = Random.GetInstance();
             do
             {
                 do
@@ -91,7 +91,7 @@ namespace RS.CollaborativeFiltering
         {
             double interval = high - low;
             double[,] matrix = new double[rows, columns];
-            Random r = new Random();
+            Random r = Random.GetInstance();
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
@@ -106,7 +106,7 @@ namespace RS.CollaborativeFiltering
         public static double[,] RandomUniform(int rows, int columns, double factor)
         {
             double[,] matrix = new double[rows, columns];
-            Random r = new Random();
+            Random r = Random.GetInstance();
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)

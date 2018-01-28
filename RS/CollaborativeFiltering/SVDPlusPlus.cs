@@ -4,7 +4,7 @@ using System.Linq;
 using System.Collections;
 
 using RS.DataType;
-
+using RS.Core;
 
 namespace RS.CollaborativeFiltering
 {

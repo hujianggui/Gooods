@@ -25,5 +25,28 @@ namespace RS.CollaborativeFiltering
             return Tuple.Create(1, 1, 1);
         }
 
+        Tuple<int, int, int> SampleTriple(Hashtable userItemsTable, ArrayList items)
+        {
+
+
+
+
+            return Tuple.Create(1, 1, 1);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ratingTable">user id - item id - score table</param>
+        /// <returns></returns>
+        Tuple<int, int, int> SampleTriple(MyTable ratingTable)
+        {
+
+
+
+
+            return Tuple.Create(1, 1, 1);
+        }
+
     }
 }
