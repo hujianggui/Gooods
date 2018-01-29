@@ -153,16 +153,14 @@ namespace RS.CollaborativeFiltering
         protected List<Rating> GetRecommendations(MyTable ratingTable, int N = 30)
         {
             List<Rating> recommendedItems = new List<Rating>();
-            ArrayList list = ratingTable.GetSubKeyList();
-           
-            int[] mainKeys = new int[ratingTable.Keys.Count];
-            ratingTable.Keys.CopyTo(mainKeys, 0);
+            var itemIds = (int[])ratingTable.GetSubKeyArray();
+            var userIds = (int[])ratingTable.GetMainKeyArray();
 
-            Parallel.ForEach(mainKeys, userId =>
+            Parallel.ForEach(userIds, userId =>
             {
                 Hashtable Nu = (Hashtable)ratingTable[userId];      // ratings of user u
                 List<Rating> predictedRatings = new List<Rating>();
-                foreach (int itemId in list)
+                foreach (int itemId in itemIds)
                 {
                     if (!Nu.ContainsKey(itemId))
                     {

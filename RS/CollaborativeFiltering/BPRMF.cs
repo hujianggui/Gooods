@@ -24,8 +24,8 @@ namespace RS.CollaborativeFiltering
 
         protected List<Tuple<int, int, int>> SampleTriples(MyTable ratingTable)
         {
-            var userIds = new ArrayList(ratingTable.Keys);
-            var itemIds = ratingTable.GetSubKeyList();
+            var userIds = (int[])ratingTable.GetMainKeyArray();
+            var itemIds = (int[])ratingTable.GetSubKeyArray();
 
             List<Tuple<int, int, int>> list = new List<Tuple<int, int, int>>();
 

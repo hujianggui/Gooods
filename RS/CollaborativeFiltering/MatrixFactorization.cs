@@ -227,18 +227,16 @@ namespace RS.CollaborativeFiltering
         protected List<Rating> GetRecommendations(MyTable ratingTable, int N = 10, bool multiThread = false)
         {
             List<Rating> recommendedItems = new List<Rating>();
-            ArrayList list = ratingTable.GetSubKeyList();
+            var itemIds = (int[])ratingTable.GetSubKeyArray();            
 
             if (multiThread)
             {
-                int[] mainKeys = new int[ratingTable.Keys.Count];
-                ratingTable.Keys.CopyTo(mainKeys, 0);
-
-                Parallel.ForEach(mainKeys, userId =>
+                var userIds = (int[])ratingTable.GetMainKeyArray();
+                Parallel.ForEach(userIds, userId =>
                 {
                     Hashtable Nu = (Hashtable)ratingTable[userId];      // ratings of user u
                     List<Rating> predictedRatings = new List<Rating>();
-                    foreach (int itemId in list)
+                    foreach (int itemId in itemIds)
                     {
                         if (!Nu.ContainsKey(itemId))
                         {
@@ -259,7 +257,7 @@ namespace RS.CollaborativeFiltering
                 {
                     Hashtable Nu = (Hashtable)ratingTable[userId];      // ratings of user u
                     List<Rating> predictedRatings = new List<Rating>();
-                    foreach (int itemId in list)
+                    foreach (int itemId in itemIds)
                     {
                         if (!Nu.ContainsKey(itemId))
                         {

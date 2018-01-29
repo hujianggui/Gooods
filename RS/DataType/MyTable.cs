@@ -12,32 +12,6 @@ namespace RS.DataType
     /// </summary>
     public class MyTable
     {
-        /// <summary>
-        /// class SubKeyComparer
-        /// </summary>
-        private class SubKeyComparer : IComparer
-        {
-            private Hashtable SubKeyTable = null;
-
-            public SubKeyComparer(Hashtable subKeyTable)
-            {
-                this.SubKeyTable = subKeyTable;
-            }
-
-            // Asc
-            public int Compare(object x, object y)
-            {
-                int f = (int)SubKeyTable[x];
-                int s = (int)SubKeyTable[y];
-
-                if (f < s)
-                    return -1;
-                else if (f == s)
-                    return 0;
-                else return 1;
-            }
-        }
-
         private Hashtable Main = new Hashtable();
 
         private Hashtable SubKeys = new Hashtable();  // Set of SubKeys
@@ -111,12 +85,29 @@ namespace RS.DataType
             return -1;
         }
 
-        public virtual ArrayList GetSubKeyList()
+        public virtual Array GetMainKeyArray(bool sort = false)
         {
-            ArrayList list = new ArrayList(SubKeys.Keys);
-            list.Sort(new SubKeyComparer(SubKeys));
-            return list;
+            object[] array = new object[Main.Keys.Count];
+            Main.Keys.CopyTo(array, 0);
+            if (sort)
+            {
+                Array.Sort(array);
+            }
+            return array;
         }
+
+
+        public virtual Array GetSubKeyArray(bool sort = false)
+        {
+            object[] array = new object[SubKeys.Keys.Count];
+            SubKeys.Keys.CopyTo(array, 0);
+            if (sort)
+            {
+                Array.Sort(array);
+            }
+            return array;
+        }
+
 
         public virtual bool ContainsMainKey(object mainKey)
         {
