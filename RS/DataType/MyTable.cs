@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
 
 namespace RS.DataType
 {
@@ -37,7 +40,7 @@ namespace RS.DataType
 
         private Hashtable Main = new Hashtable();
 
-        private Hashtable SubKeyAll = new Hashtable();  // Set of SubKeys
+        private Hashtable SubKeys = new Hashtable();  // Set of SubKeys
 
         public MyTable() {}
 
@@ -77,9 +80,9 @@ namespace RS.DataType
             Hashtable subTable = (Hashtable)Main[mainKey];
             subTable.Add(subKey, value); 
 
-            if (!SubKeyAll.Contains(subKey))
+            if (!SubKeys.Contains(subKey))
             {
-                SubKeyAll.Add(subKey, SubKeyAll.Count+1); // note
+                SubKeys.Add(subKey, SubKeys.Count+1); // note
             }
         }
 
@@ -99,19 +102,19 @@ namespace RS.DataType
 
         public virtual int Count { get { return Main.Count; } }
 
-        public virtual Hashtable SubKeyTable { get { return SubKeyAll; } }
+        public virtual Hashtable SubKeyTable { get { return SubKeys; } }
 
         public virtual int SubKeyIndex(object subKey)
         {
-            if (SubKeyAll.ContainsKey(subKey))
-                return (int)SubKeyAll[subKey];
+            if (SubKeys.ContainsKey(subKey))
+                return (int)SubKeys[subKey];
             return -1;
         }
 
         public virtual ArrayList GetSubKeyList()
         {
-            ArrayList list = new ArrayList(SubKeyAll.Keys);
-            list.Sort(new SubKeyComparer(SubKeyAll));
+            ArrayList list = new ArrayList(SubKeys.Keys);
+            list.Sort(new SubKeyComparer(SubKeys));
             return list;
         }
 

@@ -1,4 +1,5 @@
-﻿using RS.DataType;
+﻿using RS.Data.Utility;
+using RS.DataType;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,6 +21,18 @@ namespace RS.CollaborativeFiltering
             base.InitializeModel(p, q, f, fillMethod);
         }
 
+
+        protected List<Tuple<int, int, int>> SampleTriples(MyTable ratingTable)
+        {
+            var userIds = new ArrayList(ratingTable.Keys);
+            var itemIds = ratingTable.GetSubKeyList();
+
+            List<Tuple<int, int, int>> list = new List<Tuple<int, int, int>>();
+
+
+            return list;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -28,10 +41,15 @@ namespace RS.CollaborativeFiltering
         protected Tuple<int, int, int> SampleTriple(MyTable ratingTable)
         {
 
-
-
-
             return Tuple.Create(1, 1, 1);
+        }
+
+
+        public void TryTopN(List<Rating> train, int epochs = 100)
+        {
+            var ratingTable = Tools.GetRatingTable(train);
+            var triples = SampleTriples(ratingTable);
+
         }
 
     }

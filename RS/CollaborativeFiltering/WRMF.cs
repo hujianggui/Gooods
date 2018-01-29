@@ -145,7 +145,7 @@ namespace RS.CollaborativeFiltering
             Tools.TransferToImplicitRatings(train, 0);
             var baseSamples = Tools.RandomSelectNegativeSamples(train, ratio, true);
 
-            Console.WriteLine("epoch,train:loss,N,P,R,Coverage,Popularity");
+            Console.WriteLine("epoch#train:loss,N,P,R,Coverage,Popularity,MAP");
             double loss = Loss(train, lambda);
             int[] K = { 1, 5, 10, 15, 20, 25, 30 };  // recommdation list
 

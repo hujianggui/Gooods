@@ -263,8 +263,9 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(baseRatings);
             Tools.UpdateIndexesToZeroBased(testRatings);
 
-            BPRMF mf = new BPRMF(MaxUserId, MaxItemId);
-            //mf.TryLeastSquare(baseRatings, testRatings, 100, 0.01, 0.001);
+            BPRMF f = new BPRMF(MaxUserId, MaxItemId);
+            //f.TryLeastSquare(baseRatings, testRatings, 100, 0.01, 0.001);
+            f.TryTopN(baseRatings, 100);
         }
 
         public static void SLIMTest()
