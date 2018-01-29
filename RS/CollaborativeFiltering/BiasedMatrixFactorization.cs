@@ -180,12 +180,11 @@ namespace RS.CollaborativeFiltering
         protected List<Rating> GetRecommendations(MyTable ratingTable, double miu, int N = 10, bool multiThread = false)
         {
             List<Rating> recommendedItems = new List<Rating>();
-            var subKeys = ratingTable.GetSubKeyArray();
+            int[] subKeys = ratingTable.GetSubKeyArray().AsParallel().Cast<int>().ToArray();
 
             if (multiThread)
             {
-                int[] mainKeys = (int [])ratingTable.GetMainKeyArray();
-
+                int[] mainKeys = ratingTable.GetMainKeyArray().AsParallel().Cast<int>().ToArray();
                 Parallel.ForEach(mainKeys, userId =>
                 {
                     Hashtable Nu = (Hashtable)ratingTable[userId];      // ratings of user u
@@ -237,7 +236,7 @@ namespace RS.CollaborativeFiltering
             int[] K = { 1, 5, 10, 15, 20, 25, 30 };  // recommdation list
             MyTable ratingTable = Tools.GetRatingTable(train);
 
-            for (int epoch = 0; epoch < epochs; epoch++)
+            for (int epoch = 1; epoch <= epochs; epoch++)
             {
                 foreach (Rating r in train)
                 {

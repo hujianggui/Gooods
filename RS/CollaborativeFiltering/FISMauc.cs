@@ -151,8 +151,8 @@ namespace RS.CollaborativeFiltering
         protected List<Rating> GetRecommendations(MyTable ratingTable, int N = 10)
         {
             List<Rating> recommendedItems = new List<Rating>();
-            var itemIds = (int[])ratingTable.GetSubKeyArray();
-            var userIds = (int[])ratingTable.GetMainKeyArray();
+            var itemIds = ratingTable.GetSubKeyArray().AsParallel().Cast<int>().ToArray();
+            var userIds = ratingTable.GetMainKeyArray().AsParallel().Cast<int>().ToArray();
 
             Parallel.ForEach(userIds, userId =>
             {

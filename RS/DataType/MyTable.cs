@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
 
 namespace RS.DataType
 {
     /// <summary>
-    /// class MyTable
     /// Two-Level Hashtable: hastables in a hashtable
     /// </summary>
     public class MyTable
@@ -85,29 +81,19 @@ namespace RS.DataType
             return -1;
         }
 
-        public virtual Array GetMainKeyArray(bool sort = false)
+        public virtual Array GetMainKeyArray()
         {
             object[] array = new object[Main.Keys.Count];
             Main.Keys.CopyTo(array, 0);
-            if (sort)
-            {
-                Array.Sort(array);
-            }
             return array;
         }
 
-
-        public virtual Array GetSubKeyArray(bool sort = false)
+        public virtual Array GetSubKeyArray()
         {
             object[] array = new object[SubKeys.Keys.Count];
             SubKeys.Keys.CopyTo(array, 0);
-            if (sort)
-            {
-                Array.Sort(array);
-            }
             return array;
         }
-
 
         public virtual bool ContainsMainKey(object mainKey)
         {

@@ -652,8 +652,8 @@ namespace RS.Data.Utility
             {
                 positiveRatings.Add(new Rating(r.UserId, r.ItemId, 1.0));
             }
-            MyTable ratingTable = GetRatingTable(positiveRatings);
-            int[] items = (int[])ratingTable.GetSubKeyArray();
+            MyTable ratingTable = GetRatingTable(positiveRatings);            
+            int[] items = ratingTable.GetSubKeyArray().AsParallel().Cast<int>().ToArray();
 
             var random = Core.Random.GetInstance();
             foreach (int uId in ratingTable.Keys)

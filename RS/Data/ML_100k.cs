@@ -234,6 +234,18 @@ namespace RS.Data
             model.TrySGDForTopN(baseSamples, data.Item2, 100, 0.02, 0.01, 0.9);
         }
 
+        public static void BiasedMatrixFactorizationTopNTest()
+        {
+            double testSize = 0.125;
+            List<Rating> ratings = Tools.GetRatings(DefaultRatingFile);
+            Tools.UpdateIndexesToZeroBased(ratings);
+            var data = Tools.TrainTestSplit(ratings, testSize);
+            var baseSamples = Tools.RandomSelectNegativeSamples(data.Item1, 2, true);
+
+            BiasedMatrixFactorization model = new BiasedMatrixFactorization(MaxUserId, MaxItemId, 100);
+            model.TrySGDForTopN(baseSamples, data.Item2, 100, 0.02, 0.01, 0.9);            
+        }
+
         public static void AlternatingLeastSquaresTopNTest(double testSize = 0.125)
         {
             List<Rating> ratings = Tools.GetRatings(DefaultRatingFile);

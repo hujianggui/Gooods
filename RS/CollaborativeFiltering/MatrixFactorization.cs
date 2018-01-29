@@ -227,11 +227,11 @@ namespace RS.CollaborativeFiltering
         protected List<Rating> GetRecommendations(MyTable ratingTable, int N = 10, bool multiThread = false)
         {
             List<Rating> recommendedItems = new List<Rating>();
-            var itemIds = (int[])ratingTable.GetSubKeyArray();            
+            var itemIds = ratingTable.GetSubKeyArray().AsParallel().Cast<int>().ToArray();
 
             if (multiThread)
             {
-                var userIds = (int[])ratingTable.GetMainKeyArray();
+                var userIds = ratingTable.GetMainKeyArray().AsParallel().Cast<int>().ToArray();
                 Parallel.ForEach(userIds, userId =>
                 {
                     Hashtable Nu = (Hashtable)ratingTable[userId];      // ratings of user u

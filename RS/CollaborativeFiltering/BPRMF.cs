@@ -24,8 +24,19 @@ namespace RS.CollaborativeFiltering
 
         protected List<Tuple<int, int, int>> SampleTriples(MyTable ratingTable)
         {
-            var userIds = (int[])ratingTable.GetMainKeyArray();
-            var itemIds = (int[])ratingTable.GetSubKeyArray();
+            var userIds = ratingTable.GetMainKeyArray().AsParallel().Cast<int>().OrderBy(k => k).ToArray();
+            var itemIds = ratingTable.GetSubKeyArray().AsParallel().Cast<int>().OrderBy(k => k).ToArray();
+
+            var random = Core.Random.GetInstance();
+
+            // randomly select a user
+
+            int userId = userIds[random.Next(userIds.Length)];
+            Hashtable itemsTable = (Hashtable)ratingTable[userId];
+
+            // randomly select an item
+
+            int i = itemIds[random.Next(itemIds.Length)];
 
             List<Tuple<int, int, int>> list = new List<Tuple<int, int, int>>();
 
