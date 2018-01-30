@@ -21,47 +21,60 @@ namespace RS.CollaborativeFiltering
             base.InitializeModel(p, q, f, fillMethod);
         }
 
-
-        protected List<Tuple<int, int, int>> SampleTriples(MyTable ratingTable)
+        protected Tuple<int, int, int>  SampleItemPair(int userId, Hashtable itemsTable, int[] itemIds, Random random)
         {
-            var userIds = ratingTable.GetMainKeyArray().AsParallel().Cast<int>().OrderBy(k => k).ToArray();
-            var itemIds = ratingTable.GetSubKeyArray().AsParallel().Cast<int>().OrderBy(k => k).ToArray();
+            int itemId = itemIds[random.Next(itemIds.Length)];
+            while (!itemsTable.ContainsKey(itemId))
+            {
+                itemId = itemIds[random.Next(itemIds.Length)];
+            }
 
-            var random = Core.Random.GetInstance();
+            int otherItemId = itemIds[random.Next(itemIds.Length)];
+            while (itemsTable.ContainsKey(otherItemId))
+            {
+                otherItemId = itemIds[random.Next(itemIds.Length)];
+            }
 
-            // randomly select a user
-
-            int userId = userIds[random.Next(userIds.Length)];
-            Hashtable itemsTable = (Hashtable)ratingTable[userId];
-
-            // randomly select an item
-
-            int i = itemIds[random.Next(itemIds.Length)];
-
-            List<Tuple<int, int, int>> list = new List<Tuple<int, int, int>>();
-
-
-            return list;
+            return Tuple.Create(userId, itemId, otherItemId);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="ratingTable">user id - item id - score table</param>
-        /// <returns></returns>
-        protected Tuple<int, int, int> SampleTriple(MyTable ratingTable)
+        /// <param name="ratingTable"></param>
+        /// <param name="ratio"></param>
+        /// <returns>list of triples: user id - item id - other item id</returns>
+        protected List<Tuple<int, int, int>> SampleTriples(MyTable ratingTable, int ratio = 100)
         {
+            var userIds = ratingTable.GetMainKeyArray().AsParallel().Cast<int>().OrderBy(k => k).ToArray();
+            var itemIds = ratingTable.GetSubKeyArray().AsParallel().Cast<int>().OrderBy(k => k).ToArray();
+            List<Tuple<int, int, int>> list = new List<Tuple<int, int, int>>();
 
-            return Tuple.Create(1, 1, 1);
+            var random = Core.Random.GetInstance();
+            for (int i = 0; i < userIds.Length * 100; i++)
+            {
+                // randomly select a user
+                int userId = userIds[random.Next(userIds.Length)];
+                Hashtable itemsTable = (Hashtable)ratingTable[userId];
+
+                var triples = SampleItemPair(userId, itemsTable, itemIds, random);
+                list.Add(triples);
+            }
+            return list;
         }
 
-
-        public void TryTopN(List<Rating> train, int epochs = 100)
+        public void TryTopN(List<Rating> train, List<Rating> test, int epochs = 100)
         {
             var ratingTable = Tools.GetRatingTable(train);
-            var triples = SampleTriples(ratingTable);
+            var triples = SampleTriples(ratingTable, 100);
 
+            for (int e = 1; e <= epochs; e++)
+            {
+                foreach (var t in triples)
+                {
+                    
+                }
+            }
         }
-
     }
 }

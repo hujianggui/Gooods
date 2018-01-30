@@ -277,7 +277,7 @@ namespace RS.Data
 
             BPRMF f = new BPRMF(MaxUserId, MaxItemId);
             //f.TryLeastSquare(baseRatings, testRatings, 100, 0.01, 0.001);
-            f.TryTopN(baseRatings, 100);
+            f.TryTopN(baseRatings, testRatings, 100);
         }
 
         public static void SLIMTest()
