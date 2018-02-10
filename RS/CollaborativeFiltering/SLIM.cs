@@ -203,20 +203,17 @@ namespace RS.CollaborativeFiltering
             SimilarItemsTable = itemkNN.GetSimilarItems(wuv, K);
 
             int[] Ns = {1, 5, 10, 15, 20, 25, 30};
-
             int[] itemIds = new int[ItemUsersTable.Count];
             ItemUsersTable.Keys.CopyTo(itemIds, 0);
             
             for(int e = 1; e <= epochs; e++)
             {
-
                 Hashtable counter = new Hashtable();
                 counter.Add(0, 0);
 
                 Parallel.ForEach(itemIds, itemId =>
                 {
                     Iterate(itemId);
-
                     lock (counter)
                     {
                         counter[0] = (int)counter[0] + 1;

@@ -4,20 +4,20 @@ using System.Collections;
 namespace RS.DataType
 {
     /// <summary>
-    /// Two-Level Hashtable: hastables in a hashtable
+    /// Two-Level Hashtable: hastables in another hashtable
     /// </summary>
     public class MyTable
     {
         private Hashtable Main = new Hashtable();
 
-        private Hashtable SubKeys = new Hashtable();  // Set of SubKeys
+        private Hashtable SubKeys = new Hashtable();  // Set of SubKeys: id - index
 
         public MyTable() {}
 
         public virtual bool ContainsKey(object mainKey, object subKey)
         {
             if (null == mainKey || null == subKey)
-                throw new System.ArgumentNullException();
+                throw new ArgumentNullException();
 
             if (Main.ContainsKey(mainKey))
             {
@@ -34,25 +34,33 @@ namespace RS.DataType
         {
             // if null
             if ( null == mainKey || null == subKey)
+            {
                 throw new ArgumentNullException();
+            }                
 
             // If already exists
             if (ContainsKey(mainKey, subKey))
+            {
                 throw new ArgumentException();
+            }               
 
             // If readonly or fix-size
             if (Main.IsFixedSize || Main.IsReadOnly)
+            {
                 throw new NotSupportedException();
+            }                
 
             if (null == Main[mainKey])
+            {
                 Main[mainKey] = new Hashtable();
+            }                
 
             Hashtable subTable = (Hashtable)Main[mainKey];
             subTable.Add(subKey, value); 
 
             if (!SubKeys.Contains(subKey))
             {
-                SubKeys.Add(subKey, SubKeys.Count+1); // note
+                SubKeys.Add(subKey, SubKeys.Count); 
             }
         }
 
@@ -77,7 +85,9 @@ namespace RS.DataType
         public virtual int SubKeyIndex(object subKey)
         {
             if (SubKeys.ContainsKey(subKey))
+            {
                 return (int)SubKeys[subKey];
+            }                
             return -1;
         }
 
@@ -108,11 +118,14 @@ namespace RS.DataType
 
     public class MyTableTest
     {
+        /// <summary>
+        /// A case for testing integer index.
+        /// </summary>
         public static void Test()
         {
             MyTable t = new MyTable();
             
-            const int size = 7000;
+            const int size = 700;
             Random r = new Random();
 
             for (int i = 0; i < size; i++)
@@ -125,6 +138,29 @@ namespace RS.DataType
                     }
                 }
                 Console.WriteLine("{0} Numbers", i*size);
+            }
+        }
+
+        /// <summary>
+        /// a case for testing string index.
+        /// </summary>
+        public static void Test2()
+        {
+            MyTable t = new MyTable();
+
+            const int size = 700;
+            Random r = new Random();
+
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    if (!t.ContainsKey(i.ToString(), j.ToString()))
+                    {
+                        t.Add(i.ToString(), j.ToString(), r.Next());
+                    }
+                }
+                Console.WriteLine("{0} Numbers", i * size);
             }
         }
     }
