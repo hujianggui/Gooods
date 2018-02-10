@@ -44,8 +44,8 @@ namespace RS.CollaborativeFiltering
             }
             else if (fillMethod == "gaussian")
             {
-                P = MathUtility.RandomGaussian(p, f, 0, 1);
-                Q = MathUtility.RandomGaussian(q, f, 0, 1);
+                P = MathUtility.RandomGaussian(p, f, 0, 0.1);
+                Q = MathUtility.RandomGaussian(q, f, 0, 0.1);
             }
             else if (fillMethod == "uniform")
             {

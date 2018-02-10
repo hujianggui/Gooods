@@ -220,14 +220,27 @@ namespace RS.Data.Utility
         /// </summary>
         /// <param name="ratings"></param>
         /// <returns></returns>
-        public static MyTable GetRatingTable(List<Rating> ratings)
+        public static MyTable GetRatingTable(List<Rating> ratings, bool useImplicitFeedback = false)
         {
             MyTable table = new MyTable();
-            foreach (Rating r in ratings)
+            if (useImplicitFeedback)
             {
-                if (!table.ContainsKey(r.UserId, r.ItemId))
+                foreach (Rating r in ratings)
                 {
-                    table.Add(r.UserId, r.ItemId, r.Score);
+                    if (!table.ContainsKey(r.UserId, r.ItemId))
+                    {
+                        table.Add(r.UserId, r.ItemId, 1.0);
+                    }
+                }
+            }
+            else
+            {
+                foreach (Rating r in ratings)
+                {
+                    if (!table.ContainsKey(r.UserId, r.ItemId))
+                    {
+                        table.Add(r.UserId, r.ItemId, r.Score);
+                    }
                 }
             }
             return table;
