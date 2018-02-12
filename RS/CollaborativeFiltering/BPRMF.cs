@@ -142,12 +142,12 @@ namespace RS.CollaborativeFiltering
                     int otherItemId = SampleOtherItemId(userId, itemsTable, itemIds, random);
 
                     // 2. Update latent factors according to the stochastic gradient descent update rule
-                    double e_uij = 1 - Predict(userId, itemId) + Predict(userId, otherItemId);
-                    double one_over_one_plus_ex = MathUtility.Logistic(e_uij);
+                    double e_uij = Predict(userId, itemId) - Predict(userId, otherItemId);
+                    double one_over_one_plus_ex = MathUtility.Logistic(-e_uij); // 1.0 / (1.0 + Math.Exp(e_uij));
 
                     // adjust bias terms
-                    bi[itemId]      += gamma * (one_over_one_plus_ex - lambda_bias * bi[itemId]);
-                    bi[otherItemId] += gamma * (one_over_one_plus_ex - lambda_bias * bi[otherItemId]);
+                    bi[itemId]      += gamma * ( one_over_one_plus_ex - lambda_bias * bi[itemId]);
+                    bi[otherItemId] += gamma * (-one_over_one_plus_ex - lambda_bias * bi[otherItemId]);
 
                     // adjust latent factors
                     for(int i = 0; i < f;i++)
@@ -156,14 +156,9 @@ namespace RS.CollaborativeFiltering
                         double h_if = Q[itemId, i];
                         double h_jf = Q[otherItemId, i];
 
-                        double update = (h_if - h_jf) * one_over_one_plus_ex - lambda * w_uf;
-                        P[userId, i] = w_uf + gamma * update;
-
-                        update = w_uf * one_over_one_plus_ex - lambda * h_if;
-                        Q[itemId, i] = h_if + gamma * update;
-
-                        update = -w_uf * one_over_one_plus_ex - lambda * h_jf;  
-                        Q[otherItemId, i] = h_jf + gamma * update;
+                        P[userId, i]        += gamma * (one_over_one_plus_ex * (h_if - h_jf) - lambda * w_uf);
+                        Q[itemId, i]        += gamma * (one_over_one_plus_ex * w_uf - lambda * h_if);
+                        Q[otherItemId, i]   += gamma * (one_over_one_plus_ex * -w_uf - lambda * h_jf);
                     }
                 }
             }
@@ -224,7 +219,7 @@ namespace RS.CollaborativeFiltering
                 }
                 else
                 {
-                    break;
+                   // break;
                 }
             }
         }

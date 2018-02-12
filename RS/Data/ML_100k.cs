@@ -15,8 +15,8 @@ namespace RS.Data
         public static string DefaultItemFile   = DefalultDirectory + @"u.item";
         public static string DefaultUserFile   = DefalultDirectory + @"u.user";
 
-        public static string BaseRatingFile    = DefalultDirectory + @"u1.base";
-        public static string TestRatingFile    = DefalultDirectory + @"u1.test";
+        public static string BaseRatingFile    = DefalultDirectory + @"u2.base";
+        public static string TestRatingFile    = DefalultDirectory + @"u2.test";
 
         public static int MaxUserId = 943;
         public static int MaxItemId = 1682;
@@ -275,7 +275,7 @@ namespace RS.Data
             Tools.UpdateIndexesToZeroBased(baseRatings);
             Tools.UpdateIndexesToZeroBased(testRatings);
 
-            BPRMF f = new BPRMF(MaxUserId, MaxItemId);
+            BPRMF f = new BPRMF(MaxUserId, MaxItemId, 10, "gaussian");    // gaussian
             //f.TryTopN(baseRatings, testRatings, 100, 0.001, 1, 0.00025, 0.00025);
             f.TryTopN(baseRatings, testRatings, 100, 0.01, 1, 0.01, 0.01);
         }

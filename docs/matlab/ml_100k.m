@@ -269,6 +269,49 @@ function ml_100k()
         %print(h, strcat('img\', name, '_UserKNN'), '-depsc');
         print(h, strcat('img\', name, '_SLIM'), '-dpdf');
     end
+
+    function  ml_100k_BPRMF(num, name)
+        %% plots for MF on ml-100k
+        h = figure('Name', name);
+        N  = num(1:7, 1);          % # of recommendation list
+        
+        P1 = num(1:7, 2);          % precision
+        R1 = num(1:7, 3);          %  recall
+        
+        plot(P1, R1,  'bd-',  'LineWidth', 2,  'markersize', 8);
+%                 P2, R2, 'go-', ...
+%                 P3, R3, 'rx-', ...
+%                 P4, R4, 'c+-', ...
+%                 P5, R5, 'ms-', ...  
+%                 P6, R6, 'yv-', ...
+%                 P7, R7, 'k^-', ...
+%                 P8, R8, 'm<--', ...  
+%                 P9, R9, 'y>--', ...
+%                 P10, R10, 'kh--', ... 
+                
+            
+        x = P1 + 0.01;
+        y = R1 + 0.01;
+        for i=1:length(x)
+           text(x(i), y(i), num2str(N(i)), 'FontSize', 16)
+        end
+        
+        title('BPRMF on ml-100k');
+        xlabel('Precision@N');
+        ylabel('Recall@N');
+%         legend('ratio=1', 'ratio=2',  'ratio=3',  'ratio=4',  'ratio=5', ...
+%                      'ratio=6', 'ratio=7',  'ratio=8',  'ratio=9',  'ratio=10');
+        grid on;
+        %set(h,'ytick',y_axis_set);         % 设置刻度线
+        %set(h,'yticklabel',y_axis_set);        %设置显示哪些刻度值
+        set(gca,'FontSize',16);  % 设置坐标轴数字，图例，标题等字体大小
+        %set(get(gca,'XLabel'),'FontSize',18);      % 设置x轴标签字体大小
+        %set(get(gca,'YLabel'), 'FontSize',18);      % 设置y轴标签字体大小
+        
+        %print(h, strcat('img\', name, '_UserKNN'), '-depsc');
+        print(h, strcat('img\', name, '_BPRMF'), '-dpdf');
+    end
+
     clc;
     clear;
     close all;
@@ -338,15 +381,22 @@ function ml_100k()
 %     ml_100k_MF_f(num, 'ml_100_u5');
 
     %% SLIM
-%     num = xlsread('ml-100k',  4, 'B3:G9'); % u1
-%     ml_100k_SLIM(num, 'ml_100_u1');
+    num = xlsread('ml-100k',  4, 'A3:F9'); % u1
+    ml_100k_SLIM(num, 'ml_100_u1');
     
-    num = xlsread('ml-100k',  4, 'H3:M9'); % u1
-    ml_100k_SLIM(num, 'ml_100_u2');
+%     num = xlsread('ml-100k',  4, 'H3:M9'); % u1
+%     ml_100k_SLIM(num, 'ml_100_u2');
+%     
+%     num = xlsread('ml-100k',  4, 'O3:T9'); % u1
+%     ml_100k_SLIM(num, 'ml_100_u3');
+
+    %% BPRMF
+    num = xlsread('ml-100k',  5, 'A3:F9'); % u1
+    ml_100k_BPRMF(num, 'ml_100_u1');
     
-    num = xlsread('ml-100k',  4, 'O3:T9'); % u1
-    ml_100k_SLIM(num, 'ml_100_u3');
-    
+%     num = xlsread('ml-100k',  5, 'H3:M9'); % u1
+%     ml_100k_BPRMF(num, 'ml_100_u1');
+
 end
 
 
