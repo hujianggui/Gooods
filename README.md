@@ -6,8 +6,7 @@
 	    UserKNNv2 (user-based collaborative filtering, multithread for W), top-N recommendation.
 
 		@article{journals/kbs/WangH16,
-		  author    = {Zhijin Wang and
-		               Liang He},
+		  author    = {Zhijin Wang and Liang He},
 		  title     = {User identification for enhancing {IP-TV} recommendation},
 		  journal   = {Knowl.-Based Syst.},
 		  volume    = {98},
@@ -23,12 +22,13 @@
 	[7] Alternating Least Lquares, rating prediction, top-N recommendation.
 	[8] WRMF (weighted regularized matrix factorization), top-N recommendation.
 	[9] Euclidean Embedding, rating prediction, top-N recommendation.
-	[10] SLIM (Sparse LInear Model) (train with multithread), top-N recommendation. 
-	[11] FISM (Factored Item Similarity Models), top-N recommendation. This including:
+	[10] BPRMF (BPR: Bayesian Personalized Ranking from Implicit Feedback), top-N recommendation.
+	[11] SLIM (Sparse LInear Model) (train with multithread), top-N recommendation. 
+	[12] FISM (Factored Item Similarity Models), top-N recommendation. This including:
         FISMrmse which uses an element-wise update for a SE loss function.
         FISMauc which uses a pair-wise update for a AUC loss function.
-	[12] SocialMF, rating prediction, top-N recommendation.
-	[13] Friend Matrix Factorization, rating prediction, top-N recommendation.
+	[13] SocialMF, rating prediction, top-N recommendation.
+	[14] Friend Matrix Factorization, rating prediction, top-N recommendation.
 	    Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 		
 	    @inproceedings{conf/pakdd/WangYHH15,
@@ -40,9 +40,8 @@
 	      series    = {PAKDD'15},
 	    }
 	    
-	[14] Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
+	[15] Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
 	    Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
-
 
 
 ### Evaluation metrics
