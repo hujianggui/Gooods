@@ -15,8 +15,8 @@ namespace RS.Data
         public static string DefaultItemFile   = DefalultDirectory + @"u.item";
         public static string DefaultUserFile   = DefalultDirectory + @"u.user";
 
-        public static string BaseRatingFile    = DefalultDirectory + @"u2.base";
-        public static string TestRatingFile    = DefalultDirectory + @"u2.test";
+        public static string BaseRatingFile    = DefalultDirectory + @"u1.base";
+        public static string TestRatingFile    = DefalultDirectory + @"u1.test";
 
         public static int MaxUserId = 943;
         public static int MaxItemId = 1682;

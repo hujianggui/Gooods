@@ -125,10 +125,61 @@ namespace RS.CollaborativeFiltering
             return otherItemId;
         }
 
+        protected void UpdateFactors(int userId, int itemId, int otherItemId, double gamma, double lambda, double lambda_bias)
+        {
+            // 2. Update latent factors according to the stochastic gradient descent update rule
+            double e_uij = Predict(userId, itemId) - Predict(userId, otherItemId);
+            double one_over_one_plus_ex = MathUtility.Logistic(-e_uij); // 1.0 / (1.0 + Math.Exp(e_uij));
+
+            // adjust bias terms
+            bi[itemId] += gamma * (one_over_one_plus_ex - lambda_bias * bi[itemId]);
+            bi[otherItemId] += gamma * (-one_over_one_plus_ex - lambda_bias * bi[otherItemId]);
+
+            // adjust latent factors
+            for (int i = 0; i < f; i++)
+            {
+                double w_uf = P[userId, i];
+                double h_if = Q[itemId, i];
+                double h_jf = Q[otherItemId, i];
+
+                P[userId, i] += gamma * (one_over_one_plus_ex * (h_if - h_jf) - lambda * w_uf);
+                Q[itemId, i] += gamma * (one_over_one_plus_ex * w_uf - lambda * h_if);
+                Q[otherItemId, i] += gamma * (one_over_one_plus_ex * -w_uf - lambda * h_jf);
+            }
+        }
+
         /// <summary>
-        /// Iterate over the training data, uniformly sample from user-item pairs with replacement.
+        /// Iterate over the training data, uniformly sample from users without replacement.
         /// </summary>
-        protected virtual void IterateWithReplacementUniformPair(MyTable ratingTable, double gamma = 0.01, double lambda = 0.00025, double lambda_bias = 0.00025)
+        /// <param name="ratings"></param>
+        /// <param name="ratingTable"></param>
+        /// <param name="gamma"></param>
+        /// <param name="lambda"></param>
+        /// <param name="lambda_bias"></param>
+        protected virtual void IterateWithoutReplacementUniformUser(List<Rating> ratings, MyTable ratingTable, double gamma = 0.01, double lambda = 0.01, double lambda_bias = 0.01)
+        {
+            int[] userIds = ratingTable.GetMainKeyArray().AsParallel().Cast<int>().OrderBy(k => k).ToArray();
+            int[] itemIds = ratingTable.GetSubKeyArray().AsParallel().Cast<int>().OrderBy(k => k).ToArray();
+            var random = Core.Random.GetInstance();
+            int numberOfRatings = ratings.Count;
+            for (int ii = 0; ii < numberOfRatings; ii++)
+            {
+                // randomly select a user
+                int userId = userIds[random.Next(userIds.Length)];
+                Hashtable itemsTable = (Hashtable)ratingTable[userId];
+                var triple = SampleItemPair(userId, itemsTable, itemIds, random);
+                int itemId = triple.Item2;
+                int otherItemId = triple.Item3;
+
+                UpdateFactors(userId, itemId, otherItemId, gamma, lambda, lambda_bias);
+            }
+        }
+
+
+        /// <summary>
+        /// Iterate over the training data, uniformly sample from user-item pairs without replacement.
+        /// </summary>
+        protected virtual void IterateWithoutReplacementUniformPair(MyTable ratingTable, double gamma = 0.01, double lambda = 0.01, double lambda_bias = 0.01)
         {
             int[] itemIds = ratingTable.GetSubKeyArray().AsParallel().Cast<int>().OrderBy(k => k).ToArray();
             var random = Core.Random.GetInstance();         // need to be a static member?
@@ -141,28 +192,34 @@ namespace RS.CollaborativeFiltering
                     // 1. sample a negative feedback for each positive feedback
                     int otherItemId = SampleOtherItemId(userId, itemsTable, itemIds, random);
 
-                    // 2. Update latent factors according to the stochastic gradient descent update rule
-                    double e_uij = Predict(userId, itemId) - Predict(userId, otherItemId);
-                    double one_over_one_plus_ex = MathUtility.Logistic(-e_uij); // 1.0 / (1.0 + Math.Exp(e_uij));
-
-                    // adjust bias terms
-                    bi[itemId]      += gamma * ( one_over_one_plus_ex - lambda_bias * bi[itemId]);
-                    bi[otherItemId] += gamma * (-one_over_one_plus_ex - lambda_bias * bi[otherItemId]);
-
-                    // adjust latent factors
-                    for(int i = 0; i < f;i++)
-                    {
-                        double w_uf = P[userId, i];
-                        double h_if = Q[itemId, i];
-                        double h_jf = Q[otherItemId, i];
-
-                        P[userId, i]        += gamma * (one_over_one_plus_ex * (h_if - h_jf) - lambda * w_uf);
-                        Q[itemId, i]        += gamma * (one_over_one_plus_ex * w_uf - lambda * h_if);
-                        Q[otherItemId, i]   += gamma * (one_over_one_plus_ex * -w_uf - lambda * h_jf);
-                    }
+                    UpdateFactors(userId, itemId, otherItemId, gamma, lambda, lambda_bias);
                 }
             }
         }
+
+        /// <summary>
+        /// Iterate over the training data, uniformly sample from user-item pairs with replacement.
+        /// </summary>
+        protected virtual void IterateWithReplacementUniformPair(List<Rating> ratings, MyTable ratingTable, double gamma = 0.01, double lambda = 0.01, double lambda_bias = 0.01)
+        {
+            int[] itemIds = ratingTable.GetSubKeyArray().AsParallel().Cast<int>().OrderBy(k => k).ToArray();
+            var random = Core.Random.GetInstance();
+            int numberOfRatings = ratings.Count;
+            for (int ii = 0; ii < numberOfRatings; ii++)
+            {
+                Rating r = ratings[random.Next(numberOfRatings)];
+                int userId = r.UserId;
+                int itemId = r.ItemId;
+
+                Hashtable itemsTable = (Hashtable)ratingTable[userId];
+                // 1. sample a negative feedback for each positive feedback
+                int otherItemId = SampleOtherItemId(userId, itemsTable, itemIds, random);
+
+                UpdateFactors(userId, itemId, otherItemId, gamma, lambda, lambda_bias);
+            }
+        }
+
+
 
         protected void PrintParameters(List<Rating> train, List<Rating> test, int epochs, double gamma, double decay,
             double lambda, double lambda_bias)
@@ -191,7 +248,9 @@ namespace RS.CollaborativeFiltering
 
             for (int e = 1; e <= epochs; e++)
             {
-                IterateWithReplacementUniformPair(ratingTable, gamma, lambda_bias, lambda_bias);
+                //IterateWithReplacementUniformPair(ratingTable, gamma, lambda_bias, lambda_bias);
+                //IterateWithReplacementUniformPair(train, ratingTable, gamma, lambda_bias, lambda_bias);
+                IterateWithoutReplacementUniformUser(train, ratingTable, gamma, lambda_bias, lambda_bias);
 
                 double lastLoss = Loss(triples, lambda, lambda_bias);
                 if (e % 1 == 0 && e >= 1)
