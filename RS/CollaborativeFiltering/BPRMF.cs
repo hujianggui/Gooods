@@ -148,6 +148,42 @@ namespace RS.CollaborativeFiltering
             }
         }
 
+
+        /// <summary>
+		/// Iterate over the training data, uniformly sample from users with replacement.
+        /// TODO
+		/// </summary>
+		protected virtual void IterateWithReplacementUniformUser(List<Rating> ratings, MyTable ratingTable, 
+            double gamma = 0.01, double lambda = 0.01, double lambda_bias = 0.01)
+        {
+            int[] userIds = ratingTable.GetMainKeyArray().AsParallel().Cast<int>().OrderBy(k => k).ToArray();
+            int[] itemIds = ratingTable.GetSubKeyArray().AsParallel().Cast<int>().OrderBy(k => k).ToArray();
+            var random = Core.Random.GetInstance();
+            int numberOfRatings = ratings.Count;
+            int userId, itemId, otherItemId;
+
+            for (int i = 0; i < numberOfRatings; i++)
+            {
+                
+                while(true)
+                {
+                    // randomly select a user
+                    userId = userIds[random.Next(userIds.Length)];
+                    Hashtable itemsTable = (Hashtable)ratingTable[userId];
+
+                    // copy 
+                    Hashtable itemsTableCopy = new Hashtable(itemsTable);   // bugs,2018.02.13
+
+                    var triple = SampleItemPair(userId, itemsTable, itemIds, random);
+                    itemId = triple.Item2;
+                    otherItemId = triple.Item3;
+                    break;
+                }
+                UpdateFactors(userId, itemId, otherItemId, gamma, lambda, lambda_bias);
+            }
+        }
+
+
         /// <summary>
         /// Iterate over the training data, uniformly sample from users without replacement.
         /// </summary>
@@ -162,7 +198,7 @@ namespace RS.CollaborativeFiltering
             int[] itemIds = ratingTable.GetSubKeyArray().AsParallel().Cast<int>().OrderBy(k => k).ToArray();
             var random = Core.Random.GetInstance();
             int numberOfRatings = ratings.Count;
-            for (int ii = 0; ii < numberOfRatings; ii++)
+            for (int i = 0; i < numberOfRatings; i++)
             {
                 // randomly select a user
                 int userId = userIds[random.Next(userIds.Length)];
