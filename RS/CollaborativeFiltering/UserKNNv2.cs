@@ -122,7 +122,6 @@ namespace RS.CollaborativeFiltering
             return wuv;
         }
 
-
         protected List<Link> GetSimilarUsers(MyTable W, int userId, int K = 80)
         {
             List<Link> weights = new List<Link>();
