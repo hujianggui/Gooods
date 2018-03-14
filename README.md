@@ -5,14 +5,14 @@
 	[1] UserKNN (user-based collaborative filtering), rating prediction.
 	    UserKNNv2 (user-based collaborative filtering, multithread for W), top-N recommendation.
 
-	@article{journals/kbs/WangH16,
-	  author    = {Zhijin Wang and Liang He},
-	  title     = {User identification for enhancing {IP-TV} recommendation},
-	  journal   = {Knowl.-Based Syst.},
-	  volume    = {98},
-	  pages     = {68--75},
-	  year      = {2016},
-	}
+		@article{journals/kbs/WangH16,
+		  author    = {Zhijin Wang and Liang He},
+		  title     = {User identification for enhancing {IP-TV} recommendation},
+		  journal   = {Knowl.-Based Syst.},
+		  volume    = {98},
+		  pages     = {68--75},
+		  year      = {2016},
+		}
 
 	[2] ItemKNNv2 (item-based collaborative filtering, multithread for W), top-N recommendation.
 	[3] PageRank (Restart with Random Walk), top-N recommendation.
