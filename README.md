@@ -5,14 +5,14 @@
 	[1] UserKNN (user-based collaborative filtering), rating prediction.
 	    UserKNNv2 (user-based collaborative filtering, multithread for W), top-N recommendation.
 
-		@article{journals/kbs/WangH16,
-		  author    = {Zhijin Wang and Liang He},
-		  title     = {User identification for enhancing {IP-TV} recommendation},
-		  journal   = {Knowl.-Based Syst.},
-		  volume    = {98},
-		  pages     = {68--75},
-		  year      = {2016},
-		}
+	@article{journals/kbs/WangH16,
+	  author    = {Zhijin Wang and Liang He},
+	  title     = {User identification for enhancing {IP-TV} recommendation},
+	  journal   = {Knowl.-Based Syst.},
+	  volume    = {98},
+	  pages     = {68--75},
+	  year      = {2016},
+	}
 
 	[2] ItemKNNv2 (item-based collaborative filtering, multithread for W), top-N recommendation.
 	[3] PageRank (Restart with Random Walk), top-N recommendation.
@@ -24,7 +24,7 @@
 	[9] Euclidean Embedding, rating prediction, top-N recommendation.
 	[10] BPRMF (BPR: Bayesian Personalized Ranking from Implicit Feedback), top-N recommendation.
 	[11] SLIM (Sparse LInear Model) (train with multithread), top-N recommendation. 
-	[12] FISM (Factored Item Similarity Models), top-N recommendation. This including:
+	[12] FISM (Factored Item Similarity Models), top-N recommendation. This includes:
         FISMrmse which uses an element-wise update for a SE loss function.
         FISMauc which uses a pair-wise update for a AUC loss function.
 	[13] SocialMF, rating prediction, top-N recommendation.
@@ -42,6 +42,7 @@
 	    
 	[15] Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
 	    Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
+
 
 
 ### Evaluation metrics
