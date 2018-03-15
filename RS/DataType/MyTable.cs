@@ -107,11 +107,12 @@ namespace RS.DataType
 
         public virtual bool ContainsMainKey(object mainKey)
         {
-            if (Main.ContainsKey(mainKey))
-            {
-                return true;
-            }
-            return false;
+            return Main.ContainsKey(mainKey);
+        }
+
+        public virtual bool ContainsSubKey(object subKey)
+        {
+            return SubKeys.ContainsKey(subKey);
         }
     }
 
