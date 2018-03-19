@@ -27,14 +27,14 @@ namespace RS
             //ML_100k.BiasedMatrixFactorizationTopNTest();
             //ML_100k.AlternatingLeastSquaresTopNTest();
             //ML_100k.WRMFTopNTest();
-            ML_100k.BPRMFTopNTest();
+            //ML_100k.BPRMFTopNTest();
             //ML_100k.SLIMTest();
             //ML_100k.FISMrmseTest();
             //ML_100k.FISMaucTest();
 
             //ML_100k.MatrixFactorizationTopNTestTemp();
             //ML_100k.SLIMTemp();
-
+            ML_100k.MatrixFactorization_IJCAI2018_Test();
             //ML_100k.Preprocess();
 
             // ml-1m

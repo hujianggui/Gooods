@@ -193,34 +193,6 @@ namespace RS.Data
             model.TrySGDForTopN(baseSamples, testRatings, 100, 0.02, 0.01, 0.9);
         }
 
-        // kdd 2016, poi recommendation
-        public static void MatrixFactorizationTopNTestTemp(int f = 10)
-        {
-            List<Rating> baseRatings = Tools.GetRatings(@"D:\study\papers\kdd 2016\Rating_Train");
-            List<Rating> testRatings = Tools.GetRatings(@"D:\study\papers\kdd 2016\Rating_Test");
-
-            var baseSamples = Tools.RandomSelectNegativeSamples(baseRatings, 3, true);
-
-            var max1 = Tools.GetMaxUserIdAndItemId(baseRatings);
-            var max2 = Tools.GetMaxUserIdAndItemId(testRatings);
-
-            MatrixFactorization model = new MatrixFactorization(2550 + 1, 13473 + 1, f);
-            model.TrySGDForTopN(baseSamples, testRatings, 100, 0.02, 0.01, 0.9);
-        }
-
-        public static void SLIMTemp(int f = 10)
-        {
-            List<Rating> baseRatings = Tools.GetRatings(@"D:\study\papers\kdd 2016\Rating_Train");
-            List<Rating> testRatings = Tools.GetRatings(@"D:\study\papers\kdd 2016\Rating_Test");
-
-            var baseSamples = Tools.RandomSelectNegativeSamples(baseRatings, 3, true);
-
-            var max1 = Tools.GetMaxUserIdAndItemId(baseRatings);
-            var max2 = Tools.GetMaxUserIdAndItemId(testRatings);
-
-            SLIM model = new SLIM(2550 + 1, 13473 + 1);
-            model.TryLeastSquare(baseRatings, testRatings, 100, 0.01, 0.001);
-        }
 
         public static void MatrixFactorizationTopNTest()
         {
@@ -232,6 +204,36 @@ namespace RS.Data
 
             MatrixFactorization model = new MatrixFactorization(MaxUserId, MaxItemId, 100);
             model.TrySGDForTopN(baseSamples, data.Item2, 100, 0.02, 0.01, 0.9);
+        }
+
+        public static void MatrixFactorization_IJCAI2018_Test()
+        {
+            double testSize = 0.2;
+            List<Rating> ratings = Tools.GetRatings(@"D:\data\ijcai2018task\ex\train.shop.csv", ",");
+            
+            var data = Tools.TrainTestSplit(ratings, testSize);
+            var max = Tools.GetMaxUserIdAndItemId(ratings);
+
+            Tools.WriteRatings(data.Item1, @"D:\data\ijcai2018task\ex\train.shop.1.csv");
+            Tools.WriteRatings(data.Item2, @"D:\data\ijcai2018task\ex\train.shop.2.csv");
+
+            BiasedMatrixFactorization model = new BiasedMatrixFactorization(max.Item1 + 1, max.Item2 + 1, 100);
+            model.TrySGD(data.Item1, data.Item2, 100, 0.01, 0.01, 0.94, 0, 1);
+        }
+
+        public static void MatrixFactorization_IJCAI2018_Test2()
+        {
+            double testSize = 0.2;
+            List<Rating> ratings = Tools.GetRatings(@"D:\data\ijcai2018task\ex\train.item.csv", ",");
+
+            var data = Tools.TrainTestSplit(ratings, testSize);
+            var max = Tools.GetMaxUserIdAndItemId(ratings);
+
+            Tools.WriteRatings(data.Item1, @"D:\data\ijcai2018task\ex\train.item.1.csv");
+            Tools.WriteRatings(data.Item2, @"D:\data\ijcai2018task\ex\train.item.2.csv");
+
+            BiasedMatrixFactorization model = new BiasedMatrixFactorization(max.Item1 + 1, max.Item2 + 1, 100);
+            model.TrySGD(data.Item1, data.Item2, 100, 0.01, 0.01, 0.94, 0, 1);
         }
 
         public static void BiasedMatrixFactorizationTopNTest()

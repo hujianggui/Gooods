@@ -136,9 +136,6 @@ namespace RS.Evaluation
         }
 
 
-
-
-
         /// <summary>
         /// The test functin for the MAP metric, the example in:
         /// http://fastml.com/what-you-wanted-to-know-about-mean-average-precision/

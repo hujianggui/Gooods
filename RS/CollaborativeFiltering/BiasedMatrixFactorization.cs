@@ -89,10 +89,11 @@ namespace RS.CollaborativeFiltering
             return loss;
         }
 
-        public Tuple<double, double> EvaluateMaeRmse(List<Rating> ratings, double miu, double minimumRating = 1.0, double maximumRating = 5.0)
+        public Tuple<double, double, double> EvaluateMaeRmse(List<Rating> ratings, double miu, double minimumRating = 1.0, double maximumRating = 5.0)
         {
             double mae = 0.0;
             double rmse = 0;
+            double logloss = 0.0;
 
             foreach (Rating r in ratings)
             {
@@ -109,14 +110,21 @@ namespace RS.CollaborativeFiltering
 
                 mae += Math.Abs(eui);
                 rmse += eui * eui;
+
+                if (pui > 0 && pui < 1)
+                {
+                    logloss += r.Score * System.Math.Log(pui);
+                    logloss += (1 - r.Score) * System.Math.Log(1 - pui);
+                }
             }
 
             if (ratings.Count > 0)
             {
                 mae /= ratings.Count;
                 rmse = Math.Sqrt(rmse / ratings.Count);
+                logloss /= -ratings.Count;
             }
-            return Tuple.Create(mae, rmse);
+            return Tuple.Create(mae, rmse, logloss);
         }
 
         public void PrintParameters(List<Rating> train, List<Rating> test = null, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double minimumRating = 1.0, double maximumRating = 5.0)
@@ -136,7 +144,7 @@ namespace RS.CollaborativeFiltering
         public virtual void TrySGD(List<Rating> train, List<Rating> test, int epochs = 100, double gamma = 0.01, double lambda = 0.01, double decay = 1.0, double minimumRating = 1.0, double maximumRating = 5.0)
         {
             PrintParameters(train, test, epochs, gamma, lambda, decay, minimumRating, maximumRating);
-            Console.WriteLine("epoch,loss,test:mae,test:rmse");
+            Console.WriteLine("epoch,loss,test:mae,test:rmse,test:logloss");
 
             double miu = train.AsParallel().Average(r => r.Score);
             double loss = Loss(train, lambda, miu);
@@ -159,7 +167,7 @@ namespace RS.CollaborativeFiltering
 
                 double lastLoss = Loss(train, lambda, miu);
                 var eval = EvaluateMaeRmse(test, miu, minimumRating, maximumRating);
-                Console.WriteLine("{0},{1},{2},{3}", epoch, lastLoss, eval.Item1, eval.Item2);
+                Console.WriteLine("{0},{1},{2},{3},{4}", epoch, lastLoss, eval.Item1, eval.Item2, eval.Item3);
 
                 if (decay != 1.0)
                 {
