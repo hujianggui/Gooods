@@ -224,13 +224,13 @@ namespace RS.Data
         public static void MatrixFactorization_IJCAI2018_Test2()
         {
             double testSize = 0.2;
-            List<Rating> ratings = Tools.GetRatings(@"D:\data\ijcai2018task\ex\train.item.csv", ",");
+            List<Rating> ratings = Tools.GetRatings(@"D:\data\ijcai2018task\ex\train.shop.csv", ",");
 
             var data = Tools.TrainTestSplit(ratings, testSize);
             var max = Tools.GetMaxUserIdAndItemId(ratings);
 
-            Tools.WriteRatings(data.Item1, @"D:\data\ijcai2018task\ex\train.item.1.csv");
-            Tools.WriteRatings(data.Item2, @"D:\data\ijcai2018task\ex\train.item.2.csv");
+            Tools.WriteRatings(data.Item1, @"D:\data\ijcai2018task\ex\train.shop.1.csv");
+            Tools.WriteRatings(data.Item2, @"D:\data\ijcai2018task\ex\train.shop.2.csv");
 
             BiasedMatrixFactorization model = new BiasedMatrixFactorization(max.Item1 + 1, max.Item2 + 1, 100);
             model.TrySGD(data.Item1, data.Item2, 100, 0.01, 0.01, 0.94, 0, 1);
