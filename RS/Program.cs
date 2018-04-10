@@ -34,7 +34,6 @@ namespace RS
 
             //ML_100k.MatrixFactorizationTopNTestTemp();
             //ML_100k.SLIMTemp();
-            ML_100k.MatrixFactorization_IJCAI2018_Test();
             //ML_100k.Preprocess();
 
             // ml-1m
