@@ -20,23 +20,23 @@ namespace RS.DataType
 
         public Rating(int userId, int itemId, double score)
         {
-            this.UserId = userId;
-            this.ItemId = itemId;
-            this.Score = score;
+            UserId = userId;
+            ItemId = itemId;
+            Score = score;
         }
 
         public Rating(int userId, int itemId, double score, string timeStamp)
         {
-            this.UserId = userId;
-            this.ItemId = itemId;
-            this.Score = score;
-            this.Timestamp = timeStamp;
+            UserId = userId;
+            ItemId = itemId;
+            Score = score;
+            Timestamp = timeStamp;
         }
 
         public DateTime GetTime()
         {
             DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
-            long lTime = long.Parse(this.Timestamp + "0000000");
+            long lTime = long.Parse(Timestamp + "0000000");
             TimeSpan toNow = new TimeSpan(lTime);
             DateTime dtResult = dtStart.Add(toNow);
             return dtResult;
