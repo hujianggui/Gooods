@@ -1,6 +1,6 @@
 ## Algorithms for recommendation systems in C#
 
-### Algorithms for collaborative filtering
+### Collaborative filtering
 	[0] Global mean, user mean, item mean filling methods. Those are used for rating prediction.
 	[1] UserKNN (user-based collaborative filtering), rating prediction.
 	    UserKNNv2 (user-based collaborative filtering, multithread for W), top-N recommendation.
@@ -43,7 +43,7 @@
 	[15] Adaptive Friend Matrix Factorization, rating prediction, top-N recommendation.  
 	    Adaptive Friend Biased Matrix Factorization, rating prediction, top-N recommendation.
 
-### Algorithms for content based filtering
+### Content based filtering
 	[0] Tag based filtering, tag based ItemkNN
 	
 
