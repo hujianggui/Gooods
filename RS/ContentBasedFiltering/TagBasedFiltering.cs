@@ -18,6 +18,7 @@ namespace RS.ContentBasedFiltering
     {
         protected void PrintParameters(List<Rating> train, List<Rating> test, List<Link> userTags, List<Link> itemTags)
         {
+            Console.WriteLine(GetType().Name);
             Console.WriteLine("train,{0}", train.Count);
             Console.WriteLine("test,{0}", test.Count);
             Console.WriteLine("userTags,{0}", userTags.Count);
