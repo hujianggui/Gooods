@@ -68,3 +68,6 @@
 
 ### License
 	GPLv3.
+
+### TODO
+	[-] Factorization Machine
