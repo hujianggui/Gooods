@@ -10,7 +10,7 @@
           title     = {User identification for enhancing {IP-TV} recommendation},
           journal   = {Knowledge Based System},
           volume    = {98},
-          pages     = {68--75},
+          pages     = {68-75},
           year      = {2016},
         }
 
