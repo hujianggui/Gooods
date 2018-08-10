@@ -173,6 +173,13 @@ namespace RS.Evaluation
         {
             return 1.0;
         }
+
+
+        public static double Recall_0(List<Rating> recommended, List<Rating> test)
+        {
+
+            return 0.0;
+        }
     }
 
 
