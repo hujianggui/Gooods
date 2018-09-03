@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 
 namespace RS.DataType
 {
@@ -138,8 +139,44 @@ namespace RS.DataType
                         t.Add(i, j, r.Next());
                     }
                 }
-                Console.WriteLine("{0} Numbers", i*size);
+                //Console.WriteLine("{0} Numbers", i*size);
+                long usedMemory = Process.GetCurrentProcess().WorkingSet64;
+                Console.WriteLine("{0} Numbers, MM:{1} MB ", i * size, usedMemory / 1024 / 1024);
             }
+        }
+
+
+
+        public static void Read()
+        {
+            MyTable t = new MyTable();
+
+            const int size = 7000;
+            Random r = new Random();
+
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    if (!t.ContainsKey(i, j))
+                    {
+                        t.Add(i, j, r.NextDouble());
+                    }
+                }
+            }
+
+            double sum = 0.0;
+            foreach (var _r in t.Keys)
+            {
+                Hashtable row = (Hashtable)t[_r];
+                foreach (var _c in row.Keys)
+                {
+                    sum += (double)row[_c];
+                }
+            }
+            Console.WriteLine("sum,{0}", sum);
+            long usedMemory = Process.GetCurrentProcess().WorkingSet64;
+            Console.WriteLine("{0} Numbers, MM:{1} MB ", size * size, usedMemory / 1024 / 1024);
         }
 
         /// <summary>

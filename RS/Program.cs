@@ -4,6 +4,7 @@ using RS.Data;
 using System.Collections.Generic;
 using RS.DataType;
 using RS.Data.Utility;
+using System.Diagnostics;
 
 namespace RS
 {
@@ -11,8 +12,16 @@ namespace RS
     {
         static void Main(string[] args)
         {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            MyTableTest.Read();
+            stopWatch.Stop();
+            Console.WriteLine("Time," + stopWatch.Elapsed);
+
+
             // ml-100k
             //ML_100k.MeanFillingTest();
+            //ML_100k.UserKNNTest0();
             //ML_100k.UserKNNTest(0.2);
             //ML_100k.MatrixFactorizationTest();
             //ML_100k.BiasedMatrixFactorizationTest();
@@ -20,7 +29,7 @@ namespace RS
             //ML_100k.AlternatingLeastSquaresTest();
             //ML_100k.EuclideanEmbeddingTest();
 
-            ML_100k.UserKNNv2Test();
+            //ML_100k.UserKNNv2Test();
             //ML_100k.ItemKNNv2Test();
             //ML_100k.PageRankTopNTest();
             //ML_100k.MatrixFactorizationTopNTest(10);

@@ -49,6 +49,18 @@ namespace RS.Data
             MeanFilling.TryItemMean(baseRatings, testRatings, true);
         }
 
+        public static void UserKNNTest0(double testSize = 0.1)
+        {
+            List<Rating> baseRatings = Tools.GetRatings(BaseRatingFile);
+            List<Rating> testRatings = Tools.GetRatings(TestRatingFile);
+
+            Tools.UpdateIndexesToZeroBased(baseRatings);
+            Tools.UpdateIndexesToZeroBased(testRatings);
+
+            UserKNN knn = new UserKNN();
+            knn.TryMaeRmse(baseRatings, testRatings);
+        }
+
         public static void UserKNNTest(double testSize = 0.1)
         {
             List<Rating> ratings = Tools.GetRatings(DefaultRatingFile);
