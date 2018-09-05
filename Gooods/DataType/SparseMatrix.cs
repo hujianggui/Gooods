@@ -6,14 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gooods
+namespace Gooods.DataType
 {
-    /// <summary>
-    /// Sparse vector
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    public class SparseVector<TValue> : Dictionary<int, TValue>{ }
-
     /// <summary>
     /// 2D sparse hash table
     /// </summary>
@@ -63,28 +57,41 @@ namespace Gooods
             return -1;
         }
 
+        /// <summary>
+        /// Get list of rows
+        /// </summary>
+        /// <returns></returns>
         public virtual List<TRowKey> GetRowKeyList()
         {
             return new List<TRowKey>(Keys);
         }
 
+        /// <summary>
+        /// Get list of columns
+        /// </summary>
+        /// <returns></returns>
         public virtual List<TColumnKey> GetColumnKeyList()
         {
             return new List<TColumnKey>(ColumnNames.Keys);
         }
 
-        public void toConsole()
+        /// <summary>
+        /// </summary>
+        /// <returns>matrix content</returns>
+        public override string ToString()
         {
+            StringBuilder builder = new StringBuilder();
             foreach (var _r in Keys)
             {
                 var row = this[_r];
-                Console.Write("{0}", _r);
+                builder.Append(_r);
                 foreach (var _c in row.Keys)
                 {
-                    Console.Write(" {0}:{1:N2}", _c, row[_c]);
+                    builder.AppendFormat(" {0}:{1:N2}", _c, row[_c]);
                 }
-                Console.WriteLine();
+                builder.AppendLine();
             }
+            return builder.ToString();
         }
     }
 
@@ -117,7 +124,6 @@ namespace Gooods
         }
     }
 
-
     /// <summary>
     /// Sparse matrix test
     /// </summary>
@@ -134,7 +140,7 @@ namespace Gooods
 
         public void Initialize(int rows = 100, int columns = 100)
         {
-            Random random = new Random();
+            Random random = Random.GetInstance();
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
@@ -168,7 +174,7 @@ namespace Gooods
 
         public void InitializeSparseTable2D(int rows = 100, int columns = 100)
         {
-            Random random = new Random();
+            Random random = Random.GetInstance();
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
@@ -226,10 +232,6 @@ namespace Gooods
 
             stopWatch.Stop();
             Console.WriteLine("MM,{0:N4}MB,Transpose(),{1}", smt.MM(), stopWatch.Elapsed);
-
-            // print two matrices
-            smt.SparseMatrix.toConsole();
-            tranposedMatrix.toConsole();
 
             stopWatch.Reset();
             stopWatch.Start();

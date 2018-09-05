@@ -4,13 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Gooods.DataType;
+
 namespace Gooods
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("this is a test!");
+            // DenseMatrixTest.Run();
+            MatrixExtensionsTest.Run();
+            VectorExtensionsTest.Run();
         }
     }
 }
