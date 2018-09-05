@@ -43,7 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CollaborativeFiltering\Recommender.cs" />
+    <Compile Include="CollaborativeFiltering\RatingPredictor.cs" />
+    <Compile Include="CollaborativeFiltering\ItemRecommender.cs" />
     <Compile Include="DataType\DenseMatrix.cs" />
     <Compile Include="DataType\DenseVector.cs" />
     <Compile Include="Utility.cs" />

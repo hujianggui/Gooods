@@ -13,8 +13,8 @@ namespace Gooods
         static void Main(string[] args)
         {
             // DenseMatrixTest.Run();
-            MatrixExtensionsTest.Run();
-            VectorExtensionsTest.Run();
+            // MatrixExtensionsTest.Run();
+            // VectorExtensionsTest.Run();
         }
     }
 }

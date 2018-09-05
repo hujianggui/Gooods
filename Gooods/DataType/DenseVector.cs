@@ -108,7 +108,7 @@ namespace Gooods.DataType
     {
         public static void Run()
         {
-            double[] array = new double[] { 1, 2, 3, 4, 5};
+            double[] array = new double[] { 1, 2, 3, 4, 5 };
             DenseVector<double> vector = new DenseVector<double>(array);
             Console.WriteLine(vector.ToString());
 
@@ -119,7 +119,7 @@ namespace Gooods.DataType
             Console.WriteLine(vector2.ToString());
 
             double ssd = vector2.SumOfSquaredDifference(vector);
-            Console.WriteLine("SumOfSquaredDifference,{0}", ssd);
+            Console.WriteLine("SumOfSquaredDifference between v1 and v2, {0}", ssd);
         }
     }
 
