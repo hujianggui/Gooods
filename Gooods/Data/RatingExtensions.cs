@@ -14,7 +14,7 @@ namespace Gooods.Data
     public static class RatingExtensions
     {
         /// <summary>
-        /// 
+        /// Transform to list of matrix entries.
         /// </summary>
         /// <param name=""></param>
         /// <returns></returns>
@@ -27,6 +27,24 @@ namespace Gooods.Data
                 entries.Add(e);
             }
             return entries;
+        }
+
+        /// <summary>
+        /// Transform to a sparse matrix.
+        /// </summary>
+        /// <param name="ratings"></param>
+        /// <returns></returns>
+        public static SparseMatrix<double> ToSparseMatrix(this List<Rating> ratings)
+        {
+            SparseMatrix<double> matrix = new SparseMatrix<double>();
+            foreach (var r in ratings)
+            {
+                if (!matrix.HasEntry(r.UserId, r.ItemId))
+                {
+                    matrix.Add(r.UserId, r.ItemId, r.Score);
+                }
+            }
+            return matrix;
         }
 
         /// <summary>

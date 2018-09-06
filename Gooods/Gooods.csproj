@@ -46,10 +46,11 @@
     <Compile Include="CollaborativeFiltering\MeanFilling.cs" />
     <Compile Include="CollaborativeFiltering\RatingPredictor.cs" />
     <Compile Include="CollaborativeFiltering\ItemRecommender.cs" />
-    <Compile Include="CollaborativeFiltering\UserKNN.cs" />
+    <Compile Include="CollaborativeFiltering\UserKNNPredictor.cs" />
     <Compile Include="DataType\DenseMatrix.cs" />
     <Compile Include="DataType\DenseVector.cs" />
     <Compile Include="DataType\MatrixEntry.cs" />
+    <Compile Include="DataType\SparseMatrixExtensions.cs" />
     <Compile Include="Data\Rating.cs" />
     <Compile Include="Data\RatingExtensions.cs" />
     <Compile Include="Data\Tools.cs" />
