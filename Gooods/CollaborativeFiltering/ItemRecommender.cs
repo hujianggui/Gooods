@@ -8,5 +8,6 @@ namespace Gooods.CollaborativeFiltering
 {
     public class ItemRecommender
     {
+
     }
 }

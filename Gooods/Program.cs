@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Gooods.DataType;
+using Gooods.Examples;
 
 namespace Gooods
 {
@@ -12,9 +12,9 @@ namespace Gooods
     {
         static void Main(string[] args)
         {
-            // DenseMatrixTest.Run();
-            // MatrixExtensionsTest.Run();
-            // VectorExtensionsTest.Run();
+            ML_1M.MeanFillingTest();
+
+
         }
     }
 }

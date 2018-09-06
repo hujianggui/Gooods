@@ -9,7 +9,7 @@ namespace Gooods.DataType
     /// <summary>
     /// Matrix extensions for dense matrix.
     /// </summary>
-    public static class MatrixExtensions
+    public static class DenseMatrixExtensions
     {
         /// <summary>
         /// Initialize the matrix using Uniform distribution.
@@ -197,6 +197,24 @@ namespace Gooods.DataType
                 }
             });
             return average;
+        }
+
+        /// <summary>
+        /// Multiplication of two rows from two matrices respectively.
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <param name="row"></param>
+        /// <param name="other"></param>
+        /// <param name="otherRow"></param>
+        /// <returns></returns>
+        public static double RowMultiplication(this DenseMatrix<double> matrix, int row, DenseMatrix<double> other, int otherRow)
+        {
+            double sum = 0.0;
+            for(int i = 0; i < matrix.NumberOfColumns; i++)
+            {
+                sum += matrix[row, i] * other[otherRow, i];
+            }
+            return sum;
         }
 
         /// <summary>

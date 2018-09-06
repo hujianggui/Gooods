@@ -104,7 +104,6 @@ namespace Gooods.DataType
         public int NumberOfRows { get { return Keys.Count; } }
         public int NumberOfColumns { get { return ColumnNames.Keys.Count; } }
 
-
         /// <summary>
         /// Matrix transpose
         /// </summary>
