@@ -15,9 +15,11 @@ namespace Gooods
     {
         public void Start()
         {
-            DenseMatrixTest.Run();
-            MatrixExtensionsTest.Run();
-            VectorExtensionsTest.Run();
+            //DenseMatrixTest.Run();
+            DenseMatrixExtensionsTest.Run();
+            //VectorExtensionsTest.Run();
+
+            SparseMatrixExtensionsTest.Run();
         }
 
     }

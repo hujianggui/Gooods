@@ -11,9 +11,5 @@ namespace Gooods.Evaluation
     /// </summary>
     public static class Metrics
     {
-        //public void MAE(List<int> )
-        //{
-
-        //}
     }
 }

@@ -25,12 +25,20 @@ namespace Gooods.Examples
             var baseRatings = Tools.GetRatings(BaseRatingFile, "::").ToMatrixEntries();
             var testRatings = Tools.GetRatings(TestRatingFile, "::").ToMatrixEntries();
 
-            //Tools.UpdateIndexesToZeroBased(baseRatings);
-            //Tools.UpdateIndexesToZeroBased(testRatings);
-
             MeanFilling.GlobalMean(baseRatings, testRatings, true);
             MeanFilling.UserMean(baseRatings, testRatings, true);
             MeanFilling.ItemMean(baseRatings, testRatings, true);
         }
+
+        public static void UserKNNPredictorTest()
+        {
+            var baseRatings = Tools.GetRatings(BaseRatingFile, "::").ToMatrixEntries();
+            var testRatings = Tools.GetRatings(TestRatingFile, "::").ToMatrixEntries();
+
+            UserKNNPredictor ucf = new UserKNNPredictor();
+            ucf.TryPrediction(baseRatings, testRatings, 80);
+
+        }
+
     }
 }

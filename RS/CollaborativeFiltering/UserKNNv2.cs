@@ -32,7 +32,7 @@ namespace RS.CollaborativeFiltering
                         {
                             if (u.UserId == v.UserId)
                             {
-                                continue;
+                                continue; 
                             }
 
                             lock(cooccurrences)

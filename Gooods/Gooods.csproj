@@ -44,8 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CollaborativeFiltering\MeanFilling.cs" />
-    <Compile Include="CollaborativeFiltering\RatingPredictor.cs" />
-    <Compile Include="CollaborativeFiltering\ItemRecommender.cs" />
     <Compile Include="CollaborativeFiltering\UserKNNPredictor.cs" />
     <Compile Include="DataType\DenseMatrix.cs" />
     <Compile Include="DataType\DenseVector.cs" />
@@ -65,11 +63,7 @@
     <Compile Include="DataType\SparseMatrix.cs" />
     <Compile Include="DataType\SparseVector.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CollaborativeFiltering\Baseline\" />
-    <Folder Include="CollaborativeFiltering\ItemRecommender\" />
-    <Folder Include="CollaborativeFiltering\RatingPrediction\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

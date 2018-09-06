@@ -10,7 +10,7 @@ namespace Gooods.Data
     public class Tools
     {
         /// <summary>
-        /// Get ratings from a csv file
+        /// Get ratings from a csv file.
         /// userId \t itemId \t score
         /// </summary>
         /// <param name="file">rating file</param>
@@ -60,7 +60,7 @@ namespace Gooods.Data
         }
 
         /// <summary>
-        /// Write ratings to a given csv file
+        /// Write ratings to a given csv file.
         /// </summary>
         /// <param name="ratings"></param>
         /// <param name="toFile"></param>
@@ -81,9 +81,6 @@ namespace Gooods.Data
             }
             writer.Close();
         }
-
- 
-
 
     }
 }

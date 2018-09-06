@@ -12,9 +12,10 @@ namespace Gooods
     {
         static void Main(string[] args)
         {
-            ML_1M.MeanFillingTest();
+            // new Tests().Start();
 
-
+            // ML_1M.MeanFillingTest();
+            ML_1M.UserKNNPredictorTest();
         }
     }
 }

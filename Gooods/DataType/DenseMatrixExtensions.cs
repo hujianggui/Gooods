@@ -445,7 +445,7 @@ namespace Gooods.DataType
     /// <summary>
     /// Test MatrixExtensions class
     /// </summary>
-    public class MatrixExtensionsTest
+    public class DenseMatrixExtensionsTest
     {
 
         public static void Run()
