@@ -28,45 +28,39 @@ namespace Gooods.DataType
         /// <summary>
         /// Pairwise similarity using Jaccard.
         /// </summary>
-        /// <param name="matrix">row - row Jaccard simiarity.</param>
+        /// <param name="matrix"></param>
         /// <returns></returns>
-        public static SparseMatrix<double> Jaccard(this SparseMatrix<double> matrix)
+        public static SparseVector<List<VectorEntry<double>>> Jaccard(this SparseMatrix<double> matrix, int K = 80)
         {
-            SparseMatrix<double> similarity = new SparseMatrix<double>();
-
+            SparseVector<List<VectorEntry<double>>> S = new SparseVector<List<VectorEntry<double>>>();
             List<int> rows = matrix.GetRowKeyList();
             Parallel.ForEach(rows, u => {
                 var Nu = matrix[u];     // items rated by user u
-                Dictionary<int, double> otherRowValue = new Dictionary<int, double>();
+                List<VectorEntry<double>> su = new List<VectorEntry<double>>(); // similarity from user u to other users.
                 foreach (int v in matrix.Keys)
                 {
                     if (u == v) { continue; }
                     var Nv = matrix[v];   // items rated by user v
                     int numerator = 0;    // numerator = | i and j |
                     int denominator = 0;  // denominator = |i union j| = | i | + | j | - | i and j |
-
                     foreach (int item in Nu.Keys)
-                    { 
+                    {
                         if (Nv.ContainsKey(item))
                         {
                             numerator++;
                         }
                     }
                     denominator = Nu.Count + Nv.Count - numerator;
-                    otherRowValue.Add(v, numerator * 1.0 / denominator);
+                    su.Add(new VectorEntry<double>(v, numerator * 1.0 / denominator));
                 }
-                var sortedRowSimilarity = otherRowValue.OrderByDescending(p => p.Value).ToDictionary(p => p.Key, o => o.Value);
-
-                lock (similarity)
+                var sortedSimilarities = su.OrderByDescending(e => e.Value).ToList().GetRange(0, Math.Min(K, su.Count));
+                lock(S)
                 {
-                    similarity[u] = sortedRowSimilarity;
-                }                
-            });                 
-            
-            return similarity;
+                    S.Add(u, sortedSimilarities);
+                }
+            });
+            return S;
         }
-
-
 
 
     }
@@ -91,7 +85,23 @@ namespace Gooods.DataType
 
             Console.WriteLine("Jaccard similarity");
             Console.WriteLine(matrix.Jaccard().ToString());
+
+            Console.WriteLine("Jaccard_v2 similarity");
+            var S = matrix.Jaccard();
+            foreach(int r in S.Keys)
+            {
+                List<VectorEntry<double>> row = S[r];
+                Console.Write("{0}", r);
+                foreach(var e in row)
+                {
+                    Console.Write(" {0}:{1:N2}", e.Index, e.Value);
+                }
+                Console.WriteLine();
+            }           
+
         }
+
+
 
 
     }

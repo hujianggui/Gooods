@@ -49,6 +49,7 @@
     <Compile Include="DataType\DenseVector.cs" />
     <Compile Include="DataType\MatrixEntry.cs" />
     <Compile Include="DataType\SparseMatrixExtensions.cs" />
+    <Compile Include="DataType\VectorEntry.cs" />
     <Compile Include="Data\Rating.cs" />
     <Compile Include="Data\RatingExtensions.cs" />
     <Compile Include="Data\Tools.cs" />

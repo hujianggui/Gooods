@@ -36,7 +36,7 @@ namespace Gooods.Examples
             var testRatings = Tools.GetRatings(TestRatingFile, "::").ToMatrixEntries();
 
             UserKNNPredictor ucf = new UserKNNPredictor();
-            ucf.TryPrediction(baseRatings, testRatings, 80);
+            ucf.TryPrediction(baseRatings, testRatings, 400);
 
         }
 

@@ -56,6 +56,24 @@ namespace Gooods.DataType
             }
             return matrix;
         }
+
+        /// <summary>
+        /// Transform to a reversed sparse matrix.
+        /// </summary>
+        /// <param name="entries"></param>
+        /// <returns></returns>
+        public static SparseMatrix<double> ToReverseSparseMatrix(this List<MatrixEntry<double>> entries)
+        {
+            SparseMatrix<double> matrix = new SparseMatrix<double>();
+            foreach (var e in entries)
+            {
+                if (!matrix.HasEntry(e.Column, e.Row))
+                {
+                    matrix.Add(e.Column, e.Row, e.Value);
+                }
+            }
+            return matrix;
+        }
     }
 
 }
